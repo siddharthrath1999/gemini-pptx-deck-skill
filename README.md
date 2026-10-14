@@ -6,19 +6,22 @@
   <a href="https://siddharthrath1999.github.io/pptx-native/"><b>Website</b></a> ·
   <a href="#install">Install</a> ·
   <a href="#how-it-works">How it works</a> ·
+  <a href="#edit-a-deck-you-already-have">Edit a deck</a> ·
   <a href="#write-better-prompts">Prompts</a> ·
   <a href="#examples">Examples</a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/siddharthrath1999/pptx-native/releases/latest"><img src="https://img.shields.io/github/v/release/siddharthrath1999/pptx-native?color=ff6a3d&label=release" alt="Latest release"></a>
-  <img src="https://img.shields.io/badge/works%20with-Gemini%20app-4a7dff" alt="Works with the Gemini app">
-  <img src="https://img.shields.io/badge/works%20with-Google%20Antigravity-9b6bff" alt="Works with Google Antigravity">
-  <img src="https://img.shields.io/badge/output-native%20.pptx-ff6a3d" alt="Native pptx output">
-  <img src="https://img.shields.io/badge/license-MIT-3ddc97" alt="MIT licence">
+  <a href="https://github.com/siddharthrath1999/pptx-native/releases/latest"><img src="https://img.shields.io/github/v/release/siddharthrath1999/pptx-native?color=ff6b3d&label=release" alt="Latest release"></a>
+  <img src="https://img.shields.io/badge/works%20with-Gemini%20app-1b1e27" alt="Works with the Gemini app">
+  <img src="https://img.shields.io/badge/works%20with-Google%20Antigravity-1b1e27" alt="Works with Google Antigravity">
+  <img src="https://img.shields.io/badge/output-native%20.pptx-ff6b3d" alt="Native pptx output">
+  <img src="https://img.shields.io/badge/license-MIT-1b1e27" alt="MIT licence">
 </p>
 
-**PPTX Native** is a skill for Gemini and Google Antigravity. Ask for a deck in one line. Gemini researches, writes, designs and checks it, then hands you a real PowerPoint file. Every chart, table, icon and text box stays editable in PowerPoint, Keynote and Google Slides.
+**PPTX Native** is a free, open-source skill for Gemini and Google Antigravity. Ask for a deck in one line. Gemini researches, writes, designs and checks it, then hands you a real PowerPoint file. Every chart, table, icon and text box stays editable in PowerPoint, Keynote and Google Slides. Already have a deck? Attach it and say what to change.
+
+**Why it exists.** Ask an AI for slides and you usually get an outline in chat, pictures of slides you can't edit, or a quick export with generic layouts and charts to rebuild. PPTX Native builds a real .pptx with native charts, sourced research and speaker notes, checks every slide, and can edit your existing deck slide by slide.
 
 <p align="center"><img src="docs/assets/demo.gif" alt="Slides from three decks made with PPTX Native" width="720"></p>
 
@@ -61,6 +64,23 @@ flowchart LR
 
 Gemini writes the deck as a structured spec. The bundled Python kit turns it into slides, then checks every slide for cut-off text, overlaps, low contrast and stock AI phrasing. Gemini renders the slides to images, looks at them, fixes what it finds, and delivers the file with a short note on assumptions, gaps and sources.
 
+## Edit a deck you already have
+
+Attach a `.pptx` in the same message and say what to change. PPTX Native reads every slide first, then changes only what you asked for, in your deck's own fonts and colours.
+
+| You ask | It does |
+|---|---|
+| "Turn slide 2 into something better than bullets" | Rebuilds that slide with a kit layout, in your theme |
+| "Change every FY25 to FY26" | Replaces the text on every slide, keeping formatting |
+| "Update the chart with Q3 numbers" | Replaces the chart data; type and styling stay |
+| "Add a decisions slide after the table" | Inserts a new slide that matches the rest |
+| "Rewrite the speaker notes for investors" | Changes notes only |
+
+<p align="center"><img src="docs/assets/edit/before.jpg" width="48%"> <img src="docs/assets/edit/after.jpg" width="48%"></p>
+<p align="center"><sub>Before and after: "Turn slide 2 into something better than bullets."</sub></p>
+
+New and redesigned slides need a 16:9 deck. On other sizes it edits text, tables, charts and notes. New slides use the deck's theme colours and fonts, not its master artwork.
+
 ## What it makes
 
 | | |
@@ -68,17 +88,22 @@ Gemini writes the deck as a structured spec. The bundled Python kit turns it int
 | **34 layouts** | Cover, agenda, KPI tiles, big number, cards, comparison, table, scorecard, heatmap, bar list, split bar, timeline, process, funnel, 2x2 matrix, layers, roadmap, runbook steps, quiz question, recap and more |
 | **10 native chart types** | Column, bar, stacked, 100% stacked, line, area, pie, doughnut, scatter, waterfall |
 | **9 starting looks** | Editorial warm, boardroom navy, executive slate, mono minimal, classic serif, dark tech, playful bright, soft pastel, bold contrast, or your own colours |
+| **Edits your decks** | Rewrite, update tables and charts, redesign or add slides, reorder, delete |
 | **Built for presenting** | Speaker notes on every slide, sources on data slides, 152 vector icons, decks of 100+ slides |
 | **Works everywhere** | Fonts every device has, so the deck looks the same on Windows, Mac, phones and Google Slides |
 
-<p align="center"><img src="docs/assets/looks/editorial-warm.jpg" width="32%"> <img src="docs/assets/looks/dark-tech.jpg" width="32%"> <img src="docs/assets/looks/playful-bright.jpg" width="32%"></p>
-<p align="center"><sub>The same slide in three of the nine starting looks.</sub></p>
+<p align="center"><img src="docs/assets/audiences/board-2.jpg" width="24%"> <img src="docs/assets/audiences/pitch-3.jpg" width="24%"> <img src="docs/assets/audiences/workshop-2.jpg" width="24%"> <img src="docs/assets/audiences/launch-3.jpg" width="24%"></p>
+<p align="center"><sub>One company, four audiences: a board update, an investor pitch, a team workshop and a launch. Structure, slide types and tone change, not just colours. Sample data.</sub></p>
 
 ## Write better prompts
 
-Give it the **topic**, **who it's for**, **what they should know or do after**, **length**, **look**, and **your files**.
+**Clear beats long.** More context isn't better context: unrelated details pull slides off topic, and conflicting asks ("short but comprehensive") force guesses. Give the few things only you know:
 
-> Make a 30-slide market analysis on India's EV market for our leadership team. Style: calm and premium. Include one slide per company and an appendix with full tables.
+1. **The job:** who it's for and what they should decide or learn.
+2. **The source of truth:** attach the files that matter. One right document beats ten loosely related ones.
+3. **The must-haves:** length, sections you need, things to avoid. Leave design to the skill.
+
+> Make a 30-slide analysis of India's electric two-wheeler market for our leadership team, who must decide whether to enter in 2027. Use the attached market report first. One slide per major brand, and end with a go or no-go recommendation.
 
 > Make a fun 30-slide learning deck that teaches college students how UPI payments work. Use one running story, quiz questions for the room, and simple language.
 
@@ -112,6 +137,9 @@ Gemini researches and cites sources, but it can still pick a weak source or misr
 <details><summary><b>"The uploaded file did not pass the security scan"</b></summary>
 Upload the official zip, unchanged. If you edited files inside it, undo the changes.
 </details>
+<details><summary><b>Can it edit a deck I already have?</b></summary>
+Yes. Attach the .pptx and say what to change. See <a href="#edit-a-deck-you-already-have">Edit a deck</a>.
+</details>
 <details><summary><b>Does it add photos?</b></summary>
 No. Visuals come from charts, tables, shapes and icons. Add your own photos afterwards.
 </details>
@@ -123,6 +151,7 @@ pptx-native/               the skill (this folder is what Gemini and Antigravity
   SKILL.md                 the workflow the agent follows
   references/              storylines, design directions, layout catalog, writing rules
   scripts/build_deck.py    JSON deck spec -> .pptx, then lint
+  scripts/edit_deck.py     inspect and edit an existing .pptx
   scripts/dk_*.py          layouts, themes, charts, tables, icons, text measuring, checks
   scripts/sheet_deck.py    contact sheets for visual review
   examples/gallery.json    a spec that uses every layout

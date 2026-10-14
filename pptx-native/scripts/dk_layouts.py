@@ -5,6 +5,7 @@ layout, tone, kicker, title, subtitle, takeaway, source, notes.
 """
 
 import dk_measure as M
+from dk_units import Inches, Pt, emu
 from dk_canvas import BOTTOM, CW, H, LH, MX, TOP, W, plain
 from dk_charts import add_chart, add_table, series_colors
 from dk_theme import clean, contrast, mix, pick_on, readable
@@ -340,7 +341,8 @@ def kpis(c, d):
         c.warn("kpis: %d items; use 2 to 5." % n)
     n = max(1, n)
     has_note = any(it.get("note") or it.get("text") for it in items)
-    ch = min(y1 - y0, 3.3 if has_note else 2.5)
+    has_icon = any(it.get("icon") for it in items)
+    ch = min(y1 - y0, (3.3 if has_note else 2.5) + (0.55 if has_icon and not has_note else 0))
     yy = y0 + min(0.3, (y1 - y0 - ch) * 0.3)
     size = 46 if n <= 3 else (40 if n == 4 else 34)
     tile_w = cols(n)[0][1] - 0.56
@@ -617,7 +619,7 @@ def question(c, d):
         c.put(x + 0.36 + d0, y + 0.08, w - d0 - 0.56, opt, size=22, bold=True, color=pick_on(fill, "141414", "FFFFFF"), on=fill,
               max_h=rh - 0.16, min_size=13, valign="m", spacing=0.98, name="Option text")
         c.boxes[-1]["y"], c.boxes[-1]["h"] = y + 0.08, rh - 0.16
-        c.slide.shapes[-1].top, c.slide.shapes[-1].height = int(914400 * (y + 0.08)), int(914400 * (rh - 0.16))
+        c.slide.shapes[-1].top, c.slide.shapes[-1].height = emu(y + 0.08), emu(rh - 0.16)
     if icon:
         d1 = min(2.4, avail)
         cx = MX + gw + (CW - gw - d1) / 2 + 0.1
@@ -794,7 +796,7 @@ def bar_list(c, d):
         on = hl is None or it.get("label") == hl or i == hl or (isinstance(hl, list) and (it.get("label") in hl or i in hl))
         c.put(MX, y, lab_w - 0.15, it.get("label", ""), size=13, bold=on, color=P["ink"], max_h=rh - 0.08, min_size=10, valign="m", spacing=0.98, name="Bar label")
         c.boxes[-1]["h"] = rh - 0.08
-        c.slide.shapes[-1].height = int(914400 * (rh - 0.08))
+        c.slide.shapes[-1].height = emu(rh - 0.08)
         bh = min(0.34, rh * 0.56)
         by = y + (rh - 0.08 - bh) / 2
         c.rect(bar_x, by, bar_w, bh, fill=mix(P["line"], P["bg"], 0.55), radius=min(c.radius(), bh / 2), name="Bar track")
@@ -1100,11 +1102,11 @@ def layers(c, d):
         tw = min(3.4, w * 0.32)
         c.put(x + 0.3, y + 0.08, tw - 0.2, it.get("title") or "", size=20, bold=True, color=ink, on=fill, max_h=rh - 0.16, min_size=11, valign="m", spacing=0.98)
         c.boxes[-1]["h"] = rh - 0.16
-        c.slide.shapes[-1].height = int(914400 * (rh - 0.16))
+        c.slide.shapes[-1].height = emu(rh - 0.16)
         if it.get("text"):
             c.put(x + 0.3 + tw, y + 0.08, w - tw - 0.6, it["text"], size=15, color=ink, on=fill, max_h=rh - 0.16, min_size=10, valign="m", spacing=1.04)
             c.boxes[-1]["h"] = rh - 0.16
-            c.slide.shapes[-1].height = int(914400 * (rh - 0.16))
+            c.slide.shapes[-1].height = emu(rh - 0.16)
 
 
 @layout("roadmap")

@@ -13,7 +13,7 @@ from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_CONNECTOR, MSO_SHAPE
 from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE, PP_ALIGN
 from pptx.oxml.ns import qn
-from pptx.util import Emu, Inches, Pt
+from dk_units import Inches, Pt, emu
 
 import dk_measure as M
 from dk_theme import Theme, contrast, mix, pick_on, readable
@@ -85,14 +85,26 @@ def plain(text):
     return re.sub(r"\*\*([^*]+)\*\*", r"\1", str(text))
 
 
+def blank_layout(prs):
+    """The layout with the fewest placeholders, preferring one named Blank."""
+    layouts = list(prs.slide_layouts)
+    named = [l for l in layouts if "blank" in (l.name or "").lower()]
+    pool = named or layouts
+    return min(pool, key=lambda l: len(l.placeholders))
+
+
 class Deck(object):
-    def __init__(self, theme=None, meta=None):
+    def __init__(self, theme=None, meta=None, prs=None):
         self.theme = theme if isinstance(theme, Theme) else Theme(theme)
         self.meta = dict(meta or {})
-        self.prs = Presentation()
-        self.prs.slide_width = Inches(W)
-        self.prs.slide_height = Inches(H)
-        self.blank = self.prs.slide_layouts[6]
+        if prs is None:
+            self.prs = Presentation()
+            self.prs.slide_width = Inches(W)
+            self.prs.slide_height = Inches(H)
+            self.blank = self.prs.slide_layouts[6]
+        else:
+            self.prs = prs  # an existing deck: new slides use its blank layout and size
+            self.blank = blank_layout(prs)
         self.canvases = []
         props = self.prs.core_properties
         props.title = self.meta.get("title", "")
@@ -100,7 +112,10 @@ class Deck(object):
         props.subject = self.meta.get("subtitle", "")
 
     def new_slide(self, tone="light", spec=None):
-        canvas = Canvas(self, self.prs.slides.add_slide(self.blank), tone, len(self.canvases) + 1, spec or {})
+        slide = self.prs.slides.add_slide(self.blank)
+        for ph in list(slide.placeholders):  # empty placeholders would show "Click to add" boxes
+            ph._element.getparent().remove(ph._element)
+        canvas = Canvas(self, slide, tone, len(self.canvases) + 1, spec or {})
         self.canvases.append(canvas)
         return canvas
 

@@ -8,7 +8,7 @@ from pptx.enum.chart import (XL_CHART_TYPE, XL_LABEL_POSITION, XL_LEGEND_POSITIO
                              XL_TICK_MARK)
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.oxml.ns import qn
-from pptx.util import Inches, Pt
+from dk_units import Inches, Pt, emu
 
 import dk_measure as M
 from dk_canvas import LH, parse_runs, plain

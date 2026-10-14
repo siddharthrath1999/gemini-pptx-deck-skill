@@ -1,6 +1,6 @@
 {
   "name": "pptx-native",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "PPTX Native: a skill for Gemini and Google Antigravity that builds real, editable PowerPoint decks.",
   "bin": {
     "pptx-native": "bin/install.js"

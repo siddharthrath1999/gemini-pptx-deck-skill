@@ -5,8 +5,8 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var hasGsap = typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined";
-  var desktop = window.matchMedia("(min-width: 981px)");
   var REPO = "siddharthrath1999/pptx-native";
+  var navH = function () { return parseInt(getComputedStyle(document.documentElement).getPropertyValue("--nav-h"), 10) || 64; };
 
   /* ---------- smooth scroll ---------- */
   var lenis = null;
@@ -21,22 +21,57 @@
       (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })(0);
     }
   }
+  function goTo(el) {
+    var off = -(navH() + 34);
+    if (lenis) lenis.scrollTo(el, { offset: off });
+    else window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY + off, behavior: reduce ? "auto" : "smooth" });
+  }
+
+  /* ---------- nav ---------- */
+  var nav = $("#nav"), menuBtn = $("#menuBtn");
+  function closeMenu() { nav.classList.remove("open"); menuBtn.setAttribute("aria-expanded", "false"); $(".ms", menuBtn).textContent = "menu"; }
+  menuBtn.addEventListener("click", function () {
+    var open = !nav.classList.contains("open");
+    nav.classList.toggle("open", open);
+    menuBtn.setAttribute("aria-expanded", String(open));
+    $(".ms", menuBtn).textContent = open ? "close" : "menu";
+  });
   $$('a[href^="#"]').forEach(function (a) {
     a.addEventListener("click", function (e) {
       var id = a.getAttribute("href");
       var el = id.length > 1 ? $(id) : document.body;
       if (!el) return;
       e.preventDefault();
-      if (lenis) lenis.scrollTo(el, { offset: -20 }); else el.scrollIntoView({ behavior: "smooth" });
+      closeMenu();
+      if (a.dataset.agy) showSetup("agy");
+      if (id === "#top") { if (lenis) lenis.scrollTo(0); else window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+      goTo(el);
     });
   });
-  var nav = $(".nav");
-  window.addEventListener("scroll", function () { nav.classList.toggle("scrolled", window.scrollY > 40); }, { passive: true });
+  var navLinks = $$(".nav-links a");
+  var tracked = navLinks.map(function (a) { return $(a.getAttribute("href")); });
+  function onScroll() {
+    nav.classList.toggle("scrolled", window.scrollY > 40);
+    var y = window.innerHeight * 0.4, cur = -1;
+    tracked.forEach(function (s, i) { if (!s) return; var r = s.getBoundingClientRect(); if (r.top <= y && r.bottom > y) cur = i; });
+    navLinks.forEach(function (a, i) { a.classList.toggle("active", i === cur); });
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  /* GitHub stars, shown only when the API answers */
+  var stars = $("#stars");
+  stars.style.display = "none";
+  if (window.fetch) {
+    fetch("https://api.github.com/repos/" + REPO).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      if (d && d.stargazers_count > 0) { stars.textContent = "★ " + d.stargazers_count; stars.style.display = ""; }
+    }).catch(function () {});
+  }
 
   /* ---------- reveal ---------- */
   if (hasGsap && !reduce) {
     ScrollTrigger.batch(".rv", {
-      start: "top 88%",
+      start: "top 90%",
       onEnter: function (els) { gsap.to(els, { opacity: 1, y: 0, duration: 1.1, ease: "expo.out", stagger: 0.08, overwrite: true }); }
     });
   } else {
@@ -45,10 +80,10 @@
 
   /* ---------- hero: typing prompt ---------- */
   var prompts = [
-    "Make a fun learning deck that teaches how UPI payments work.",
     "Make a 45-slide market analysis of India's credit card issuers.",
-    "Benchmark India's six quick commerce apps for our strategy team.",
-    "Turn the attached sheet into a quarterly review with charts."
+    "Make a fun learning deck that teaches how UPI payments work.",
+    "Turn the attached sheet into a quarterly review with charts.",
+    "Redesign slides 4 to 9 of the attached deck. Keep our colours."
   ];
   var typed = $("#typed");
   (function typeLoop(pi) {
@@ -56,11 +91,11 @@
     if (reduce) { typed.textContent = prompts[0]; return; }
     (function step() {
       typed.textContent = text.slice(0, i++);
-      if (i <= text.length) setTimeout(step, 28 + Math.random() * 40);
+      if (i <= text.length) setTimeout(step, 26 + Math.random() * 38);
       else setTimeout(function () { erase(text.length); }, 2600);
     })();
     function erase(n) {
-      typed.textContent = text.slice(0, n);
+      typed.textContent = text.slice(0, Math.max(0, n));
       if (n > 0) setTimeout(function () { erase(n - 2); }, 14);
       else setTimeout(function () { typeLoop(pi + 1); }, 300);
     }
@@ -70,10 +105,14 @@
   var cards = $$(".fan-card");
   if (hasGsap && !reduce) {
     var n = cards.length, mid = (n - 1) / 2;
-    var spread = function () { return Math.min(window.innerWidth * 0.17, 230); };
+    var spread = function () { return Math.min(window.innerWidth * 0.12, 175); };
     gsap.set(cards, { opacity: 0, yPercent: 40, z: -500, rotateX: 50, scale: 0.5 });
     var tl = gsap.timeline({ scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom bottom", scrub: 1 } });
-    tl.to(".hero-copy", { y: function () { return -window.innerHeight * 0.3; }, scale: 0.82, duration: 1, ease: "none" }, 0)
+    var heroCopy = $(".hero-copy"), heroPrompt = $("#heroPrompt");
+    gsap.set(heroCopy, { transformOrigin: "50% 0%" });
+    /* lift the copy so the prompt ends just under the nav, never behind it */
+    var lift = function () { return Math.min(0, navH() + 40 - heroCopy.offsetTop - heroPrompt.offsetTop * 0.82); };
+    tl.to(heroCopy, { y: lift, scale: 0.82, duration: 1, ease: "none" }, 0)
       .to(".hero-copy .lead, .hero-copy h1, .hero-copy .eyebrow", { opacity: 0, duration: 0.6 }, 0)
       .to("#scrollHint", { opacity: 0, duration: 0.2 }, 0);
     cards.forEach(function (c, i) {
@@ -81,7 +120,7 @@
       tl.to(c, {
         opacity: 1, scale: 1, z: function () { return -Math.abs(o) * 90; },
         x: function () { return o * spread(); },
-        y: function () { return window.innerHeight * 0.12 + Math.abs(o) * Math.abs(o) * 10; },
+        y: function () { return window.innerHeight * 0.1 + Math.abs(o) * Math.abs(o) * 10; },
         yPercent: 0, rotateY: -o * 13, rotateZ: o * 2.5, rotateX: 6,
         duration: 1, ease: "power2.out"
       }, 0.25 + Math.abs(o) * 0.06);
@@ -92,8 +131,9 @@
   }
 
   /* ---------- 3D tilt + cursor glow ---------- */
+  var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   function tilt(el, max) {
-    if (reduce) return;
+    if (reduce || !fine) return;
     el.addEventListener("mousemove", function (e) {
       var r = el.getBoundingClientRect();
       var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
@@ -103,90 +143,159 @@
     });
     el.addEventListener("mouseleave", function () { el.style.transform = ""; });
   }
-  $$(".tilt").forEach(function (el) { tilt(el, 14); });
+  $$(".tilt").forEach(function (el) { tilt(el, 12); });
 
-  /* ---------- how it works: pinned steps ---------- */
-  var steps = $$(".step"), scenes = $$(".scene"), bar = $("#stepsBar");
+  /* ---------- how it works: live task replay ---------- */
+  var msgs = $$("#thread .msg"), scenes = $$("#board .scene"), threadBody = $("#thread");
+  var LABELS = ["your request", "research", "storyline", "design", "slides", "checks", "delivery"];
+  var stepNow = -1;
   function setStep(i) {
-    steps.forEach(function (s, k) { s.classList.toggle("active", k === i); });
+    if (i === stepNow) return;
+    stepNow = i;
+    msgs.forEach(function (m, k) {
+      m.classList.toggle("shown", k <= i);
+      var last = i === msgs.length - 1;
+      m.classList.toggle("current", k === i && k > 0 && !last);
+      m.classList.toggle("done", k > 0 && (k < i || last));
+      var ic = $(".status .ms", m);
+      if (ic) ic.textContent = (k < i || last) ? "check_circle" : "progress_activity";
+    });
     scenes.forEach(function (s, k) { s.classList.toggle("active", k === i); });
-    var a = steps[i], list = $("#stepsList");
-    if (a && bar) bar.style.height = (a.offsetTop + a.offsetHeight / 2 - 18) + "px";
-    if (list) list.dataset.i = i;
+    $("#boardLabel").textContent = LABELS[i];
+    $("#replayBar").style.width = ((i + 1) / scenes.length * 100) + "%";
+    var target = msgs[i];
+    if (target) {
+      var top = target.offsetTop - threadBody.offsetTop + target.offsetHeight - threadBody.clientHeight + 24;
+      threadBody.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" });
+    }
   }
-  var makingST = null;
+  var replayST = null, replayTimer = null;
   if (hasGsap && !reduce) {
     ScrollTrigger.matchMedia({
       "(min-width: 981px)": function () {
-        makingST = ScrollTrigger.create({
-          trigger: "#makingPin", start: "top top", end: "+=" + (steps.length * 70) + "%", pin: true, scrub: true,
-          onUpdate: function (self) { setStep(Math.min(steps.length - 1, Math.floor(self.progress * steps.length))); }
+        replayST = ScrollTrigger.create({
+          trigger: "#replay", start: "top top", end: "+=" + (scenes.length * 55) + "%", pin: true,
+          onUpdate: function (self) { setStep(Math.min(scenes.length - 1, Math.floor(self.progress * scenes.length))); }
         });
-        return function () { makingST = null; };
+        return function () { replayST = null; };
       }
     });
   }
-  var autoStep = null;
-  function startAuto() {
-    if (makingST || autoStep) return;
-    autoStep = setInterval(function () {
-      var cur = steps.findIndex(function (s) { return s.classList.contains("active"); });
-      setStep((cur + 1) % steps.length);
-    }, 3200);
-  }
-  steps.forEach(function (s, i) {
-    s.addEventListener("click", function () {
-      if (makingST) {
-        var y = makingST.start + (i + 0.5) / steps.length * (makingST.end - makingST.start);
+  msgs.forEach(function (m, i) {
+    m.style.cursor = "pointer";
+    m.addEventListener("click", function () {
+      if (replayST) {
+        var y = replayST.start + (i + 0.5) / scenes.length * (replayST.end - replayST.start);
         if (lenis) lenis.scrollTo(y); else window.scrollTo({ top: y, behavior: "smooth" });
-      } else { clearInterval(autoStep); autoStep = null; setStep(i); }
+      } else { stopReplay(); setStep(i); }
     });
   });
+  function stopReplay() { clearInterval(replayTimer); replayTimer = null; }
   setStep(0);
-  setTimeout(function () { if (!makingST) startAuto(); }, 800);
-
-  /* ---------- looks ---------- */
-  var looks = [
-    ["editorial-warm", "Editorial warm", "Warm paper, soft cards, quiet confidence.", ["#f6f5f1", "#141414", "#ffd43b", "#c6e8cf"]],
-    ["boardroom-navy", "Boardroom navy", "Serif headlines and one strong blue for board papers.", ["#ffffff", "#0f1b2d", "#1f5eff", "#00a389"]],
-    ["executive-slate", "Executive slate", "Cool slate and deep green for strategy and operations.", ["#f2f4f5", "#1f2933", "#0b6e4f", "#c2410c"]],
-    ["mono-minimal", "Mono minimal", "Greyscale with one sharp accent, for product readouts.", ["#fafafa", "#111111", "#e4572e", "#bdbdbd"]],
-    ["classic-serif", "Classic serif", "Cream, brick and forest, for reports that read like books.", ["#fbf8f3", "#2b2118", "#9c3d2a", "#2f5d50"]],
-    ["dark-tech", "Dark tech", "Near-black with cyan light, for engineering and launches.", ["#0e1116", "#f2f4f8", "#5eead4", "#7c9cff"]],
-    ["playful-bright", "Playful bright", "Round shapes and happy colour, for workshops and teaching.", ["#fff9ef", "#1d1b3a", "#ff5c7a", "#3d5afe"]],
-    ["soft-pastel", "Soft pastel", "Lilac and mint, for people and culture topics.", ["#f7f5fb", "#2a2540", "#8b7cf6", "#7fd1c7"]],
-    ["bold-contrast", "Bold contrast", "Black, white and red, for manifestos and launches.", ["#ffffff", "#000000", "#ff3b1d", "#0047ff"]]
-  ];
-  var lookList = $("#lookList"), lookFrame = $("#lookFrame"), lookDesc = $("#lookDesc"), lookTimer = null, lookIdx = 0;
-  looks.forEach(function (l, i) {
-    var img = new Image(); img.src = "assets/looks/" + l[0] + ".jpg"; img.alt = l[1] + " look applied to a comparison slide"; if (i === 0) img.className = "on";
-    lookFrame.appendChild(img);
-    var b = document.createElement("button");
-    b.className = "look-btn" + (i === 0 ? " active" : "");
-    b.innerHTML = '<span class="sw">' + l[3].map(function (c) { return '<i style="background:' + c + '"></i>'; }).join("") + '</span><span class="name">' + l[1] + "</span>";
-    b.setAttribute("aria-label", l[1]);
-    b.addEventListener("click", function () { stopLooks(); showLook(i); });
-    lookList.appendChild(b);
-  });
-  function showLook(i) {
-    lookIdx = i;
-    $$("img", lookFrame).forEach(function (im, k) { im.classList.toggle("on", k === i); });
-    $$(".look-btn", lookList).forEach(function (b, k) { b.classList.toggle("active", k === i); });
-    lookDesc.innerHTML = "<b>" + looks[i][1] + ".</b> " + looks[i][2];
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (ents) {
+      ents.forEach(function (e) {
+        if (replayST || reduce) return;
+        if (e.isIntersecting && !replayTimer) replayTimer = setInterval(function () { setStep((stepNow + 1) % scenes.length); }, 2600);
+        if (!e.isIntersecting) stopReplay();
+      });
+    }, { threshold: 0.35 }).observe($("#board"));
   }
-  function stopLooks() { clearInterval(lookTimer); lookTimer = null; }
-  showLook(0);
+  if (reduce) setStep(scenes.length - 1);
+
+  /* ---------- same topic, different decks ---------- */
+  var AUD = [
+    ["board", "Board update", "groups",
+      "Make a short board update on Lumen Bikes' Q3 for our board. Calm and factual; they need to approve three decisions.",
+      [["Structure", "Result first, then evidence, then the decisions to approve"], ["Slides", "Metric tiles, a city table with one row highlighted, a decisions list"], ["Tone", "Sentence headlines that state the result"], ["Look", "Executive slate: quiet greys, one deep green"]]],
+    ["pitch", "Investor pitch", "rocket_launch",
+      "Make a short investor pitch for Lumen Bikes' seed round. Bold and simple; investors decide whether to take a meeting.",
+      [["Structure", "The idea, the proof, the growth, the ask"], ["Slides", "A one-line statement, one big number, a growth chart"], ["Tone", "Short, confident claims backed by one figure each"], ["Look", "Bold contrast: black, white and one red"]]],
+    ["workshop", "Team workshop", "school",
+      "Make a short workshop deck for our support team on why Lumen riders cancel. Fun and interactive.",
+      [["Structure", "Question first, then the answer, then a recap"], ["Slides", "A quiz for the room, cards with icons, a recap"], ["Tone", "Friendly, plain words, questions to the room"], ["Look", "Playful bright: rounded cards and warm colour"]]],
+    ["launch", "Product launch", "campaign",
+      "Make a short launch deck for Lumen Cargo, our new cargo bike plan, for the city teams who will roll it out.",
+      [["Structure", "What it is, how it works, when it arrives"], ["Slides", "A statement, a four-step process, a city timeline"], ["Tone", "Clear steps and dates, written for doers"], ["Look", "Dark tech: near-black with cyan light"]]]
+  ];
+  var audTabs = $("#audTabs"), audMain = $("#audMain"), audThumbs = $("#audThumbs"), audIdx = 0, slideIdx = 0, audTimer = null;
+  AUD.forEach(function (a, i) {
+    var b = document.createElement("button");
+    b.innerHTML = '<span class="ms">' + a[2] + "</span>" + a[1];
+    b.setAttribute("role", "tab");
+    b.addEventListener("click", function () { stopAud(); showAud(i, 0); });
+    audTabs.appendChild(b);
+  });
+  for (var s = 0; s < 4; s++) {
+    var im = new Image(); im.alt = ""; audMain.appendChild(im);
+    var tb = document.createElement("button"); tb.setAttribute("aria-label", "Slide " + (s + 1));
+    tb.innerHTML = '<img alt="">';
+    (function (k) { tb.addEventListener("click", function () { stopAud(); showAud(audIdx, k); }); })(s);
+    audThumbs.appendChild(tb);
+  }
+  function audSrc(key, k) { return "assets/audiences/" + key + "-" + (k + 1) + ".jpg"; }
+  function showAud(i, k) {
+    var a = AUD[i], changed = i !== audIdx || !audMain.dataset.ready;
+    audIdx = i; slideIdx = k; audMain.dataset.ready = "1";
+    $$("button", audTabs).forEach(function (b, j) { b.classList.toggle("active", j === i); b.setAttribute("aria-selected", String(j === i)); });
+    var imgs = $$("img", audMain);
+    if (changed) {
+      imgs.forEach(function (im, j) { im.src = audSrc(a[0], j); im.alt = a[1] + " deck, slide " + (j + 1); });
+      $$("button img", audThumbs).forEach(function (im, j) { im.src = audSrc(a[0], j); });
+      $("#audPrompt").textContent = a[3];
+      $("#audDiff").innerHTML = a[4].map(function (d) { return "<div><span>" + d[0] + "</span>" + d[1] + "</div>"; }).join("");
+    }
+    imgs.forEach(function (im, j) { im.classList.toggle("on", j === k); });
+    $$("button", audThumbs).forEach(function (b, j) { b.classList.toggle("on", j === k); });
+  }
+  function stopAud() { clearInterval(audTimer); audTimer = null; audMain.dataset.touched = "1"; }
+  showAud(0, 0);
   if (!reduce && "IntersectionObserver" in window) {
     new IntersectionObserver(function (ents) {
       ents.forEach(function (e) {
-        if (e.isIntersecting && !lookTimer && !lookFrame.dataset.touched) lookTimer = setInterval(function () { showLook((lookIdx + 1) % looks.length); }, 2600);
-        if (!e.isIntersecting) stopLooks();
+        if (e.isIntersecting && !audTimer && !audMain.dataset.touched) {
+          audTimer = setInterval(function () {
+            if (slideIdx < 3) showAud(audIdx, slideIdx + 1); else showAud((audIdx + 1) % AUD.length, 0);
+          }, 2200);
+        }
+        if (!e.isIntersecting) { clearInterval(audTimer); audTimer = null; }
       });
-    }, { threshold: 0.4 }).observe(lookFrame);
-    lookList.addEventListener("click", function () { lookFrame.dataset.touched = "1"; });
+    }, { threshold: 0.4 }).observe(audMain);
   }
 
-  /* ---------- backdrop crossfade (Gemini-style) ---------- */
+  /* ---------- edit: before/after slider ---------- */
+  var ba = $("#ba"), dragging = false;
+  function setPos(clientX) {
+    var r = ba.getBoundingClientRect();
+    var p = Math.max(0, Math.min(100, (clientX - r.left) / r.width * 100));
+    ba.style.setProperty("--pos", p + "%");
+  }
+  ba.addEventListener("pointerdown", function (e) { dragging = true; ba.dataset.touched = "1"; if (ba.setPointerCapture) ba.setPointerCapture(e.pointerId); setPos(e.clientX); });
+  ba.addEventListener("pointermove", function (e) { if (dragging) setPos(e.clientX); });
+  ba.addEventListener("pointerup", function () { dragging = false; });
+  ba.addEventListener("pointercancel", function () { dragging = false; });
+  ba.setAttribute("tabindex", "0");
+  ba.setAttribute("role", "slider");
+  ba.setAttribute("aria-label", "Compare before and after");
+  ba.addEventListener("keydown", function (e) {
+    var cur = parseFloat(ba.style.getPropertyValue("--pos")) || 50;
+    if (e.key === "ArrowLeft") ba.style.setProperty("--pos", Math.max(0, cur - 5) + "%");
+    if (e.key === "ArrowRight") ba.style.setProperty("--pos", Math.min(100, cur + 5) + "%");
+  });
+  if (hasGsap && !reduce) {
+    var baState = { p: 50 };
+    ScrollTrigger.create({
+      trigger: ba, start: "top 70%", once: true,
+      onEnter: function () {
+        gsap.timeline({ onUpdate: function () { if (!ba.dataset.touched) ba.style.setProperty("--pos", baState.p + "%"); } })
+          .to(baState, { p: 18, duration: 1.1, ease: "power2.inOut" })
+          .to(baState, { p: 78, duration: 1.4, ease: "power2.inOut" })
+          .to(baState, { p: 50, duration: 1, ease: "power2.inOut" });
+      }
+    });
+  }
+
+  /* ---------- backdrop crossfade ---------- */
   function backdrop(el) {
     var a = new Image(), b = new Image(), front = a;
     a.alt = b.alt = ""; el.appendChild(a); el.appendChild(b);
@@ -257,70 +366,96 @@
     ["qc", "Quick commerce benchmark", "Competitive benchmark · editorial slate", ["47 slides", "11 charts", "6 platforms"], [1, 4, 6, 17, 22, 28, 34, 41]]
   ];
   var exRow = $("#exRow"), setExBg = backdrop($("#exBackdrop"));
-  var lb = $("#lightbox"), lbImg = $("#lbImg"), lbStrip = $("#lbStrip"), lbTitle = $("#lbTitle"), lbList = [], lbI = 0;
+  var lb = $("#lightbox"), lbImg = $("#lbImg"), lbStrip = $("#lbStrip"), lbTitle = $("#lbTitle"), lbList = [], lbI = 0, lbFrom = null;
   function src(key, p) { return "assets/examples/" + key + "-" + String(p).padStart(2, "0") + ".jpg"; }
   EX.forEach(function (e) {
     var b = document.createElement("button");
-    b.className = "ex-card";
-    b.innerHTML = '<div class="cover"><img loading="lazy" src="' + src(e[0], e[4][0]) + '" alt="Cover of the ' + e[1] + ' deck"></div><div class="meta"><h3>' + e[1] + "</h3><p>" + e[2] + '</p><div class="stats">' + e[3].map(function (s) { return '<span class="chip">' + s + "</span>"; }).join("") + "</div></div>";
+    b.className = "ex-card rv";
+    b.innerHTML = '<div class="cover"><img loading="lazy" src="' + src(e[0], e[4][0]) + '" alt="Cover of the ' + e[1] + ' deck"></div><div class="meta"><h3>' + e[1] + "</h3><p>" + e[2] + '</p><div class="stats">' + e[3].map(function (s) { return '<span class="chip">' + s + "</span>"; }).join("") + '</div><span class="open"><span class="ms">slideshow</span>Page through ' + e[4].length + " slides</span></div>";
     b.addEventListener("mouseenter", function () { setExBg(src(e[0], e[4][1])); });
-    b.addEventListener("click", function () { openLb(e); });
+    b.addEventListener("click", function () { lbFrom = b; openLb(e); });
     tilt(b, 7);
     exRow.appendChild(b);
   });
+  if (hasGsap && !reduce) ScrollTrigger.batch($$(".ex-card"), { start: "top 90%", onEnter: function (els) { gsap.to(els, { opacity: 1, y: 0, duration: 1.1, ease: "expo.out", stagger: 0.1, overwrite: true }); } });
   setExBg(src("upi", 6));
   function openLb(e) {
     lbList = e[4].map(function (p) { return src(e[0], p); }); lbTitle.textContent = e[1];
     lbStrip.innerHTML = "";
     lbList.forEach(function (s, i) { var t = new Image(); t.src = s; t.alt = "Slide " + (i + 1); t.addEventListener("click", function () { showLb(i); }); lbStrip.appendChild(t); });
     showLb(0); lb.classList.add("open"); if (lenis) lenis.stop();
+    $("#lbClose").focus();
   }
-  function showLb(i) { lbI = (i + lbList.length) % lbList.length; lbImg.src = lbList[lbI]; $$("img", lbStrip).forEach(function (t, k) { t.classList.toggle("on", k === lbI); }); }
-  function closeLb() { lb.classList.remove("open"); if (lenis) lenis.start(); }
+  function showLb(i) {
+    lbI = (i + lbList.length) % lbList.length; lbImg.src = lbList[lbI];
+    lbImg.alt = lbTitle.textContent + ", slide " + (lbI + 1) + " of " + lbList.length;
+    $$("img", lbStrip).forEach(function (t, k) { t.classList.toggle("on", k === lbI); });
+  }
+  function closeLb() { lb.classList.remove("open"); if (lenis) lenis.start(); if (lbFrom) lbFrom.focus(); }
   $("#lbClose").addEventListener("click", closeLb);
+  $("#lbPrev").addEventListener("click", function () { showLb(lbI - 1); });
+  $("#lbNext").addEventListener("click", function () { showLb(lbI + 1); });
   lb.addEventListener("click", function (e) { if (e.target === lb || e.target.classList.contains("lb-main")) closeLb(); });
   document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeMenu();
     if (!lb.classList.contains("open")) return;
-    if (e.key === "Escape") closeLb(); if (e.key === "ArrowRight") showLb(lbI + 1); if (e.key === "ArrowLeft") showLb(lbI - 1);
+    if (e.key === "Escape") closeLb();
+    if (e.key === "ArrowRight") showLb(lbI + 1);
+    if (e.key === "ArrowLeft") showLb(lbI - 1);
   });
 
   /* ---------- setup: tabs ---------- */
-  $$(".tabs button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      $$(".tabs button").forEach(function (x) { x.classList.toggle("active", x === b); });
-      $$(".setup-panel").forEach(function (p) { p.classList.toggle("active", p.id === "tab-" + b.dataset.tab); p.style.opacity = 1; p.style.transform = "none"; });
-      if (b.dataset.tab === "agy") playTerm();
-      if (hasGsap) ScrollTrigger.refresh();
+  function showSetup(tab) {
+    $$("#setupTabs button").forEach(function (x) { x.classList.toggle("active", x.dataset.tab === tab); });
+    $$(".setup-panel").forEach(function (p) {
+      p.classList.toggle("active", p.id === "tab-" + tab);
+      p.style.opacity = 1; p.style.transform = "none";
     });
-  });
+    if (tab === "agy") playTerm(); else placeHot();
+    if (hasGsap) ScrollTrigger.refresh();
+  }
+  $$("#setupTabs button").forEach(function (b) { b.addEventListener("click", function () { showSetup(b.dataset.tab); }); });
 
   /* ---------- setup: Gemini app walkthrough ---------- */
   var W = [
-    ["Download the skill", "Get pptx-native.zip from this page. Keep it zipped.", "github.com/" + REPO, [20, 22], false],
-    ["Open Customise, then Skills", "In Gemini's left menu, click Customise and open the Skills tab.", "gemini.google.com/customize", [42, 24], true],
-    ["Click Create, then Upload", "The Create button sits at the top right of your skills.", "gemini.google.com/customize/skills", [74, 45], true],
-    ["Choose the zip and click Create", "Gemini scans it, shows the skill, and you confirm.", "gemini.google.com/customize/skills", [88, 82], true],
-    ["Start a Task and ask", "New chat, switch on Task, type @pptx-native and describe your deck.", "gemini.google.com/app", [50, 62], false]
+    ["Download the skill", "Use the Download button below. Keep the file zipped.", "github.com/" + REPO, ".m-screen:nth-of-type(1) .m-file", false],
+    ["Open Customise, then Skills", "In Gemini's left menu, click Customise and open the Skills tab.", "gemini.google.com/customize", ".m-screen:nth-of-type(2) .m-tabs .hl", true],
+    ["Click Create, then Upload", "The Create button sits at the top right of your skills.", "gemini.google.com/customize/skills", ".m-screen:nth-of-type(3) .m-menu .hl", true],
+    ["Choose the zip and click Create", "Gemini scans it, shows the skill, and you confirm.", "gemini.google.com/customize/skills", ".m-screen:nth-of-type(4) .m-pill", true],
+    ["Start a Task and ask", "New chat, switch on Task, type @pptx-native and describe your deck.", "gemini.google.com/app", ".m-screen:nth-of-type(5) .m-input .chip.on", false]
   ];
-  var walk = $("#walk"), wi = 0, hot = $("#hotspot"), mscreens = $$(".m-screen");
+  var walk = $("#walk"), wi = 0, hot = $("#hotspot"), mscreens = $$(".m-screen"), mockMain = $(".mock-main");
   W.forEach(function (w, i) {
     var b = document.createElement("button");
     b.innerHTML = '<span class="n">' + (i + 1) + "</span><span><b>" + w[0] + '</b><span class="d">' + w[1] + "</span></span>";
     b.addEventListener("click", function () { showWalk(i); });
     walk.appendChild(b);
   });
+  function placeHot() {
+    var t = $(W[wi][3], mockMain);
+    if (!t || !mockMain.offsetWidth) return;
+    var r = t.getBoundingClientRect(), m = mockMain.getBoundingClientRect();
+    hot.style.left = (r.left - m.left + r.width / 2) + "px";
+    hot.style.top = (r.top - m.top + r.height / 2) + "px";
+  }
   function showWalk(i) {
     wi = Math.max(0, Math.min(W.length - 1, i));
     $$("button", walk).forEach(function (b, k) { b.classList.toggle("active", k === wi); });
     mscreens.forEach(function (s, k) { s.classList.toggle("active", k === wi); });
     $("#mockUrl").textContent = W[wi][2];
     $("#sideCustom").classList.toggle("hl", W[wi][4]);
-    hot.style.left = W[wi][3][0] + "%"; hot.style.top = W[wi][3][1] + "%";
-    $("#walkNext").textContent = wi === W.length - 1 ? "Start over" : "Next step";
+    placeHot();
+    var last = wi === W.length - 1;
+    $("#walkNext").innerHTML = last ? '<span class="ms">restart_alt</span>Start over' : 'Next step<span class="ms">arrow_forward</span>';
+    $("#walkPrev").disabled = wi === 0;
+    $("#walkPrev").style.opacity = wi === 0 ? 0.45 : 1;
   }
   $("#walkNext").addEventListener("click", function () { showWalk(wi === W.length - 1 ? 0 : wi + 1); });
   $("#walkPrev").addEventListener("click", function () { showWalk(wi - 1); });
   showWalk(0);
+  window.addEventListener("resize", placeHot);
+  window.addEventListener("load", placeHot);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeHot);
 
   /* ---------- setup: Antigravity terminal ---------- */
   var CMD = {
@@ -332,12 +467,13 @@
   function playTerm() {
     termTimer.forEach(clearTimeout); termTimer = [];
     var lines = $$("#termOut div");
-    lines.forEach(function (d) { d.classList.remove("in"); });
     var full = CMD[osNow], i = 0;
+    if (reduce) { termCmd.textContent = full; lines.forEach(function (d) { d.classList.add("in"); }); return; }
+    lines.forEach(function (d) { d.classList.remove("in"); });
     termCmd.textContent = "";
     (function typeCmd() {
       termCmd.textContent = full.slice(0, i++);
-      if (i <= full.length) termTimer.push(setTimeout(typeCmd, reduce ? 0 : 14));
+      if (i <= full.length) termTimer.push(setTimeout(typeCmd, 14));
       else lines.forEach(function (d, k) { termTimer.push(setTimeout(function () { d.classList.add("in"); }, 300 + k * 260)); });
     })();
   }
@@ -347,20 +483,32 @@
       osNow = b.dataset.os; playTerm();
     });
   });
-  function copy(text, btn, label) {
-    var done = function () { btn.textContent = "Copied"; setTimeout(function () { btn.textContent = label; }, 1600); };
-    if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, done); else done();
+  function copy(text, btn) {
+    var label = btn.innerHTML;
+    var done = function () { btn.innerHTML = '<span class="ms">check</span><span>Copied</span>'; setTimeout(function () { btn.innerHTML = label; }, 1600); };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+    function fallback() {
+      var ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch (err) {}
+      document.body.removeChild(ta); done();
+    }
   }
-  $("#copyCmd").addEventListener("click", function () { copy(CMD[osNow], this, "Copy"); });
+  $("#copyCmd").addEventListener("click", function () { copy(CMD[osNow], this); });
   termCmd.textContent = CMD.mac;
+  $$("#termOut div").forEach(function (d) { d.classList.add("in"); });
 
   /* ---------- prompt builder ---------- */
   var built = $("#builtText"), topic = $("#topic");
   function pick(key) { return $$('[data-key="' + key + '"] button.active').map(function (b) { return b.textContent; }); }
+  function list(a) { return a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]; }
   function compose() {
-    var deck = pick("deck")[0], aud = pick("aud")[0], len = pick("len")[0], style = pick("style")[0], extra = pick("extra");
-    var t = "Make a " + len + "-slide " + deck + " on " + (topic.value.trim() || "your topic") + " for " + aud + ". Style: " + style + ".";
-    if (extra.length) t += " Include " + extra.join(", ").replace(/, ([^,]*)$/, " and $1") + ".";
+    var deck = pick("deck")[0], aud = pick("aud")[0], len = pick("len")[0], extra = pick("extra");
+    var t = "Make a " + len + "-slide " + deck + " on " + (topic.value.trim() || "your topic") + " for " + aud + ".";
+    var useFiles = extra.filter(function (x) { return /^use /.test(x); });
+    var rest = extra.filter(function (x) { return !/^use /.test(x); });
+    if (useFiles.length) t += " " + useFiles[0].charAt(0).toUpperCase() + useFiles[0].slice(1) + ".";
+    if (rest.length) t += " Include " + list(rest) + ".";
     built.textContent = t;
   }
   $$("#builderOpts .opt-group[data-key]").forEach(function (g) {
@@ -374,12 +522,12 @@
     });
   });
   topic.addEventListener("input", compose);
-  $("#copyPrompt").addEventListener("click", function () { copy(built.textContent, this, "Copy prompt"); });
+  $("#copyPrompt").addEventListener("click", function () { copy(built.textContent, this); });
   compose();
 
   /* ---------- counters + bars ---------- */
   var bento = $("#bento");
-  if ("IntersectionObserver" in window) {
+  if ("IntersectionObserver" in window && !reduce) {
     new IntersectionObserver(function (ents, obs) {
       ents.forEach(function (e) {
         if (!e.isIntersecting) return;
@@ -390,8 +538,11 @@
         });
         obs.disconnect();
       });
-    }, { threshold: 0.3 }).observe(bento);
-  } else { bento.classList.add("in-view"); }
+    }, { threshold: 0.25 }).observe(bento);
+  } else {
+    bento.classList.add("in-view");
+    $$(".counter", bento).forEach(function (c) { c.textContent = c.dataset.to; });
+  }
 
   window.addEventListener("load", function () { if (hasGsap) ScrollTrigger.refresh(); });
 })();

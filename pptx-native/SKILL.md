@@ -1,6 +1,6 @@
 ---
 name: pptx-native
-description: Researches, structures, writes and builds presentation decks as native, fully editable PowerPoint (.pptx) files with real charts, tables, vector icons and speaker notes, using the bundled Python deck kit. Use when asked for a deck, slides, a presentation, a pitch, a benchmark, an analysis, a review, a walkthrough, a runbook, training material or a report in slide form, including long decks of 100 or more slides, even when the request is brief or does not mention PowerPoint. Runs in Gemini app Task mode, Google Antigravity, or any agent that can run Python. Never substitutes Google Slides, HTML, Canvas or images for the .pptx file.
+description: Researches, structures, writes and builds presentation decks as native, fully editable PowerPoint (.pptx) files with real charts, tables, vector icons and speaker notes, and edits existing .pptx decks slide by slide while keeping their theme. Use when asked for a deck, slides, a presentation, a pitch, a benchmark, an analysis, a review, a walkthrough, a runbook, training material or a report in slide form, including long decks of 100 or more slides, or when a .pptx is attached with changes to make, even when the request is brief or does not mention PowerPoint. Runs in Gemini app Task mode, Google Antigravity, or any agent that can run Python. Never substitutes Google Slides, HTML, Canvas or images for the .pptx file.
 ---
 
 # PPTX Native: build a PowerPoint deck
@@ -16,6 +16,8 @@ The deliverable is one `.pptx` file the user can open and edit in PowerPoint, Ke
 - No pictures of text and no generated images. Visuals come from layouts, native charts, tables and the bundled icons.
 
 ## Workflow
+
+If the user attached a `.pptx` and wants it changed rather than replaced, follow `references/editing.md` instead of the steps below.
 
 Work through these in order. Tick each off before moving on.
 
@@ -85,4 +87,5 @@ Not checked: <"nothing", or what was skipped and the exact error, e.g. "render f
 - `references/design-directions.md`: theme tokens, presets, how to design a look for a brief.
 - `references/layout-catalog.md`: the spec format, every layout and its fields, charts, tables, icons.
 - `references/writing-rules.md`: how slide copy and speaker notes should read.
+- `references/editing.md`: inspecting and editing an attached deck, section by section.
 - `examples/gallery.json`: a working spec that uses every layout. Build and render it once if you want to see them.
