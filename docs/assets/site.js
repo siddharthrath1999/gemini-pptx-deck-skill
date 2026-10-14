@@ -7,12 +7,13 @@
   var hasGsap = typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined";
   var REPO = "siddharthrath1999/pptx-native";
   var navH = function () { return parseInt(getComputedStyle(document.documentElement).getPropertyValue("--nav-h"), 10) || 64; };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
 
   /* ---------- smooth scroll ---------- */
   var lenis = null;
   if (hasGsap) gsap.registerPlugin(ScrollTrigger);
   if (!reduce && typeof window.Lenis !== "undefined") {
-    lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+    lenis = new Lenis({ duration: 1.1, smoothWheel: true });
     if (hasGsap) {
       lenis.on("scroll", ScrollTrigger.update);
       gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
@@ -22,7 +23,7 @@
     }
   }
   function goTo(el) {
-    var off = -(navH() + 34);
+    var off = -(navH() + 28);
     if (lenis) lenis.scrollTo(el, { offset: off });
     else window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY + off, behavior: reduce ? "auto" : "smooth" });
   }
@@ -59,12 +60,12 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
-  /* GitHub stars, shown only when the API answers */
+  /* GitHub stars, shown only when there are some */
   var stars = $("#stars");
   stars.style.display = "none";
   if (window.fetch) {
     fetch("https://api.github.com/repos/" + REPO).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
-      if (d && d.stargazers_count > 0) { stars.textContent = "★ " + d.stargazers_count; stars.style.display = ""; }
+      if (d && d.stargazers_count > 0) { stars.innerHTML = '<span class="ms fill" style="font-size:13px">star</span>' + d.stargazers_count; stars.style.display = ""; }
     }).catch(function () {});
   }
 
@@ -72,7 +73,7 @@
   if (hasGsap && !reduce) {
     ScrollTrigger.batch(".rv", {
       start: "top 90%",
-      onEnter: function (els) { gsap.to(els, { opacity: 1, y: 0, duration: 1.1, ease: "expo.out", stagger: 0.08, overwrite: true }); }
+      onEnter: function (els) { gsap.to(els, { opacity: 1, y: 0, duration: 1, ease: "expo.out", stagger: 0.07, overwrite: true }); }
     });
   } else {
     document.documentElement.classList.remove("js");
@@ -80,7 +81,7 @@
 
   /* ---------- hero: typing prompt ---------- */
   var prompts = [
-    "Make a 45-slide market analysis of India's credit card issuers.",
+    "Make a 15-slide analysis of India's electric two-wheeler market for our leadership team.",
     "Make a fun learning deck that teaches how UPI payments work.",
     "Turn the attached sheet into a quarterly review with charts.",
     "Redesign slides 4 to 9 of the attached deck. Keep our colours."
@@ -91,7 +92,7 @@
     if (reduce) { typed.textContent = prompts[0]; return; }
     (function step() {
       typed.textContent = text.slice(0, i++);
-      if (i <= text.length) setTimeout(step, 26 + Math.random() * 38);
+      if (i <= text.length) setTimeout(step, 24 + Math.random() * 36);
       else setTimeout(function () { erase(text.length); }, 2600);
     })();
     function erase(n) {
@@ -113,7 +114,7 @@
     /* lift the copy so the prompt ends just under the nav, never behind it */
     var lift = function () { return Math.min(0, navH() + 40 - heroCopy.offsetTop - heroPrompt.offsetTop * 0.82); };
     tl.to(heroCopy, { y: lift, scale: 0.82, duration: 1, ease: "none" }, 0)
-      .to(".hero-copy .lead, .hero-copy h1, .hero-copy .eyebrow", { opacity: 0, duration: 0.6 }, 0)
+      .to(".hero-copy .lead, .hero-copy h1, .hero-copy .brandline", { opacity: 0, duration: 0.6 }, 0)
       .to("#scrollHint", { opacity: 0, duration: 0.2 }, 0);
     cards.forEach(function (c, i) {
       var o = i - mid;
@@ -123,14 +124,14 @@
         y: function () { return window.innerHeight * 0.1 + Math.abs(o) * Math.abs(o) * 10; },
         yPercent: 0, rotateY: -o * 13, rotateZ: o * 2.5, rotateX: 6,
         duration: 1, ease: "power2.out"
-      }, 0.25 + Math.abs(o) * 0.06);
+      }, 0.2 + Math.abs(o) * 0.06);
     });
-    tl.to("#heroStats", { opacity: 1, y: -10, duration: 0.4 }, 1.1);
+    tl.to("#heroStats", { opacity: 1, y: -10, duration: 0.35 }, 1.05);
   } else {
     $("#heroStats").style.opacity = 1;
   }
 
-  /* ---------- 3D tilt + cursor glow ---------- */
+  /* ---------- gentle tilt + cursor light ---------- */
   var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   function tilt(el, max) {
     if (reduce || !fine) return;
@@ -139,34 +140,63 @@
       var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
       el.style.setProperty("--mx", px * 100 + "%");
       el.style.setProperty("--my", py * 100 + "%");
-      el.style.transform = "rotateX(" + ((0.5 - py) * max) + "deg) rotateY(" + ((px - 0.5) * max) + "deg) translateZ(0)";
+      el.style.transform = "perspective(900px) rotateX(" + ((0.5 - py) * max) + "deg) rotateY(" + ((px - 0.5) * max) + "deg)";
     });
     el.addEventListener("mouseleave", function () { el.style.transform = ""; });
   }
-  $$(".tilt").forEach(function (el) { tilt(el, 12); });
+  $$(".tilt").forEach(function (el) { tilt(el, 6); });
 
-  /* ---------- how it works: live task replay ---------- */
-  var msgs = $$("#thread .msg"), scenes = $$("#board .scene"), threadBody = $("#thread");
-  var LABELS = ["your request", "research", "storyline", "design", "slides", "checks", "delivery"];
+  /* ---------- how it works: a real Task run, replayed ---------- */
+  var RUN = {
+    thread: [
+      { user: true, html: "<b>@pptx-native</b> Make a 15-slide analysis of India's electric two-wheeler market for our leadership team, who must decide whether to enter in 2027." },
+      { icon: "travel_explore", title: "Searched India's electric two-wheeler market data", sub: "Vahan, FADA, CRISIL, EVreporter, PM E-DRIVE notices" },
+      { icon: "account_tree", title: "Planned a five-part story", sub: "thesis, demand, competition, economics, 2027 entry" },
+      { icon: "palette", title: "Made a custom executive-slate theme", sub: "Georgia headlines, Arial body, emerald and copper" },
+      { icon: "dashboard", title: "Built 15 slides and ran the checker", sub: "native charts, a table, a scorecard and a roadmap" },
+      { icon: "rule", title: "Fixed text overflow on slides 3, 5, 6, 7 and 8", sub: "then rendered every slide and refined 9, 10 and 13" },
+      { icon: "task_alt", title: "Presented the deck", sub: "15 slides, 12 sources, nothing left to fill in" }
+    ],
+    labels: ["your request", "research", "storyline", "design", "slides", "checks and fixes", "delivery"],
+    research: [["account_balance", "Vahan dashboard · registrations, Jan to Sep 2026", "primary"], ["receipt_long", "FADA · monthly retail sales", "primary"], ["gavel", "Ministry of Heavy Industries · PM E-DRIVE", "primary"], ["query_stats", "CRISIL Intelligence · FY31 outlook", "industry"], ["request_quote", "Company results · TVS, Bajaj, Ather, Ola", "filings"]],
+    outline: ["Executive thesis: four makers hold 76% of sales", "Market demand: retail volumes up 5.5x in four years", "Competition: TVS and Bajaj overtook Ola in FY26", "Economics: e-scooters cost 40% less per km to run", "2027 entry: commuter e-motorcycles and B2B fleets"],
+    palette: ["#13242b", "#f3f5f3", "#1f7a52", "#c96a2b", "#2f5d9e"],
+    font: "Georgia headlines, Arial body. Chosen by Gemini for a board audience.",
+    thumbs: ["run/s01.jpg", "run/s02.jpg", "run/s03.jpg", "run/s04.jpg", "run/s05.jpg", "run/s06.jpg", "run/s09.jpg", "run/s12.jpg", "run/s14.jpg"],
+    checks: [["check", "Text overflow on slides 3, 5, 6, 7 and 8", "fixed"], ["check", "Overlap on slide 14", "fixed"], ["check", "Lint rerun after the fixes", "0 issues"], ["visibility", "Rendered 15 slides and looked at each sheet", "done"], ["auto_fix_high", "Refined slides 9, 10 and 13 after looking", "done"]]
+  };
+  var thread = $("#thread");
+  thread.innerHTML = RUN.thread.map(function (m) {
+    if (m.user) return '<div class="msg user">' + m.html + "</div>";
+    return '<div class="msg"><div class="step"><span class="ic"><span class="ms">' + m.icon + "</span></span><div><b>" + esc(m.title) + "</b>" + (m.sub ? "<small>" + esc(m.sub) + "</small>" : "") + "</div></div></div>";
+  }).join("");
+  $("#sceneResearch").innerHTML = RUN.research.map(function (r) { return '<div class="row"><span class="well sm"><span class="ms">' + r[0] + "</span></span>" + esc(r[1]) + '<span class="r' + (r[2] === "set aside" ? "" : " ok") + '">' + esc(r[2]) + "</span></div>"; }).join("");
+  $("#sceneOutline").innerHTML = RUN.outline.map(function (t, i) { return "<div><span>0" + (i + 1) + "</span>" + esc(t) + "</div>"; }).join("");
+  $("#scenePalette").innerHTML = RUN.palette.map(function (c) { return '<i style="background:' + c + '"></i>'; }).join("");
+  $("#sceneFontNote").textContent = RUN.font;
+  $("#sceneThumbs").innerHTML = RUN.thumbs.map(function (s) { return '<img src="assets/' + s + '" alt="" loading="lazy">'; }).join("");
+  $("#sceneChecks").innerHTML = RUN.checks.map(function (r) { return '<div class="row"><span class="well sm"><span class="ms" style="color:var(--ok)">' + r[0] + "</span></span>" + esc(r[1]) + '<span class="r ok">' + esc(r[2]) + "</span></div>"; }).join("");
+
+  var msgs = $$("#thread .msg"), scenes = $$("#board .scene");
   var stepNow = -1;
   function setStep(i) {
     if (i === stepNow) return;
     stepNow = i;
+    var last = i === msgs.length - 1;
     msgs.forEach(function (m, k) {
       m.classList.toggle("shown", k <= i);
-      var last = i === msgs.length - 1;
       m.classList.toggle("current", k === i && k > 0 && !last);
       m.classList.toggle("done", k > 0 && (k < i || last));
-      var ic = $(".status .ms", m);
-      if (ic) ic.textContent = (k < i || last) ? "check_circle" : "progress_activity";
+      var ic = $(".ic .ms", m);
+      if (ic && k > 0) ic.textContent = (k < i || last) ? "check_circle" : (k === i ? "progress_activity" : RUN.thread[k].icon);
     });
     scenes.forEach(function (s, k) { s.classList.toggle("active", k === i); });
-    $("#boardLabel").textContent = LABELS[i];
+    $("#boardLabel").textContent = RUN.labels[i];
     $("#replayBar").style.width = ((i + 1) / scenes.length * 100) + "%";
     var target = msgs[i];
     if (target) {
-      var top = target.offsetTop - threadBody.offsetTop + target.offsetHeight - threadBody.clientHeight + 24;
-      threadBody.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" });
+      var top = target.offsetTop - thread.offsetTop + target.offsetHeight - thread.clientHeight + 24;
+      thread.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" });
     }
   }
   var replayST = null, replayTimer = null;
@@ -174,7 +204,7 @@
     ScrollTrigger.matchMedia({
       "(min-width: 981px)": function () {
         replayST = ScrollTrigger.create({
-          trigger: "#replay", start: "top top", end: "+=" + (scenes.length * 55) + "%", pin: true,
+          trigger: "#replay", start: function () { return "top " + (navH() + 24) + "px"; }, end: "+=" + (scenes.length * 42) + "%", pin: true,
           onUpdate: function (self) { setStep(Math.min(scenes.length - 1, Math.floor(self.progress * scenes.length))); }
         });
         return function () { replayST = null; };
@@ -203,7 +233,7 @@
   }
   if (reduce) setStep(scenes.length - 1);
 
-  /* ---------- same topic, different decks ---------- */
+  /* ---------- same topic, different decks · plus editing ---------- */
   var AUD = [
     ["board", "Board update", "groups",
       "Make a short board update on Lumen Bikes' Q3 for our board. Calm and factual; they need to approve three decisions.",
@@ -218,11 +248,14 @@
       "Make a short launch deck for Lumen Cargo, our new cargo bike plan, for the city teams who will roll it out.",
       [["Structure", "What it is, how it works, when it arrives"], ["Slides", "A statement, a four-step process, a city timeline"], ["Tone", "Clear steps and dates, written for doers"], ["Look", "Dark tech: near-black with cyan light"]]]
   ];
-  var audTabs = $("#audTabs"), audMain = $("#audMain"), audThumbs = $("#audThumbs"), audIdx = 0, slideIdx = 0, audTimer = null;
-  AUD.forEach(function (a, i) {
+  var EDITS = [["dashboard", "“Turn slide 2 into something better than bullets”", "Rebuilt as cards, in the deck's theme"], ["find_replace", "“Change every FY25 to FY26”", "Every slide, formatting kept"], ["insert_chart", "“Update the chart with Q3 numbers”", "Same chart, new data"], ["add_box", "“Add a decisions slide after the table”", "A new slide that matches the rest"]];
+  var aud = $("#aud"), audTabs = $("#audTabs"), audMain = $("#audMain"), audThumbs = $("#audThumbs"), audIdx = -1, slideIdx = 0, audTimer = null;
+  AUD.concat([["edit", "Edit your deck", "edit_document"]]).forEach(function (a, i) {
+    if (a[0] === "edit") { var sep = document.createElement("span"); sep.className = "sep"; audTabs.appendChild(sep); }
     var b = document.createElement("button");
     b.innerHTML = '<span class="ms">' + a[2] + "</span>" + a[1];
     b.setAttribute("role", "tab");
+    if (a[0] === "edit") b.className = "edit-tab";
     b.addEventListener("click", function () { stopAud(); showAud(i, 0); });
     audTabs.appendChild(b);
   });
@@ -235,13 +268,24 @@
   }
   function audSrc(key, k) { return "assets/audiences/" + key + "-" + (k + 1) + ".jpg"; }
   function showAud(i, k) {
-    var a = AUD[i], changed = i !== audIdx || !audMain.dataset.ready;
-    audIdx = i; slideIdx = k; audMain.dataset.ready = "1";
+    var editing = i === AUD.length, changed = i !== audIdx;
+    audIdx = i; slideIdx = k;
     $$("button", audTabs).forEach(function (b, j) { b.classList.toggle("active", j === i); b.setAttribute("aria-selected", String(j === i)); });
-    var imgs = $$("img", audMain);
+    aud.classList.toggle("editing", editing);
+    if (editing) {
+      if (changed) {
+        $("#audQLabel").textContent = "You attach a deck and ask";
+        $("#audPrompt").textContent = "Turn slide 2 into something better than bullets. Keep our fonts and colours.";
+        $("#audDiff").innerHTML = EDITS.map(function (e) { return '<div class="row"><span class="well sm"><span class="ms">' + e[0] + "</span></span><div>" + esc(e[1]) + "<em>" + esc(e[2]) + "</em></div></div>"; }).join("");
+        nudgeBa();
+      }
+      return;
+    }
+    var a = AUD[i], imgs = $$(":scope > img", audMain);
     if (changed) {
       imgs.forEach(function (im, j) { im.src = audSrc(a[0], j); im.alt = a[1] + " deck, slide " + (j + 1); });
       $$("button img", audThumbs).forEach(function (im, j) { im.src = audSrc(a[0], j); });
+      $("#audQLabel").textContent = "The request";
       $("#audPrompt").textContent = a[3];
       $("#audDiff").innerHTML = a[4].map(function (d) { return "<div><span>" + d[0] + "</span>" + d[1] + "</div>"; }).join("");
     }
@@ -255,22 +299,22 @@
       ents.forEach(function (e) {
         if (e.isIntersecting && !audTimer && !audMain.dataset.touched) {
           audTimer = setInterval(function () {
-            if (slideIdx < 3) showAud(audIdx, slideIdx + 1); else showAud((audIdx + 1) % AUD.length, 0);
-          }, 2200);
+            if (audIdx < AUD.length && slideIdx < 3) showAud(audIdx, slideIdx + 1);
+            else showAud((audIdx + 1) % (AUD.length + 1), 0);
+          }, 2400);
         }
         if (!e.isIntersecting) { clearInterval(audTimer); audTimer = null; }
       });
     }, { threshold: 0.4 }).observe(audMain);
   }
 
-  /* ---------- edit: before/after slider ---------- */
+  /* before/after slider (inside the edit tab) */
   var ba = $("#ba"), dragging = false;
   function setPos(clientX) {
     var r = ba.getBoundingClientRect();
-    var p = Math.max(0, Math.min(100, (clientX - r.left) / r.width * 100));
-    ba.style.setProperty("--pos", p + "%");
+    ba.style.setProperty("--pos", Math.max(0, Math.min(100, (clientX - r.left) / r.width * 100)) + "%");
   }
-  ba.addEventListener("pointerdown", function (e) { dragging = true; ba.dataset.touched = "1"; if (ba.setPointerCapture) ba.setPointerCapture(e.pointerId); setPos(e.clientX); });
+  ba.addEventListener("pointerdown", function (e) { dragging = true; ba.dataset.touched = "1"; stopAud(); if (ba.setPointerCapture) ba.setPointerCapture(e.pointerId); setPos(e.clientX); });
   ba.addEventListener("pointermove", function (e) { if (dragging) setPos(e.clientX); });
   ba.addEventListener("pointerup", function () { dragging = false; });
   ba.addEventListener("pointercancel", function () { dragging = false; });
@@ -282,17 +326,14 @@
     if (e.key === "ArrowLeft") ba.style.setProperty("--pos", Math.max(0, cur - 5) + "%");
     if (e.key === "ArrowRight") ba.style.setProperty("--pos", Math.min(100, cur + 5) + "%");
   });
-  if (hasGsap && !reduce) {
-    var baState = { p: 50 };
-    ScrollTrigger.create({
-      trigger: ba, start: "top 70%", once: true,
-      onEnter: function () {
-        gsap.timeline({ onUpdate: function () { if (!ba.dataset.touched) ba.style.setProperty("--pos", baState.p + "%"); } })
-          .to(baState, { p: 18, duration: 1.1, ease: "power2.inOut" })
-          .to(baState, { p: 78, duration: 1.4, ease: "power2.inOut" })
-          .to(baState, { p: 50, duration: 1, ease: "power2.inOut" });
-      }
-    });
+  function nudgeBa() {
+    if (!hasGsap || reduce || ba.dataset.touched) { ba.style.setProperty("--pos", "50%"); return; }
+    var st = { p: 50 };
+    gsap.killTweensOf(st);
+    gsap.timeline({ onUpdate: function () { if (!ba.dataset.touched) ba.style.setProperty("--pos", st.p + "%"); } })
+      .to(st, { p: 20, duration: 0.9, ease: "power2.inOut" })
+      .to(st, { p: 80, duration: 1.2, ease: "power2.inOut" })
+      .to(st, { p: 50, duration: 0.8, ease: "power2.inOut" });
   }
 
   /* ---------- backdrop crossfade ---------- */
@@ -307,27 +348,27 @@
     };
   }
 
-  /* ---------- layouts ---------- */
+  /* ---------- layouts: 8 first, expand and collapse ---------- */
   var L = [
-    ["Cover", "Title, subtitle, tags and your palette.", "story", 1], ["Agenda", "Numbered parts as cards.", "story", 2],
-    ["Section divider", "Big number, part title, new tone.", "story", 3], ["Statement", "One sentence that deserves the room.", "story", 4],
-    ["Big number", "One figure, what it means, side stats.", "data", 5], ["KPI tiles", "Two to five headline metrics with deltas.", "data", 6],
-    ["Chart", "Native chart with a takeaway panel.", "data", 7], ["Chart pair", "Two charts side by side.", "data", 9],
-    ["Waterfall", "Bridge from one total to another.", "data", 10], ["Bar list", "Ranked bars for benchmarks.", "data", 11],
-    ["Split bar", "Where a total goes, piece by piece.", "data", 12], ["Table", "Native table with a highlighted row.", "data", 13],
-    ["Heatmap", "Values shaded by size.", "data", 14], ["Scorecard", "Entities scored on criteria.", "data", 15],
-    ["Timeline", "Milestones in order.", "flow", 17], ["Process", "Steps with icons and arrows.", "flow", 18],
-    ["Funnel", "Stages with conversion.", "flow", 19], ["2x2 matrix", "Positions on two axes.", "flow", 20],
-    ["Layers", "Stacks and architectures.", "flow", 21], ["Roadmap", "Lanes of work across quarters.", "flow", 22],
-    ["Cards", "Parallel ideas with icons and stats.", "story", 24], ["Comparison", "Options side by side.", "story", 26],
-    ["Two column", "Two halves of an argument.", "story", 27], ["Bullets", "A short list, used sparingly.", "story", 28],
-    ["Quiz question", "Lettered options for the room.", "teach", 29], ["Pros and cons", "For and against.", "story", 30],
+    ["Cover", "Title, subtitle, tags and your palette.", "story", 1], ["KPI tiles", "Two to five headline metrics with deltas.", "data", 6],
+    ["Chart", "Native chart with a takeaway panel.", "data", 7], ["Scorecard", "Entities scored on criteria.", "data", 15],
+    ["Process", "Steps with icons and arrows.", "flow", 18], ["Roadmap", "Lanes of work across quarters.", "flow", 22],
+    ["Cards", "Parallel ideas with icons and stats.", "story", 24], ["Quiz question", "Lettered options for the room.", "teach", 29],
+    ["Agenda", "Numbered parts as cards.", "story", 2], ["Section divider", "Big number, part title, new tone.", "story", 3],
+    ["Statement", "One sentence that deserves the room.", "story", 4], ["Big number", "One figure, what it means, side stats.", "data", 5],
+    ["Chart pair", "Two charts side by side.", "data", 9], ["Waterfall", "Bridge from one total to another.", "data", 10],
+    ["Bar list", "Ranked bars for benchmarks.", "data", 11], ["Split bar", "Where a total goes, piece by piece.", "data", 12],
+    ["Table", "Native table with a highlighted row.", "data", 13], ["Heatmap", "Values shaded by size.", "data", 14],
+    ["Timeline", "Milestones in order.", "flow", 17], ["Funnel", "Stages with conversion.", "flow", 19],
+    ["2x2 matrix", "Positions on two axes.", "flow", 20], ["Layers", "Stacks and architectures.", "flow", 21],
+    ["Comparison", "Options side by side.", "story", 26], ["Two column", "Two halves of an argument.", "story", 27],
+    ["Bullets", "A short list, used sparingly.", "story", 28], ["Pros and cons", "For and against.", "story", 30],
     ["Before and after", "What changed.", "story", 31], ["Quote", "A real voice, credited.", "story", 32],
     ["Runbook steps", "Owner, time and command per step.", "teach", 33], ["Code", "Monospace panel with notes.", "teach", 34],
     ["Free canvas", "Anything the others don't cover.", "flow", 35], ["Recap", "What to remember from a part.", "teach", 36],
     ["Next steps", "Actions with owners and dates.", "story", 37], ["Sources", "Numbered references.", "story", 38]
   ];
-  var grid = $("#posterGrid"), showAll = false, filter = "all";
+  var grid = $("#posterGrid"), expanded = false, filter = "all", showBtn = $("#showAll");
   var setLayoutBg = backdrop($("#layoutBackdrop"));
   L.forEach(function (l, i) {
     var src = "assets/layouts/l" + String(l[3]).padStart(2, "0") + ".jpg";
@@ -335,18 +376,20 @@
     el.className = "poster"; el.dataset.cat = l[2]; el.dataset.i = i;
     el.innerHTML = '<img loading="lazy" src="' + src + '" alt="' + l[0] + ' layout"><h4>' + l[0] + "</h4><p>" + l[1] + "</p>";
     el.addEventListener("mouseenter", function () { setLayoutBg(src); });
-    tilt(el, 8);
+    tilt(el, 6);
     grid.appendChild(el);
   });
   function applyFilter() {
-    var shown = 0;
+    var shown = 0, total = 0;
     $$(".poster", grid).forEach(function (p) {
       var ok = filter === "all" || p.dataset.cat === filter;
-      var vis = ok && (showAll || filter !== "all" || shown < 12);
+      if (ok) total++;
+      var vis = ok && (expanded || shown < 8);
       p.classList.toggle("hide", !vis);
       if (vis) shown++;
     });
-    $("#showAll").parentNode.style.display = (filter === "all" && !showAll) ? "" : "none";
+    showBtn.parentNode.style.display = total > 8 ? "" : "none";
+    showBtn.innerHTML = expanded ? '<span class="ms">expand_less</span><span>Show fewer</span>' : '<span class="ms">expand_more</span><span>Show all ' + total + " layouts</span>";
     if (hasGsap) ScrollTrigger.refresh();
   }
   $$("#layoutFilters button").forEach(function (b) {
@@ -355,7 +398,10 @@
       filter = b.dataset.f; applyFilter();
     });
   });
-  $("#showAll").addEventListener("click", function () { showAll = true; applyFilter(); });
+  showBtn.addEventListener("click", function () {
+    expanded = !expanded; applyFilter();
+    if (!expanded) goTo($("#layouts"));
+  });
   applyFilter();
   setLayoutBg("assets/layouts/l06.jpg");
 
@@ -374,10 +420,10 @@
     b.innerHTML = '<div class="cover"><img loading="lazy" src="' + src(e[0], e[4][0]) + '" alt="Cover of the ' + e[1] + ' deck"></div><div class="meta"><h3>' + e[1] + "</h3><p>" + e[2] + '</p><div class="stats">' + e[3].map(function (s) { return '<span class="chip">' + s + "</span>"; }).join("") + '</div><span class="open"><span class="ms">slideshow</span>Page through ' + e[4].length + " slides</span></div>";
     b.addEventListener("mouseenter", function () { setExBg(src(e[0], e[4][1])); });
     b.addEventListener("click", function () { lbFrom = b; openLb(e); });
-    tilt(b, 7);
+    tilt(b, 5);
     exRow.appendChild(b);
   });
-  if (hasGsap && !reduce) ScrollTrigger.batch($$(".ex-card"), { start: "top 90%", onEnter: function (els) { gsap.to(els, { opacity: 1, y: 0, duration: 1.1, ease: "expo.out", stagger: 0.1, overwrite: true }); } });
+  if (hasGsap && !reduce) ScrollTrigger.batch($$(".ex-card"), { start: "top 90%", onEnter: function (els) { gsap.to(els, { opacity: 1, y: 0, duration: 1, ease: "expo.out", stagger: 0.1, overwrite: true }); } });
   setExBg(src("upi", 6));
   function openLb(e) {
     lbList = e[4].map(function (p) { return src(e[0], p); }); lbTitle.textContent = e[1];
@@ -422,7 +468,7 @@
     ["Open Customise, then Skills", "In Gemini's left menu, click Customise and open the Skills tab.", "gemini.google.com/customize", ".m-screen:nth-of-type(2) .m-tabs .hl", true],
     ["Click Create, then Upload", "The Create button sits at the top right of your skills.", "gemini.google.com/customize/skills", ".m-screen:nth-of-type(3) .m-menu .hl", true],
     ["Choose the zip and click Create", "Gemini scans it, shows the skill, and you confirm.", "gemini.google.com/customize/skills", ".m-screen:nth-of-type(4) .m-pill", true],
-    ["Start a Task and ask", "New chat, switch on Task, type @pptx-native and describe your deck.", "gemini.google.com/app", ".m-screen:nth-of-type(5) .m-input .chip.on", false]
+    ["Switch to Task and ask", "New chat, pick Task under the box, type @pptx-native and describe your deck.", "gemini.google.com/app", ".m-screen:nth-of-type(5) .m-modes .hl", false]
   ];
   var walk = $("#walk"), wi = 0, hot = $("#hotspot"), mscreens = $$(".m-screen"), mockMain = $(".mock-main");
   W.forEach(function (w, i) {
@@ -448,7 +494,6 @@
     var last = wi === W.length - 1;
     $("#walkNext").innerHTML = last ? '<span class="ms">restart_alt</span>Start over' : 'Next step<span class="ms">arrow_forward</span>';
     $("#walkPrev").disabled = wi === 0;
-    $("#walkPrev").style.opacity = wi === 0 ? 0.45 : 1;
   }
   $("#walkNext").addEventListener("click", function () { showWalk(wi === W.length - 1 ? 0 : wi + 1); });
   $("#walkPrev").addEventListener("click", function () { showWalk(wi - 1); });
@@ -503,8 +548,8 @@
   function pick(key) { return $$('[data-key="' + key + '"] button.active').map(function (b) { return b.textContent; }); }
   function list(a) { return a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]; }
   function compose() {
-    var deck = pick("deck")[0], aud = pick("aud")[0], len = pick("len")[0], extra = pick("extra");
-    var t = "Make a " + len + "-slide " + deck + " on " + (topic.value.trim() || "your topic") + " for " + aud + ".";
+    var deck = pick("deck")[0], audv = pick("aud")[0], len = pick("len")[0], extra = pick("extra");
+    var t = "Make a " + len + "-slide " + deck + " on " + (topic.value.trim() || "your topic") + " for " + audv + ".";
     var useFiles = extra.filter(function (x) { return /^use /.test(x); });
     var rest = extra.filter(function (x) { return !/^use /.test(x); });
     if (useFiles.length) t += " " + useFiles[0].charAt(0).toUpperCase() + useFiles[0].slice(1) + ".";
@@ -522,26 +567,31 @@
     });
   });
   topic.addEventListener("input", compose);
-  $("#copyPrompt").addEventListener("click", function () { copy(built.textContent, this); });
+  $("#copyPrompt").addEventListener("click", function () { copy("@pptx-native " + built.textContent, this); });
   compose();
 
-  /* ---------- counters + bars ---------- */
-  var bento = $("#bento");
-  if ("IntersectionObserver" in window && !reduce) {
-    new IntersectionObserver(function (ents, obs) {
-      ents.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        bento.classList.add("in-view");
-        $$(".counter", bento).forEach(function (c) {
-          var to = +c.dataset.to, t0 = performance.now();
-          (function tick(t) { var p = Math.min(1, (t - t0) / 1400); c.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(tick); })(t0);
-        });
-        obs.disconnect();
-      });
-    }, { threshold: 0.25 }).observe(bento);
+  /* ---------- what's inside: demos run only while on screen ---------- */
+  function typeNotes(tile) {
+    var el = $(".d-notes .tw", tile);
+    if (!el || el.dataset.busy) return;
+    var full = el.dataset.text || el.textContent;
+    el.dataset.text = full; el.dataset.busy = "1";
+    if (reduce) { el.textContent = full; return; }
+    var i = 0;
+    (function step() {
+      if (!tile.classList.contains("live")) { el.textContent = full; delete el.dataset.busy; return; }
+      el.textContent = full.slice(0, i++);
+      if (i <= full.length) setTimeout(step, 38);
+      else setTimeout(function () { i = 0; step(); }, 2600);
+    })();
+  }
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (ents) {
+      ents.forEach(function (e) { e.target.classList.toggle("live", e.isIntersecting); if (e.isIntersecting) typeNotes(e.target); });
+    }, { threshold: 0.25 });
+    $$(".tile").forEach(function (t) { io.observe(t); });
   } else {
-    bento.classList.add("in-view");
-    $$(".counter", bento).forEach(function (c) { c.textContent = c.dataset.to; });
+    $$(".tile").forEach(function (t) { t.classList.add("live"); });
   }
 
   window.addEventListener("load", function () { if (hasGsap) ScrollTrigger.refresh(); });

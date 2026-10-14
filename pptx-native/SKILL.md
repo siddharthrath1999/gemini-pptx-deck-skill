@@ -30,11 +30,12 @@ Work through these in order. Tick each off before moving on.
 7. **Render and look.** Turn the deck into images with the tools on the task computer, then make contact sheets:
    ```
    mkdir -p render1
-   soffice --headless --convert-to pdf --outdir render1 <short-name>.pptx
+   HOME=/tmp soffice --headless --convert-to pdf --outdir render1 <short-name>.pptx
+   ls -l render1/<short-name>.pdf
    pdftoppm -png -r 50 render1/<short-name>.pdf render1/s
    python3 <skill folder>/scripts/sheet_deck.py render1
    ```
-   Open every `sheet-NN.png` and check each slide against the list below. For a closer look at one slide, run `pdftoppm -png -r 110 -f 12 -l 12` on the PDF. Fix the spec, rebuild, and render again into a new folder (`render2`, and so on). If LibreOffice will not start, try once more with `HOME=/tmp` in front of the command, and once with `libreoffice` in place of `soffice`. Rendering is part of the job: do not skip it to save time. If it still cannot render, continue on lint alone and quote the exact error text in the handoff so it can be fixed.
+   Open every `sheet-NN.png` and check each slide against the list below. For a closer look at one slide, run `pdftoppm -png -r 110 -f 12 -l 12` on the PDF. Fix the spec, rebuild, and render again into a new folder (`render2`, and so on). Run one conversion at a time and check that the PDF exists before running `pdftoppm`; if it is missing, wait a few seconds and look again before converting a second time. If LibreOffice will not start, try once with `libreoffice` in place of `soffice`. Rendering is part of the job: do not skip it to save time. If it still cannot render, continue on lint alone and quote the exact error text in the handoff so it can be fixed.
 8. **Deliver.** Attach the `.pptx` (in an IDE agent such as Antigravity, save it in the workspace and give its path). Follow it with a short handoff note (format below). Do not paste the slide contents into the chat.
 
 Find this skill's folder once and reuse the path. In the Gemini app it is usually `skills/user/pptx-native` under the working directory. In Antigravity it is `~/.gemini/antigravity/skills/pptx-native`, `~/.gemini/config/skills/pptx-native`, or `.agents/skills/pptx-native` in the project. Use `python` if `python3` is not available.

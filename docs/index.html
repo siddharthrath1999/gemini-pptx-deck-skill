@@ -9,11 +9,12 @@
 <meta property="og:description" content="Free and open source. Ask in one line, get a fully editable .pptx.">
 <meta property="og:image" content="https://siddharthrath1999.github.io/pptx-native/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0..1,0&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..500,0..1,-25..0&display=block" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
 <script>document.documentElement.classList.add("js");</script>
 </head>
@@ -22,18 +23,18 @@
 
 <header class="nav" id="nav">
   <div class="nav-inner">
-    <a class="wordmark" href="#top" aria-label="PPTX Native, home"><span>PPTX</span><i></i><span>Native</span></a>
+    <a class="logo" href="#top" aria-label="PPTX Native, home"><img src="assets/brand/wordmark-cream.svg" alt="PPTX Native" width="81" height="34"></a>
     <nav class="nav-links" aria-label="Sections">
-      <a href="#why">Why</a><a href="#how">How it works</a><a href="#audiences">Audiences</a><a href="#edit">Edit decks</a><a href="#layouts">Layouts</a><a href="#setup">Set up</a><a href="#faq">FAQ</a>
+      <a href="#why">Why</a><a href="#how">How it works</a><a href="#audiences">Audiences &amp; edits</a><a href="#layouts">Layouts</a><a href="#setup">Set up</a><a href="#prompts">Prompts</a><a href="#faq">FAQ</a>
     </nav>
     <div class="nav-cta">
-      <a class="btn gh-btn" href="https://github.com/siddharthrath1999/pptx-native" aria-label="PPTX Native on GitHub"><svg class="gh"><use href="#gh"/></svg><span class="label">GitHub</span><span class="count" id="stars">★</span></a>
-      <a class="btn primary install" href="#setup" aria-label="Install for free"><span class="ms">download</span><span class="label">Install free</span></a>
-      <button class="btn menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span class="ms">menu</span></button>
+      <a class="btn sm gh-btn" href="https://github.com/siddharthrath1999/pptx-native" aria-label="PPTX Native on GitHub"><svg class="gh"><use href="#gh"/></svg><span class="label">GitHub</span><span class="count" id="stars"></span></a>
+      <a class="btn sm primary install" href="#setup" aria-label="Install for free"><span class="ms">download</span><span class="label">Install free</span></a>
+      <button class="btn sm icon menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span class="ms">menu</span></button>
     </div>
   </div>
   <div class="menu-sheet" id="menuSheet">
-    <a href="#why">Why PPTX Native <span class="ms">arrow_forward</span></a><a href="#how">How it works <span class="ms">arrow_forward</span></a><a href="#audiences">Audiences <span class="ms">arrow_forward</span></a><a href="#edit">Edit decks <span class="ms">arrow_forward</span></a><a href="#layouts">Layouts <span class="ms">arrow_forward</span></a><a href="#setup">Set up <span class="ms">arrow_forward</span></a><a href="#faq">FAQ <span class="ms">arrow_forward</span></a>
+    <a href="#why">Why PPTX Native <span class="ms">arrow_forward</span></a><a href="#how">How it works <span class="ms">arrow_forward</span></a><a href="#audiences">Audiences &amp; edits <span class="ms">arrow_forward</span></a><a href="#layouts">Layouts <span class="ms">arrow_forward</span></a><a href="#setup">Set up <span class="ms">arrow_forward</span></a><a href="#prompts">Prompts <span class="ms">arrow_forward</span></a><a href="prompts.html">Prompt gallery <span class="ms">arrow_forward</span></a><a href="#faq">FAQ <span class="ms">arrow_forward</span></a>
   </div>
 </header>
 
@@ -53,7 +54,7 @@
       <div class="fan-card"><img src="assets/examples/upi-31.jpg" alt=""></div>
     </div>
     <div class="hero-copy">
-      <span class="eyebrow">Open-source skill for Gemini and Antigravity</span>
+      <span class="brandline"><span class="ms">code</span><span class="long">Open-source skill for</span><span class="short">Free skill for</span> <span class="lg"><img src="assets/logos/gemini-2025.svg" alt="">Gemini</span> and <span class="lg"><img src="assets/logos/antigravity.png" alt="">Antigravity</span></span>
       <h1>Real PowerPoint, <span class="soft">straight from Gemini.</span></h1>
       <p class="lead">Ask in one line. Get a researched, designed .pptx where every chart, table, icon and word stays editable. Or hand it the deck you already have.</p>
       <div class="prompt" id="heroPrompt">
@@ -62,13 +63,13 @@
           <div class="prompt-bar">
             <span class="chip on"><img src="assets/logos/gemini-2025.svg" alt="">@pptx-native</span>
             <span class="chip"><span class="ms">bolt</span>Task</span>
-            <span class="chip">4 Argon</span>
+            <span class="chip">Argon</span>
             <span class="send" aria-hidden="true"><span class="ms">arrow_upward</span></span>
           </div>
         </div>
       </div>
     </div>
-    <div class="hero-stats" id="heroStats"><span class="chip"><span class="ms">slideshow</span>45 to 120 slides</span><span class="chip"><span class="ms">bar_chart</span>Native charts</span><span class="chip"><span class="ms">record_voice_over</span>Notes on every slide</span><span class="chip"><span class="ms">edit</span>Every element editable</span></div>
+    <div class="hero-stats" id="heroStats"><span class="chip"><span class="ms">slideshow</span>15 to 120 slides</span><span class="chip"><span class="ms">bar_chart</span>Native charts</span><span class="chip"><span class="ms">record_voice_over</span>Notes on every slide</span><span class="chip"><span class="ms">edit</span>Every element editable</span></div>
     <div class="scroll-hint" id="scrollHint">Scroll<span></span></div>
   </div>
 </section>
@@ -76,18 +77,9 @@
 <section class="works">
   <div class="wrap">
     <div class="works-row rv">
-      <div class="logo-tile tilt">
-        <div class="logo-3d"><img class="halo" src="assets/logos/gemini-2025.svg" alt=""><img class="shade" src="assets/logos/gemini-2025.svg" alt=""><img class="face" src="assets/logos/gemini-2025.svg" alt="Gemini logo"></div>
-        <div><b>Gemini app</b><small>Upload once. Runs in Task mode on web, Mac and mobile.</small></div>
-      </div>
-      <div class="logo-tile tilt">
-        <div class="logo-3d"><img class="halo" src="assets/logos/antigravity.png" alt=""><img class="shade" src="assets/logos/antigravity.png" alt=""><img class="face" src="assets/logos/antigravity.png" alt="Google Antigravity logo"></div>
-        <div><b>Google Antigravity</b><small>One line in Terminal. Runs on your own computer.</small></div>
-      </div>
-      <div class="logo-tile tilt">
-        <div class="logo-3d"><span class="file-mark">.pptx</span></div>
-        <div><b>Opens anywhere</b><small>PowerPoint, Keynote, Google Slides and LibreOffice.</small></div>
-      </div>
+      <div class="work tilt"><span class="app gemini"><img src="assets/logos/gemini-2025.svg" alt="Gemini"></span><div><b>Gemini app</b><small>Upload once. Runs in Task mode on the web and the Mac app.</small></div></div>
+      <div class="work tilt"><span class="app agy"><img src="assets/logos/antigravity.png" alt="Google Antigravity"></span><div><b>Google Antigravity</b><small>One line in Terminal. Runs on your own computer.</small></div></div>
+      <div class="work tilt"><span class="app ppt"><img src="assets/logos/powerpoint.svg" alt="PowerPoint"></span><div><b>Opens anywhere</b><small>PowerPoint, Keynote, Google Slides and LibreOffice.</small></div></div>
     </div>
   </div>
 </section>
@@ -97,12 +89,12 @@
     <div class="sec-head rv">
       <span class="eyebrow">Why it exists</span>
       <h2>Most AI slides aren't really slides.</h2>
-      <p class="lead">Ask for a deck and you usually get one of three things. All of them leave the real work to you.</p>
+      <p class="lead">Ask for a deck and you usually get one of three things. Each leaves the real work to you.</p>
     </div>
     <div class="why-grid rv">
-      <div class="why-card"><span class="ic"><span class="ms">chat</span></span><h3>A chat answer</h3><p>Normal chat gives you an outline, text or a web page. Good notes, not something you can present.</p><div class="fake">Slide 1: Introduction<br>• Point one<br>• Point two</div></div>
-      <div class="why-card"><span class="ic"><span class="ms">image</span></span><h3>Pictures of slides</h3><p>Many AI slide tools paint each slide as an image. It looks finished until one number changes.</p><div class="fake">[ flattened image ]<br>text can't be selected</div></div>
-      <div class="why-card"><span class="ic"><span class="ms">open_in_new</span></span><h3>A quick export</h3><p>Exports to Google Slides or HTML are editable, but often generic: thin research, default layouts, charts to rebuild.</p><div class="fake">Title + bullets × 12<br>chart pasted as a picture</div></div>
+      <div class="why-card"><span class="well"><span class="ms">chat</span></span><h3>A chat answer</h3><p>Normal chat gives you an outline, text or a web page. Good notes, not something you can present.</p><div class="fake">Slide 1: Introduction<br>• Point one<br>• Point two</div></div>
+      <div class="why-card"><span class="well"><span class="ms">image</span></span><h3>Pictures of slides</h3><p>Many AI slide tools paint each slide as an image. It looks finished until one number changes.</p><div class="fake">[ flattened image ]<br>text can't be selected</div></div>
+      <div class="why-card"><span class="well"><span class="ms">open_in_new</span></span><h3>A quick export</h3><p>Exports to Google Slides or HTML are editable, but often generic: thin research, default layouts, charts to rebuild.</p><div class="fake">Title + bullets × 12<br>chart pasted as a picture</div></div>
     </div>
     <div class="compare rv">
       <div class="table-scroll">
@@ -123,73 +115,36 @@
   </div>
 </section>
 
-<section id="how" style="padding-bottom:0">
+<section id="how">
   <div class="wrap">
     <div class="sec-head rv">
       <span class="eyebrow">How it works</span>
-      <h2>Watch one request become a deck.</h2>
-      <p class="lead">This is what a real Gemini task looks like with PPTX Native. It plays as you scroll; tap any step to jump to it.</p>
+      <h2>One request, start to finish.</h2>
+      <p class="lead">A real run in Gemini's Task mode: the steps it took, the slides it made, and its answer. It plays as you scroll; tap any step to jump to it.</p>
     </div>
-  </div>
-  <div class="wrap replay" id="replay">
-    <div class="thread">
-      <div class="thread-top"><img src="assets/logos/gemini-2025.svg" alt="">Gemini · Task<span class="chip on">@pptx-native</span></div>
-      <div class="thread-body" id="thread">
-        <div class="msg user"><span class="av"><span class="ms">person</span></span><div class="bubble">Make a 45-slide market analysis of India's credit card issuers for our card strategy team.<div class="att" style="margin-top:10px"><span class="chip"><span class="ms">attach_file</span>board_pack.pdf</span></div></div></div>
-        <div class="msg"><span class="av"><img src="assets/logos/gemini-2025.svg" alt=""></span><div class="bubble"><b>Reading your file and searching.</b> RBI card data, issuer filings, bureau reports.<div class="status"><span class="ms">progress_activity</span><span>10 sources</span></div></div></div>
-        <div class="msg"><span class="av"><img src="assets/logos/gemini-2025.svg" alt=""></span><div class="bubble"><b>Planning the story.</b> Five parts, one headline per slide that states its point.<div class="status"><span class="ms">progress_activity</span><span>45 headlines</span></div></div></div>
-        <div class="msg"><span class="av"><img src="assets/logos/gemini-2025.svg" alt=""></span><div class="bubble"><b>Choosing a look.</b> Calm boardroom style for a strategy team.<div class="status"><span class="ms">progress_activity</span><span>theme set</span></div></div></div>
-        <div class="msg"><span class="av"><img src="assets/logos/gemini-2025.svg" alt=""></span><div class="bubble"><b>Building the slides.</b> Tables, scorecards, native charts and notes.<div class="status"><span class="ms">progress_activity</span><span>45 slides</span></div></div></div>
-        <div class="msg"><span class="av"><img src="assets/logos/gemini-2025.svg" alt=""></span><div class="bubble"><b>Checking every slide.</b> Then rendering them and looking, sheet by sheet.<div class="status"><span class="ms">progress_activity</span><span>0 errors</span></div></div></div>
-        <div class="msg"><span class="av"><img src="assets/logos/gemini-2025.svg" alt=""></span><div class="bubble"><b>Here's your deck.</b> 45 slides, with a note on what I assumed and my sources.<div class="status"><span class="ms">progress_activity</span><span>delivered</span></div></div></div>
+    <div class="replay" id="replay">
+      <div class="thread">
+        <div class="thread-top"><img src="assets/logos/gemini-2025.svg" alt="">Gemini · Task<span class="chip on">@pptx-native</span></div>
+        <div class="thread-body" id="thread"></div>
       </div>
-    </div>
-    <div class="board" id="board">
-      <div class="label">Being made · <b id="boardLabel">your request</b></div>
-      <div class="scene active">
-        <div class="prompt-card">Make a 45-slide market analysis of India's credit card issuers for our card strategy team.<div class="att"><span class="chip"><span class="ms">description</span>board_pack.pdf</span><span class="chip on"><span class="ms">extension</span>pptx-native</span><span class="chip"><span class="ms">bolt</span>Task</span></div></div>
-      </div>
-      <div class="scene">
-        <div class="card-row"><span class="k"><span class="ms">description</span></span>Your file · board_pack.pdf<span class="r ok">read first</span></div>
-        <div class="card-row"><span class="k"><span class="ms">account_balance</span></span>RBI · card statistics, June 2026<span class="r ok">primary</span></div>
-        <div class="card-row"><span class="k"><span class="ms">request_quote</span></span>SBI Card · Q1 FY27 results<span class="r ok">filing</span></div>
-        <div class="card-row"><span class="k"><span class="ms">query_stats</span></span>TransUnion CIBIL · credit report<span class="r ok">bureau</span></div>
-        <div class="card-row"><span class="k"><span class="ms">public</span></span>Two blogs set aside<span class="r">weak sources</span></div>
-      </div>
-      <div class="scene">
-        <div class="outline">
-          <div><span>01</span>India crossed 124 million credit cards in 2026</div>
-          <div><span>02</span>Four banks hold 70% of cards and 76% of spend</div>
-          <div><span>03</span>Spend per card splits affluent books from mass books</div>
-          <div><span>04</span>Card-on-UPI grew volume but thinned margins</div>
-          <div><span>05</span>Five moves to protect returns in FY27</div>
+      <div class="board" id="board">
+        <div class="label">Being made · <b id="boardLabel">your request</b></div>
+        <div class="scene active">
+          <div class="prompt-card"><b style="font-weight:600">@pptx-native</b> Make a 15-slide analysis of India's electric two-wheeler market for our leadership team, who must decide whether to enter in 2027.<div class="att"><span class="chip on"><span class="ms">extension</span>pptx-native</span><span class="chip"><span class="ms">bolt</span>Task</span><span class="chip">Argon</span></div></div>
         </div>
-      </div>
-      <div class="scene">
-        <div class="palette"><i style="background:#0f1b2d"></i><i style="background:#f3f5f9"></i><i style="background:#1f5eff"></i><i style="background:#00a389"></i><i style="background:#f2a900"></i></div>
-        <div class="type-spec"><b>Aa</b><span>Georgia headlines, Arial text.<br>Fonts every device has.</span></div>
-      </div>
-      <div class="scene">
-        <div class="thumbs">
-          <img src="assets/examples/cards-01.jpg" alt=""><img src="assets/examples/cards-03.jpg" alt=""><img src="assets/examples/cards-06.jpg" alt=""><img src="assets/examples/cards-14.jpg" alt="">
-          <img src="assets/examples/cards-16.jpg" alt=""><img src="assets/examples/cards-20.jpg" alt=""><img src="assets/examples/cards-36.jpg" alt=""><img src="assets/examples/cards-40.jpg" alt="">
-          <img src="assets/layouts/l06.jpg" alt=""><img src="assets/layouts/l15.jpg" alt=""><img src="assets/layouts/l11.jpg" alt=""><img src="assets/layouts/l36.jpg" alt="">
+        <div class="scene" id="sceneResearch"></div>
+        <div class="scene"><div class="outline" id="sceneOutline"></div></div>
+        <div class="scene">
+          <div class="palette" id="scenePalette"></div>
+          <div class="type-spec"><b id="sceneFont">Aa</b><span id="sceneFontNote">Headline and body fonts every device has.</span></div>
         </div>
+        <div class="scene"><div class="thumbs" id="sceneThumbs"></div></div>
+        <div class="scene" id="sceneChecks"></div>
+        <div class="scene">
+          <figure class="real"><img src="assets/run/gemini-answer.jpg" alt="Gemini's real answer: the 15-slide deck file and the handoff note" loading="lazy"><figcaption><span class="ms">photo_camera</span>Real screenshot · Gemini Task mode, October 2026</figcaption></figure>
+        </div>
+        <div class="replay-progress"><i id="replayBar"></i></div>
       </div>
-      <div class="scene">
-        <div class="card-row"><span class="k"><span class="ms">check</span></span>No text cut off or overflowing<span class="r ok">0 errors</span></div>
-        <div class="card-row"><span class="k"><span class="ms">check</span></span>Nothing overlapping<span class="r ok">0 errors</span></div>
-        <div class="card-row"><span class="k"><span class="ms">check</span></span>Readable contrast everywhere<span class="r ok">0 warnings</span></div>
-        <div class="card-row"><span class="k"><span class="ms">check</span></span>No stock AI phrasing or em dashes<span class="r ok">0 warnings</span></div>
-        <div class="card-row"><span class="k"><span class="ms">visibility</span></span>Rendered and reviewed by eye<span class="r ok">5 sheets</span></div>
-      </div>
-      <div class="scene">
-        <div class="file-card"><span class="file-mark">.pptx</span><div><b>india_credit_cards_2026.pptx</b><small>45 slides · 6 native charts · notes on every slide</small></div><span class="ms" style="margin-left:auto;color:var(--accent-2)">download</span></div>
-        <div class="note-box">Assumed: card strategy team, thorough benchmark.
-Placeholders to fill: none.
-Sources: 10, listed on the last slide.</div>
-      </div>
-      <div class="replay-progress"><i id="replayBar"></i></div>
     </div>
   </div>
 </section>
@@ -197,59 +152,47 @@ Sources: 10, listed on the last slide.</div>
 <section id="audiences">
   <div class="wrap">
     <div class="sec-head rv">
-      <span class="eyebrow">Same topic, different decks</span>
+      <span class="eyebrow">Same topic, different decks · or your own deck</span>
       <h2>It designs for who's in the room.</h2>
-      <p class="lead">One company, four requests. The structure, slide types, wording and look all change, not just the colours. These are real renders from the skill, with sample data.</p>
+      <p class="lead">One company, four requests: the structure, slide types, wording and look all change. Already have a deck? The last tab shows an edit in your deck's own fonts and colours.</p>
     </div>
     <div class="tabs rv" id="audTabs" role="tablist"></div>
-    <div class="aud rv">
-      <div class="aud-stage"><div class="aud-main" id="audMain"></div><div class="aud-thumbs" id="audThumbs"></div></div>
+    <div class="aud rv" id="aud">
+      <div class="aud-stage">
+        <div class="aud-main" id="audMain">
+          <div class="ba" id="ba" style="--pos:50%">
+            <img src="assets/edit/before.jpg" alt="The original slide: a plain bullet list">
+            <img class="after" src="assets/edit/after.jpg" alt="The same slide redesigned as four cards with icons">
+            <span class="tag l">Before</span><span class="tag r">After</span>
+            <div class="handle"><span><span class="ms">width</span></span></div>
+          </div>
+        </div>
+        <div class="aud-thumbs" id="audThumbs"></div>
+      </div>
       <div class="aud-info">
-        <div class="q"><small>The request</small><span id="audPrompt"></span></div>
+        <div class="q"><small id="audQLabel">The request</small><span id="audPrompt"></span></div>
         <div class="diff" id="audDiff"></div>
       </div>
     </div>
-  </div>
-</section>
-
-<section id="edit">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <span class="eyebrow">Already have a deck?</span>
-      <h2>Edit it, slide by slide.</h2>
-      <p class="lead">Attach your .pptx and say what to change. PPTX Native reads every slide, then changes only what you asked for, in <b>your deck's own fonts and colours</b>. Drag to compare.</p>
-    </div>
-    <div class="edit rv">
-      <div class="ba" id="ba" style="--pos:50%">
-        <img src="assets/edit/before.jpg" alt="The original slide: a plain bullet list">
-        <img class="after" src="assets/edit/after.jpg" alt="The same slide redesigned as four cards with icons">
-        <span class="tag l">Before</span><span class="tag r">After</span>
-        <div class="handle"><span><span class="ms">width</span></span></div>
-      </div>
-      <div class="edit-list">
-        <div class="card-row"><span class="k"><span class="ms">dashboard</span></span><div>"Turn slide 2 into something better than bullets"<em>Rebuilt as cards, in the deck's theme</em></div></div>
-        <div class="card-row"><span class="k"><span class="ms">find_replace</span></span><div>"Change every FY25 to FY26"<em>Every slide, formatting kept</em></div></div>
-        <div class="card-row"><span class="k"><span class="ms">insert_chart</span></span><div>"Update the chart with Q3 numbers"<em>Same chart, new data</em></div></div>
-        <div class="card-row"><span class="k"><span class="ms">add_box</span></span><div>"Add a decisions slide after the table"<em>New slide that matches the rest</em></div></div>
-        <div class="card-row"><span class="k"><span class="ms">record_voice_over</span></span><div>"Rewrite the speaker notes for investors"<em>Notes only; slides untouched</em></div></div>
-      </div>
-    </div>
+    <p class="fine">Real renders from the skill with sample data for a fictional company, Lumen Bikes.</p>
   </div>
 </section>
 
 <section class="layouts" id="layouts">
   <div class="backdrop" id="layoutBackdrop" aria-hidden="true"></div>
   <div class="wrap">
-    <div class="sec-head rv">
-      <span class="eyebrow">34 layouts</span>
-      <h2>A layout for every kind of point.</h2>
-      <p class="lead">A number gets a big number. A ranking gets bars. A process gets steps. Gemini picks from the shape of your content.</p>
-    </div>
-    <div class="filters rv" id="layoutFilters">
-      <button class="active" data-f="all">All</button><button data-f="data">Data and charts</button><button data-f="story">Story and text</button><button data-f="flow">Structure and flow</button><button data-f="teach">Teaching and runbooks</button>
+    <div class="sec-head split rv">
+      <div>
+        <span class="eyebrow">34 layouts</span>
+        <h2>A layout for every kind of point.</h2>
+        <p class="lead">A number gets a big number. A ranking gets bars. A process gets steps. Gemini picks from the shape of your content.</p>
+      </div>
+      <div class="filters" id="layoutFilters">
+        <button class="active" data-f="all">All</button><button data-f="data">Data</button><button data-f="story">Story</button><button data-f="flow">Flow</button><button data-f="teach">Teaching</button>
+      </div>
     </div>
     <div class="poster-grid" id="posterGrid"></div>
-    <div class="more"><button class="btn" id="showAll"><span class="ms">expand_more</span>Show all 34 layouts</button></div>
+    <div class="more"><button class="btn" id="showAll"><span class="ms">expand_more</span><span>Show all 34 layouts</span></button></div>
   </div>
 </section>
 
@@ -259,7 +202,7 @@ Sources: 10, listed on the last slide.</div>
     <div class="sec-head center rv">
       <span class="eyebrow">Made with PPTX Native</span>
       <h2>Three one-line requests. Three real decks.</h2>
-      <p class="lead">Built by Gemini 4 Argon in Task mode. Open one to page through it.</p>
+      <p class="lead">Built by Gemini in Task mode. Open one to page through it.</p>
     </div>
     <div class="ex-row" id="exRow"></div>
     <p class="fine">Made from online sources in October 2026. Figures have not been independently checked.</p>
@@ -267,8 +210,8 @@ Sources: 10, listed on the last slide.</div>
 </section>
 
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Deck preview">
-  <div class="lb-top"><b id="lbTitle"></b><button class="icon-btn" id="lbClose" aria-label="Close"><span class="ms">close</span></button></div>
-  <div class="lb-main"><button class="icon-btn" id="lbPrev" aria-label="Previous slide"><span class="ms">chevron_left</span></button><img id="lbImg" alt=""><button class="icon-btn" id="lbNext" aria-label="Next slide"><span class="ms">chevron_right</span></button></div>
+  <div class="lb-top"><b id="lbTitle"></b><button class="btn icon" id="lbClose" aria-label="Close"><span class="ms">close</span></button></div>
+  <div class="lb-main"><button class="btn icon" id="lbPrev" aria-label="Previous slide"><span class="ms">chevron_left</span></button><img id="lbImg" alt=""><button class="btn icon" id="lbNext" aria-label="Next slide"><span class="ms">chevron_right</span></button></div>
   <div class="lb-strip" id="lbStrip"></div>
 </div>
 
@@ -286,19 +229,19 @@ Sources: 10, listed on the last slide.</div>
     <div class="setup-panel active rv" id="tab-app">
       <div>
         <div class="walk" id="walk"></div>
-        <div class="walk-nav"><button class="btn" id="walkPrev"><span class="ms">arrow_back</span>Back</button><button class="btn" id="walkNext">Next step<span class="ms">arrow_forward</span></button></div>
-        <div class="dl-card"><span class="file-mark">.zip</span><div><b>pptx-native.zip</b><small>The skill · about 100 KB · keep it zipped</small></div><a class="btn primary" href="https://github.com/siddharthrath1999/pptx-native/releases/latest/download/pptx-native.zip"><span class="ms">download</span>Download</a></div>
+        <div class="walk-nav"><button class="btn sm" id="walkPrev"><span class="ms">arrow_back</span>Back</button><button class="btn sm" id="walkNext">Next step<span class="ms">arrow_forward</span></button></div>
+        <div class="dl-card"><span class="app skill"><img src="assets/brand/skill.svg" alt=""></span><div><b>pptx-native.zip</b><small>The skill · 105 KB · keep it zipped</small></div><a class="btn primary" href="https://github.com/siddharthrath1999/pptx-native/releases/latest/download/pptx-native.zip"><span class="ms">download</span>Download</a></div>
       </div>
       <div class="mock">
         <div class="mock-bar"><i></i><i></i><i></i><span class="url" id="mockUrl">gemini.google.com</span></div>
         <div class="mock-body">
           <div class="mock-side"><div><span class="ms">edit_square</span>New chat</div><div><span class="ms">folder</span>Library</div><div id="sideCustom"><span class="ms">tune</span>Customise</div><div><span class="ms">schedule</span>Scheduled</div></div>
           <div class="mock-main">
-            <div class="m-screen active"><div class="m-title">Downloads</div><div class="m-card"><span class="m-file"><span class="ms">folder_zip</span>pptx-native.zip</span>100 KB</div><div class="m-card" style="opacity:.5">quarterly_review.pdf</div><div class="m-card" style="opacity:.35">notes.txt</div></div>
-            <div class="m-screen"><div class="m-title">Customise</div><div class="m-tabs"><span>Discover</span><span>Connectors</span><span class="hl">Skills</span></div><div class="m-card">humanizer</div><div class="m-card">write-query</div></div>
-            <div class="m-screen"><div class="m-title">Skills <span class="m-pill">Create<span class="ms">expand_more</span></span></div><div class="m-card">humanizer</div><div class="m-card">write-query</div><div class="m-menu"><div><span class="ms">auto_awesome</span>Create with Gemini</div><div><span class="ms">edit</span>Create manually</div><div class="hl"><span class="ms">upload</span>Upload</div></div></div>
-            <div class="m-screen"><div class="m-title">Upload a skill</div><div class="m-drop"><div><span class="m-file"><span class="ms">folder_zip</span>pptx-native.zip</span><br><br>Scan passed · review and confirm</div></div><div style="display:flex;justify-content:flex-end;margin-top:12px"><span class="m-pill" style="background:var(--accent);color:#140802">Create</span></div></div>
-            <div class="m-screen"><div class="m-title">New chat</div><div class="m-input">Make a 30-slide analysis of India's EV market for our leadership team.<div class="row"><span class="chip on">@pptx-native</span><span class="chip on"><span class="ms">bolt</span>Task</span><span class="chip">4 Argon</span></div></div></div>
+            <div class="m-screen active"><div class="m-title">Downloads</div><div class="m-card"><span class="m-file"><span class="ms">folder_zip</span>pptx-native.zip</span><span class="sz">105 KB</span></div><div class="m-card" style="opacity:.5"><span class="ms">picture_as_pdf</span>quarterly_review.pdf</div><div class="m-card" style="opacity:.35"><span class="ms">description</span>notes.txt</div></div>
+            <div class="m-screen"><div class="m-title">Customise</div><div class="m-tabs"><span>Discover</span><span>Connectors</span><span class="hl">Skills</span></div><div class="m-card"><img src="assets/brand/skill.svg" alt="" style="width:16px;opacity:.7">humanizer</div><div class="m-card"><img src="assets/brand/skill.svg" alt="" style="width:16px;opacity:.7">write-query</div></div>
+            <div class="m-screen"><div class="m-title">Skills <span class="m-pill">Create<span class="ms">expand_more</span></span></div><div class="m-card"><img src="assets/brand/skill.svg" alt="" style="width:16px;opacity:.7">humanizer</div><div class="m-card"><img src="assets/brand/skill.svg" alt="" style="width:16px;opacity:.7">write-query</div><div class="m-menu"><div><span class="ms">auto_awesome</span>Create with Gemini</div><div><span class="ms">edit</span>Create manually</div><div class="hl"><span class="ms">upload</span>Upload</div></div></div>
+            <div class="m-screen"><div class="m-title">Upload a skill</div><div class="m-drop"><div><span class="m-file"><span class="ms">folder_zip</span>pptx-native.zip</span><br><br>Upload successful · review and confirm</div></div><div style="display:flex;justify-content:flex-end;margin-top:12px"><span class="m-pill" style="background:var(--accent);color:var(--accent-ink)">Create</span></div></div>
+            <div class="m-screen"><div class="m-title">New chat</div><div class="m-input"><b>@pptx-native</b> Make a 30-slide analysis of India's EV market for our leadership team.<div class="row2"><span class="chip">Argon</span></div></div><div class="m-modes"><span>Chat</span><span class="hl">Task</span></div></div>
             <span class="hotspot" id="hotspot"></span>
           </div>
         </div>
@@ -306,17 +249,17 @@ Sources: 10, listed on the last slide.</div>
     </div>
     <div class="setup-panel" id="tab-agy">
       <div>
-        <div class="walk">
-          <button class="active"><span class="n">1</span><span><b>Copy one line</b><span class="d">Pick your system in the terminal box, then click Copy.</span></span></button>
-          <button class="active"><span class="n">2</span><span><b>Paste it into Terminal</b><span class="d">It puts the skill where Antigravity looks and sets up the two Python packages it needs.</span></span></button>
-          <button class="active"><span class="n">3</span><span><b>Restart Antigravity and ask</b><span class="d">"Make me a 30-slide deck on our Q3 results." The deck is saved in your project.</span></span></button>
+        <div class="walk static">
+          <button class="active" tabindex="-1"><span class="n">1</span><span><b>Copy one line</b><span class="d">Pick your system in the terminal box, then click Copy.</span></span></button>
+          <button class="active" tabindex="-1"><span class="n">2</span><span><b>Paste it into Terminal</b><span class="d">It puts the skill where Antigravity looks and sets up the two Python packages it needs.</span></span></button>
+          <button class="active" tabindex="-1"><span class="n">3</span><span><b>Restart Antigravity and ask</b><span class="d">"Make me a 30-slide deck on our Q3 results." The deck is saved in your project.</span></span></button>
         </div>
         <p class="fine" style="text-align:left">Add <code>--project</code> to install into one project only. LibreOffice is optional; with it, the agent can look at its slides.</p>
       </div>
       <div class="term">
         <div class="term-top"><i></i><i></i><i></i><div class="os" id="osTabs"><button class="active" data-os="mac">macOS · Linux</button><button data-os="win">Windows</button><button data-os="npx">npx</button></div></div>
         <div class="term-body">
-          <div class="term-cmd"><span class="p">$</span><code id="termCmd"></code><button class="copy" id="copyCmd"><span class="ms">content_copy</span><span>Copy</span></button></div>
+          <div class="term-cmd"><span class="p">$</span><code id="termCmd"></code><button class="btn sm copy" id="copyCmd"><span class="ms">content_copy</span><span>Copy</span></button></div>
           <div class="term-out" id="termOut">
             <div class="w">PPTX Native · installing the skill</div>
             <div><span class="g">✓</span> Skill copied to ~/.gemini/antigravity/skills/pptx-native</div>
@@ -341,9 +284,9 @@ Sources: 10, listed on the last slide.</div>
       <p class="lead">More context isn't better context. Unrelated details pull slides off topic, and conflicting asks force guesses. Give the skill the few things only you know; it handles research, structure and design.</p>
     </div>
     <div class="principles rv">
-      <div class="principle"><span class="ic"><span class="ms">groups</span></span><h3>Say the job</h3><p>Who it's for and what they should decide or learn. That one line shapes the structure more than anything else.</p></div>
-      <div class="principle"><span class="ic"><span class="ms">verified</span></span><h3>Give the source of truth</h3><p>Attach the files that matter. One right document beats ten loosely related ones, and it outranks the web.</p></div>
-      <div class="principle"><span class="ic"><span class="ms">checklist</span></span><h3>Name the must-haves</h3><p>Length, sections you need, things to avoid. Skip adjectives like "amazing"; they don't change the result.</p></div>
+      <div class="principle"><span class="well hot"><span class="ms">groups</span></span><h3>Say the job</h3><p>Who it's for and what they should decide or learn. That one line shapes the structure more than anything else.</p></div>
+      <div class="principle"><span class="well hot"><span class="ms">verified</span></span><h3>Give the source of truth</h3><p>Attach the files that matter. One right document beats ten loosely related ones, and it outranks the web.</p></div>
+      <div class="principle"><span class="well hot"><span class="ms">checklist</span></span><h3>Name the must-haves</h3><p>Length, sections you need, things to avoid. Skip adjectives like "amazing"; they don't change the result.</p></div>
     </div>
     <div class="vs rv">
       <div class="vs-card bad">
@@ -357,7 +300,7 @@ Sources: 10, listed on the last slide.</div>
         <div class="vs-notes"><div><span class="ms">check</span>Audience and decision set the story</div><div><span class="ms">check</span>The source of truth is named</div><div><span class="ms">check</span>Must-haves are specific; design is left to the skill</div></div>
       </div>
     </div>
-    <div class="sec-head rv" style="margin-bottom:32px"><h3 style="font-size:26px">Build yours</h3><p class="lead">Pick options and copy the prompt into Gemini.</p></div>
+    <div class="sec-head rv" style="margin-bottom:28px"><h3 style="font-size:24px;letter-spacing:-0.03em">Build yours</h3><p class="lead">Pick options and copy the prompt into Gemini.</p></div>
     <div class="builder rv">
       <div id="builderOpts">
         <div class="opt-group"><b>Topic</b><input id="topic" class="topic" value="India's EV market" aria-label="Topic"></div>
@@ -368,10 +311,19 @@ Sources: 10, listed on the last slide.</div>
       </div>
       <div class="built">
         <div class="prompt"><div class="prompt-inner"><div class="prompt-text" id="builtText"></div>
-          <div class="prompt-bar"><span class="chip on">@pptx-native</span><span class="chip"><span class="ms">bolt</span>Task</span><button class="btn primary" id="copyPrompt" style="margin-left:auto;height:38px"><span class="ms">content_copy</span>Copy</button></div></div></div>
-        <p class="fine" style="text-align:left">Then attach your files in the same message. Ask for changes afterwards in the same chat.</p>
+          <div class="prompt-bar"><span class="chip on">@pptx-native</span><span class="chip"><span class="ms">bolt</span>Task</span><button class="btn sm primary" id="copyPrompt" style="margin-left:auto"><span class="ms">content_copy</span><span>Copy</span></button></div></div></div>
+        <p class="fine">Then attach your files in the same message. Ask for changes afterwards in the same chat.</p>
       </div>
     </div>
+    <a class="gallery-cta rv" href="prompts.html">
+      <div>
+        <span class="eyebrow">Prompt gallery</span>
+        <h3 style="margin-top:12px">Start from a prompt that already works.</h3>
+        <p>Ready-made prompts for strategy, teaching, product and editing decks. Fill in your details, see the kind of slide it makes, and send it to Gemini.</p>
+        <div class="peek"><span class="chip"><span class="ms">trending_up</span>Business</span><span class="chip"><span class="ms">school</span>Learning</span><span class="chip"><span class="ms">rocket_launch</span>Product &amp; tech</span><span class="chip"><span class="ms">edit_document</span>Editing</span></div>
+      </div>
+      <span class="btn lg">Browse the gallery<span class="ms">arrow_forward</span></span>
+    </a>
   </div>
 </section>
 
@@ -379,18 +331,18 @@ Sources: 10, listed on the last slide.</div>
   <div class="wrap">
     <div class="sec-head rv"><span class="eyebrow">What's inside</span><h2>Built to be presented, not just generated.</h2></div>
     <div class="bento rv" id="bento">
-      <div class="tile w2"><div class="viz"><div class="bars"><i style="--h:.34"></i><i style="--h:.48"></i><i style="--h:.42"></i><i style="--h:.62"></i><i style="--h:.56"></i><i style="--h:.78"></i><i class="hl" style="--h:1"></i><i style="--h:.7"></i></div></div><h3>Native charts, data inside</h3><p>Column, bar, stacked, line, area, pie, doughnut, scatter and waterfall. Click a chart in PowerPoint and edit its numbers.</p></div>
-      <div class="tile"><span class="ic"><span class="ms">dashboard</span></span><span class="big"><span class="counter" data-to="34">0</span></span><p>Layouts, from KPI tiles to roadmaps and quizzes.</p></div>
-      <div class="tile"><span class="ic hot"><span class="ms">edit_document</span></span><h3>Edits your deck</h3><p>Rewrite, update, redesign or add slides, in your own theme.</p></div>
-      <div class="tile"><span class="ic"><span class="ms">travel_explore</span></span><h3>Researched and sourced</h3><p>Your files first, then primary sources. Every data slide names its source.</p></div>
-      <div class="tile"><div class="ticks viz"><div><span class="ms">check_circle</span>Overflow</div><div><span class="ms">check_circle</span>Overlaps</div><div><span class="ms">check_circle</span>Contrast</div><div><span class="ms">check_circle</span>Wording</div></div><h3>Checks its own work</h3><p>Then renders the slides and looks at them.</p></div>
-      <div class="tile w2"><div class="stack viz"><img src="assets/audiences/board-1.jpg" alt="" style="--r:-3deg"><img src="assets/audiences/workshop-1.jpg" alt="" style="--r:1.5deg"><img src="assets/audiences/launch-1.jpg" alt="" style="--r:-1deg"></div><h3>A look for every audience</h3><p>Nine starting styles, or your brand colours. Structure and tone change with the room.</p></div>
-      <div class="tile"><span class="ic"><span class="ms">record_voice_over</span></span><h3>Speaker notes</h3><p>What to say on every slide, with a bridge to the next.</p></div>
-      <div class="tile"><span class="ic"><span class="ms">interests</span></span><span class="big"><span class="counter" data-to="152">0</span></span><p>Vector icons, editable like any shape.</p></div>
-      <div class="tile"><span class="ic"><span class="ms">stacks</span></span><span class="big">100+</span><p>Slides when you need depth, with parts, recaps and an appendix.</p></div>
-      <div class="tile"><span class="ic"><span class="ms">text_fields</span></span><h3>Fonts that travel</h3><p>Looks the same on Windows, Mac, phones and Google Slides.</p></div>
-      <div class="tile w2"><span class="ic"><span class="ms">edit_note</span></span><h3>Writes like a person</h3><p>Sentence headlines that state the point, numbers with units and dates, and no stock AI phrasing. Every line is checked before you see it.</p></div>
-      <div class="tile w2"><span class="ic"><span class="ms">devices</span></span><h3>Gemini app and Antigravity</h3><p>Upload once to the Gemini app, or install with one line for Antigravity and other agents that run Python.</p></div>
+      <div class="tile w2"><div class="demo"><div class="d-chart"><div class="cap"><span>Riders, thousands</span><b>Edit data in PowerPoint</b></div><div class="bars"><i style="--a:.3;--b:.42"></i><i style="--a:.45;--b:.36"></i><i style="--a:.4;--b:.58"></i><i style="--a:.6;--b:.5"></i><i style="--a:.52;--b:.72"></i><i style="--a:.75;--b:.64"></i><i class="hl" style="--a:1;--b:.86"></i><i style="--a:.68;--b:.95"></i></div></div></div><h3>Native charts, data inside</h3><p>Column, bar, stacked, line, area, pie, doughnut, scatter and waterfall. Click a chart in PowerPoint and edit its numbers.</p></div>
+      <div class="tile"><div class="demo"><div class="cycle" style="--t:12s"><img src="assets/layouts/l06.jpg" alt=""><img src="assets/layouts/l15.jpg" alt="" style="--d:3s"><img src="assets/layouts/l20.jpg" alt="" style="--d:6s"><img src="assets/layouts/l22.jpg" alt="" style="--d:9s"></div></div><h3>34 layouts</h3><p>From KPI tiles to roadmaps and quizzes.</p></div>
+      <div class="tile"><div class="demo"><div class="cycle two" style="--t:6s"><span class="badge">your deck</span><img src="assets/edit/before.jpg" alt=""><img src="assets/edit/after.jpg" alt="" style="--d:3s"></div></div><h3>Edits your deck</h3><p>Rewrites, updates and redesigns in your own theme.</p></div>
+      <div class="tile"><div class="demo"><div class="d-list"><div><span class="ms">description</span>Your files<em>first</em></div><div><span class="ms">account_balance</span>Regulator data<em>primary</em></div><div><span class="ms">request_quote</span>Company filings<em>primary</em></div><div><span class="ms">query_stats</span>Industry reports<em>dated</em></div></div></div><h3>Researched and sourced</h3><p>Every data slide names its source.</p></div>
+      <div class="tile"><div class="demo"><div class="d-list checks"><div><span class="ms">check_circle</span>No text overflow</div><div><span class="ms">check_circle</span>No overlaps</div><div><span class="ms">check_circle</span>Readable contrast</div><div><span class="ms">check_circle</span>Plain wording</div></div></div><h3>Checks its own work</h3><p>Then renders the slides and looks at them.</p></div>
+      <div class="tile w2"><div class="demo"><div class="cycle" style="--t:12s"><img src="assets/audiences/board-1.jpg" alt=""><img src="assets/audiences/pitch-1.jpg" alt="" style="--d:3s"><img src="assets/audiences/workshop-1.jpg" alt="" style="--d:6s"><img src="assets/audiences/launch-1.jpg" alt="" style="--d:9s"></div></div><h3>A look for every audience</h3><p>Nine starting styles, or your brand colours. Structure and tone change with the room.</p></div>
+      <div class="tile"><div class="demo"><div class="d-notes"><small>Speaker notes · slide 4</small><span class="tw">Riders doubled in three quarters. Pause here, then point to Pune: it turned profitable first. Next, we look at why.</span></div></div><h3>Speaker notes</h3><p>What to say on every slide.</p></div>
+      <div class="tile"><div class="demo"><div class="d-icons"><div class="lane"><span class="ms">bolt</span><span class="ms">savings</span><span class="ms">groups</span><span class="ms">rocket_launch</span><span class="ms">shield</span><span class="ms">public</span><span class="ms">insights</span><span class="ms">bolt</span><span class="ms">savings</span><span class="ms">groups</span><span class="ms">rocket_launch</span><span class="ms">shield</span><span class="ms">public</span><span class="ms">insights</span></div><div class="lane rev"><span class="ms">battery_charging_full</span><span class="ms">payments</span><span class="ms">schedule</span><span class="ms">school</span><span class="ms">handshake</span><span class="ms">eco</span><span class="ms">target</span><span class="ms">battery_charging_full</span><span class="ms">payments</span><span class="ms">schedule</span><span class="ms">school</span><span class="ms">handshake</span><span class="ms">eco</span><span class="ms">target</span></div></div></div><h3>152 icons</h3><p>Vector shapes, editable like any other.</p></div>
+      <div class="tile"><div class="demo"><div class="d-stack"><img src="assets/examples/upi-01.jpg" alt=""><img src="assets/examples/cards-14.jpg" alt=""><img src="assets/examples/qc-17.jpg" alt=""><img src="assets/examples/upi-31.jpg" alt=""></div></div><h3>100+ slides</h3><p>Parts, recaps and an appendix when you need depth.</p></div>
+      <div class="tile"><div class="demo"><div class="d-fonts"><b>Aa</b><div class="devs"><span><span class="ms">laptop_windows</span>Windows</span><span><span class="ms">laptop_mac</span>Mac</span><span><span class="ms">smartphone</span>Phone</span><span><span class="ms">cloud</span>Google Slides</span></div></div></div><h3>Fonts that travel</h3><p>Looks the same everywhere.</p></div>
+      <div class="tile w2"><div class="demo"><div class="d-rewrite"><small>Headline</small><span class="bad">In today's fast-paced landscape, we leverage synergies to unlock growth</span><span class="good">Riders doubled in three quarters, and Pune turned profitable</span></div></div><h3>Writes like a person</h3><p>Sentence headlines that state the point, numbers with units and dates, no stock AI phrasing.</p></div>
+      <div class="tile w2"><div class="demo"><div class="d-plat"><span class="app gemini"><img src="assets/logos/gemini-2025.svg" alt=""></span><span class="plus"><span class="ms">add</span></span><span class="app agy"><img src="assets/logos/antigravity.png" alt=""></span><span class="arrow"><span class="ms">arrow_forward</span></span><span class="app ppt"><img src="assets/logos/powerpoint.svg" alt=""></span></div></div><h3>Gemini app and Antigravity</h3><p>Upload once to the Gemini app, or install with one line for Antigravity and other agents that run Python.</p></div>
     </div>
   </div>
 </section>
@@ -407,7 +359,7 @@ Sources: 10, listed on the last slide.</div>
       <details><summary>Can it use my brand?<span class="ms">add</span></summary><p>Give your colours as hex codes in the prompt. Fonts default to ones every device has; ask for a brand font only if everyone presenting has it installed.</p></details>
       <details><summary>Does it add photos?<span class="ms">add</span></summary><p>No. Visuals come from charts, tables, shapes and icons. Add your own photos afterwards.</p></details>
       <details><summary>Upload says "did not pass the security scan".<span class="ms">add</span></summary><p>Upload the official zip, unchanged. If you edited files inside it, undo the changes and try again.</p></details>
-      <details><summary>Is this made by Google?<span class="ms">add</span></summary><p>No. PPTX Native is an independent open-source project. Gemini and Antigravity are Google products; their logos appear only to show where the skill works.</p></details>
+      <details><summary>Is this made by Google or Microsoft?<span class="ms">add</span></summary><p>No. PPTX Native is an independent open-source project. Gemini, Antigravity and PowerPoint logos appear only to show where the skill works and what it makes.</p></details>
     </div>
   </div>
 </section>
@@ -415,19 +367,20 @@ Sources: 10, listed on the last slide.</div>
 <section class="cta">
   <div class="wrap">
     <div class="cta-card rv">
-      <div class="cta-logos">
-        <div class="logo-3d"><img class="halo" src="assets/logos/gemini-2025.svg" alt=""><img class="face" src="assets/logos/gemini-2025.svg" alt="Gemini"></div>
-        <div class="logo-3d"><img class="halo" src="assets/logos/antigravity.png" alt=""><img class="face" src="assets/logos/antigravity.png" alt="Antigravity"></div>
-        <span class="chipbox"><svg class="gh"><use href="#gh"/></svg></span>
-        <span class="chipbox"><span class="file-mark">.pptx</span></span>
+      <div class="flow" aria-label="Gemini or Antigravity makes a PowerPoint file">
+        <span class="app gemini"><img src="assets/logos/gemini-2025.svg" alt="Gemini"></span>
+        <span class="op"><span class="ms">add</span></span>
+        <span class="app agy"><img src="assets/logos/antigravity.png" alt="Antigravity"></span>
+        <span class="op"><span class="ms">arrow_forward</span></span>
+        <span class="app ppt"><img src="assets/logos/powerpoint.svg" alt="PowerPoint"></span>
       </div>
       <h2>Your next deck is one sentence away.</h2>
       <p>Free and open source. Add it to Gemini in two minutes, or to Antigravity with one line.</p>
       <div class="btn-row">
         <a class="btn primary lg" href="https://github.com/siddharthrath1999/pptx-native/releases/latest/download/pptx-native.zip"><span class="ms">download</span>Download for Gemini</a>
         <a class="btn lg" href="#setup" data-agy="1"><span class="ms">terminal</span>Install in Antigravity</a>
-        <a class="btn lg" href="https://github.com/siddharthrath1999/pptx-native"><svg class="gh"><use href="#gh"/></svg>Star on GitHub</a>
       </div>
+      <a class="textlink" href="https://github.com/siddharthrath1999/pptx-native">Read the source on GitHub<span class="ms">arrow_forward</span></a>
     </div>
   </div>
 </section>
@@ -437,18 +390,18 @@ Sources: 10, listed on the last slide.</div>
   <div class="wrap">
     <div class="foot-grid">
       <div class="foot-brand">
-        <a class="wordmark" href="#top"><span>PPTX</span><i></i><span>Native</span></a>
+        <a class="logo" href="#top" aria-label="PPTX Native, back to top"><img src="assets/brand/wordmark-cream.svg" alt="PPTX Native" width="104" height="44"></a>
         <p>A free, open-source skill that turns a one-line request into a real, editable PowerPoint deck, or edits the one you have.</p>
-        <a class="btn" href="https://github.com/siddharthrath1999/pptx-native"><svg class="gh"><use href="#gh"/></svg>View source</a>
+        <a class="btn sm" href="https://github.com/siddharthrath1999/pptx-native"><svg class="gh"><use href="#gh"/></svg>View source</a>
       </div>
-      <div><h5>Product</h5><a href="#why">Why PPTX Native</a><a href="#how">How it works</a><a href="#audiences">Audiences</a><a href="#edit">Edit decks</a><a href="#layouts">Layouts</a><a href="#examples">Examples</a></div>
-      <div><h5>Get started</h5><a href="#setup">Gemini app</a><a href="#setup" data-agy="1">Antigravity</a><a href="https://github.com/siddharthrath1999/pptx-native/releases/latest/download/pptx-native.zip">Download the zip</a><a href="#prompts">Prompt guide</a><a href="https://github.com/siddharthrath1999/pptx-native/releases">Release notes</a></div>
-      <div><h5>Project</h5><a href="https://github.com/siddharthrath1999/pptx-native">GitHub</a><a href="https://github.com/siddharthrath1999/pptx-native/issues">Report an issue</a><a href="https://github.com/siddharthrath1999/pptx-native/blob/main/LICENSE">MIT licence</a><a href="https://lucide.dev">Lucide icons</a></div>
+      <div><h5>Product</h5><nav><a href="#why">Why PPTX Native</a><a href="#how">How it works</a><a href="#audiences">Audiences &amp; edits</a><a href="#layouts">Layouts</a><a href="#examples">Examples</a></nav></div>
+      <div><h5>Get started</h5><nav><a href="#setup">Gemini app</a><a href="#setup" data-agy="1">Antigravity</a><a href="https://github.com/siddharthrath1999/pptx-native/releases/latest/download/pptx-native.zip">Download the zip</a><a href="prompts.html">Prompt gallery</a><a href="#prompts">Prompt guide</a></nav></div>
+      <div><h5>Project</h5><nav><a href="https://github.com/siddharthrath1999/pptx-native">GitHub</a><a href="https://github.com/siddharthrath1999/pptx-native/releases">Release notes</a><a href="https://github.com/siddharthrath1999/pptx-native/issues">Report an issue</a><a href="https://github.com/siddharthrath1999/pptx-native/blob/main/LICENSE">MIT licence</a></nav></div>
     </div>
-    <div class="foot-big" aria-hidden="true">PPTX Native</div>
+    <div class="foot-big" aria-hidden="true"><img src="assets/brand/wordmark-outline.svg" alt=""></div>
     <div class="foot-legal">
-      <p>Made by Sidharth Rath. Independent project, not affiliated with or endorsed by Google or Microsoft. Gemini and Google Antigravity are trademarks of Google LLC. PowerPoint is a trademark of Microsoft.</p>
-      <a href="#top">Back to top <span class="ms" style="font-size:16px;vertical-align:-3px">arrow_upward</span></a>
+      <p>Made by Sidharth Rath. Independent project, not affiliated with or endorsed by Google or Microsoft. Gemini and Google Antigravity are trademarks of Google LLC. PowerPoint and its logo are trademarks of Microsoft. Icons by Lucide (ISC) and Material Symbols (Apache 2.0).</p>
+      <a class="textlink" href="#top">Back to top<span class="ms">arrow_upward</span></a>
     </div>
   </div>
 </footer>

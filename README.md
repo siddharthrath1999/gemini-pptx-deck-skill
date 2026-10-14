@@ -8,6 +8,7 @@
   <a href="#how-it-works">How it works</a> ·
   <a href="#edit-a-deck-you-already-have">Edit a deck</a> ·
   <a href="#write-better-prompts">Prompts</a> ·
+  <a href="https://siddharthrath1999.github.io/pptx-native/prompts.html">Prompt gallery</a> ·
   <a href="#examples">Examples</a>
 </p>
 
@@ -112,7 +113,7 @@ New and redesigned slides need a 16:9 deck. On other sizes it edits text, tables
 - **Ask for changes after:** "Make slide 12 a chart" rebuilds just that slide.
 - **Read the handoff note.** It lists gaps like `[2025 revenue]` and every source.
 
-The [website](https://siddharthrath1999.github.io/pptx-native/#prompts) has a prompt builder you can copy from.
+The [prompt gallery](https://siddharthrath1999.github.io/pptx-native/prompts.html) has 24 ready-made prompts for strategy, teaching, product and editing decks, with fields you can change before copying.
 
 ## Examples
 
