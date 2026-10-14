@@ -1,86 +1,143 @@
-# Deck Builder for Gemini
+<p align="center">
+  <img src="docs/assets/banner.png" alt="PPTX Native: real PowerPoint, straight from Gemini" width="100%">
+</p>
 
-**Ask Gemini for a deck. Get a real PowerPoint.**
+<p align="center">
+  <a href="https://siddharthrath1999.github.io/pptx-native/"><b>Website</b></a> ·
+  <a href="#install">Install</a> ·
+  <a href="#how-it-works">How it works</a> ·
+  <a href="#write-better-prompts">Prompts</a> ·
+  <a href="#examples">Examples</a>
+</p>
 
-`build-pptx-deck` is a skill for the Gemini app. You type one line, and Gemini researches, writes, designs and checks a full presentation, then gives you a `.pptx` file you can edit in PowerPoint, Keynote or Google Slides. Charts, tables, icons and speaker notes are all native and editable.
+<p align="center">
+  <a href="https://github.com/siddharthrath1999/pptx-native/releases/latest"><img src="https://img.shields.io/github/v/release/siddharthrath1999/pptx-native?color=ff6a3d&label=release" alt="Latest release"></a>
+  <img src="https://img.shields.io/badge/works%20with-Gemini%20app-4a7dff" alt="Works with the Gemini app">
+  <img src="https://img.shields.io/badge/works%20with-Google%20Antigravity-9b6bff" alt="Works with Google Antigravity">
+  <img src="https://img.shields.io/badge/output-native%20.pptx-ff6a3d" alt="Native pptx output">
+  <img src="https://img.shields.io/badge/license-MIT-3ddc97" alt="MIT licence">
+</p>
 
-**Website and full guide:** https://siddharthrath1999.github.io/gemini-pptx-deck-skill/
+**PPTX Native** is a skill for Gemini and Google Antigravity. Ask for a deck in one line. Gemini researches, writes, designs and checks it, then hands you a real PowerPoint file. Every chart, table, icon and text box stays editable in PowerPoint, Keynote and Google Slides.
 
-![Cover slide of a learning deck made with this skill](docs/img/upi-01.jpg)
+<p align="center"><img src="docs/assets/demo.gif" alt="Slides from three decks made with PPTX Native" width="720"></p>
 
-## What you need
+## Install
 
-- A personal Google account (not work or school), age 18+
-- A Google AI Pro or Ultra plan (the skill runs in **Task** mode)
-- Keep Activity on, and Personal Intelligence on for tasks
-- The Gemini website or Mac app to upload the skill
+### Gemini app (no install)
 
-Task mode is not offered in the EEA, the UK, Switzerland or Nigeria.
+1. Download **[pptx-native.zip](https://github.com/siddharthrath1999/pptx-native/releases/latest/download/pptx-native.zip)**. Keep it zipped.
+2. In Gemini, open **Customise** in the left menu, then the **Skills** tab.
+3. Click **Create**, then **Upload**, choose the zip, and click **Create**.
 
-## Set up
-
-1. Download [`build-pptx-deck.zip`](https://github.com/siddharthrath1999/gemini-pptx-deck-skill/releases/latest/download/build-pptx-deck.zip). Don't unzip it.
-2. In Gemini, click **Customise** in the left menu, then **Skills**.
-3. Click **Create**, then **Upload**, and choose the zip.
-4. Check the name says `build-pptx-deck`, then click **Create**.
+You need a personal Google account (18+) and a **Google AI Pro or Ultra** plan, because the skill runs in **Task** mode. Upload from the Gemini website or Mac app. Task mode isn't offered in the EEA, the UK, Switzerland or Nigeria.
 
 To update later: open the skill, click **More**, then **Replace skill**, and upload the new zip.
 
-## Make a deck
+### Google Antigravity (one line)
 
-1. Start a new chat. Pick **4 Argon** if you have it.
-2. Click **Task** under the message box. (In normal Chat mode you'll get text or Google Slides, not a `.pptx`.)
-3. Describe the deck. Gemini picks the skill itself, or type `@` and choose `build-pptx-deck`.
-4. Wait for the file, then download it.
-5. Ask for changes in the same chat: "Make slide 12 a chart", "Use our brand colours".
+Paste one line into Terminal:
 
-## Prompting tips
+| System | Command |
+|---|---|
+| macOS · Linux | `curl -fsSL https://raw.githubusercontent.com/siddharthrath1999/pptx-native/main/install.sh \| bash` |
+| Windows (PowerShell) | `irm https://raw.githubusercontent.com/siddharthrath1999/pptx-native/main/install.ps1 \| iex` |
+| Any system with Node | `npx github:siddharthrath1999/pptx-native` |
 
-Give it: **topic**, **who it's for**, **what they should know or do after**, **length**, **style**, and **your files or data**.
+The installer copies the skill to `~/.gemini/antigravity/skills/` and `~/.gemini/config/skills/`, installs `python-pptx` and `Pillow` if they're missing, and checks for LibreOffice (optional; with it, the agent can look at its slides). Add `--project` to install into `./.agents/skills` of the current project instead. Then restart Antigravity and ask for a deck.
 
-> Make a 40-slide market analysis of India's credit card market for our product leadership team. Compare the top 10 issuers on cards, spend and spend per card, and end with three opportunities for a new co-brand card. Serious, clean style.
+## How it works
+
+```mermaid
+flowchart LR
+  A["Your one-line request<br/>+ files"] --> B["1 · Research<br/>sources with dates"]
+  B --> C["2 · Story<br/>one headline per slide"]
+  C --> D["3 · Design<br/>palette, fonts, layouts"]
+  D --> E["4 · Build<br/>native .pptx via python-pptx"]
+  E --> F["5 · Check<br/>lint + rendered review"]
+  F -->|fixes| E
+  F --> G["6 · Deliver<br/>.pptx + handoff note"]
+```
+
+Gemini writes the deck as a structured spec. The bundled Python kit turns it into slides, then checks every slide for cut-off text, overlaps, low contrast and stock AI phrasing. Gemini renders the slides to images, looks at them, fixes what it finds, and delivers the file with a short note on assumptions, gaps and sources.
+
+## What it makes
+
+| | |
+|---|---|
+| **34 layouts** | Cover, agenda, KPI tiles, big number, cards, comparison, table, scorecard, heatmap, bar list, split bar, timeline, process, funnel, 2x2 matrix, layers, roadmap, runbook steps, quiz question, recap and more |
+| **10 native chart types** | Column, bar, stacked, 100% stacked, line, area, pie, doughnut, scatter, waterfall |
+| **9 starting looks** | Editorial warm, boardroom navy, executive slate, mono minimal, classic serif, dark tech, playful bright, soft pastel, bold contrast, or your own colours |
+| **Built for presenting** | Speaker notes on every slide, sources on data slides, 152 vector icons, decks of 100+ slides |
+| **Works everywhere** | Fonts every device has, so the deck looks the same on Windows, Mac, phones and Google Slides |
+
+<p align="center"><img src="docs/assets/looks/editorial-warm.jpg" width="32%"> <img src="docs/assets/looks/dark-tech.jpg" width="32%"> <img src="docs/assets/looks/playful-bright.jpg" width="32%"></p>
+<p align="center"><sub>The same slide in three of the nine starting looks.</sub></p>
+
+## Write better prompts
+
+Give it the **topic**, **who it's for**, **what they should know or do after**, **length**, **look**, and **your files**.
+
+> Make a 30-slide market analysis on India's EV market for our leadership team. Style: calm and premium. Include one slide per company and an appendix with full tables.
 
 > Make a fun 30-slide learning deck that teaches college students how UPI payments work. Use one running story, quiz questions for the room, and simple language.
 
-- **Attach files** (PDFs, spreadsheets, notes) to the same message. Gemini uses them first.
-- **Say the length.** Without one, it plans a thorough deck (about 40 to 80 slides for an analysis).
-- **Set the look** with a mood ("calm and premium") or hex colours.
-- **Read the handoff note.** It lists assumptions, gaps like `[2025 revenue]`, and sources.
+- **Attach files** (PDFs, sheets, notes) in the same message. Gemini uses them before the web.
+- **Say the length.** Without one, an analysis runs about 40 to 80 slides.
+- **Ask for changes after:** "Make slide 12 a chart" rebuilds just that slide.
+- **Read the handoff note.** It lists gaps like `[2025 revenue]` and every source.
 
-## What it can make
+The [website](https://siddharthrath1999.github.io/pptx-native/#prompts) has a prompt builder you can copy from.
 
-- 34 layouts: KPI tiles, cards, comparisons, scorecards, heatmaps, timelines, roadmaps, funnels, 2x2 matrices, runbook steps, quiz slides and more
-- Native charts: column, bar, stacked, line, area, pie, doughnut, scatter, waterfall
-- Nine starting styles plus custom colours
-- Speaker notes on every slide, sources on data slides, decks of 100+ slides
+## Examples
 
-## Good to know
+Three decks Gemini 4 Argon made with PPTX Native from one-line requests:
 
-- **Check the numbers.** Gemini cites sources but can still pick a weak one. Verify figures before you present.
-- **Fonts work everywhere** (Arial, Georgia, Calibri and similar), so the deck looks the same on every device.
-- **No photos.** Add your own images in PowerPoint afterwards.
+| How UPI works · learning deck | India's credit card market · analysis | Quick commerce · benchmark |
+|---|---|---|
+| <img src="docs/assets/examples/upi-01.jpg"> | <img src="docs/assets/examples/cards-14.jpg"> | <img src="docs/assets/examples/qc-17.jpg"> |
+| <img src="docs/assets/examples/upi-06.jpg"> | <img src="docs/assets/examples/cards-20.jpg"> | <img src="docs/assets/examples/qc-34.jpg"> |
+| 60 slides, 6 quizzes | 45 slides, 5 parts | 47 slides, 11 charts |
 
-## How it works inside
+<sub>Made from online sources in October 2026. Figures have not been independently checked.</sub>
+
+## FAQ
+
+<details><summary><b>Why Task mode?</b></summary>
+Task mode gives Gemini a small computer where it can run the skill's tools. In Chat mode you'd get text, HTML or Google Slides instead of a .pptx.
+</details>
+<details><summary><b>Are the numbers right?</b></summary>
+Gemini researches and cites sources, but it can still pick a weak source or misread one. Check figures before you present.
+</details>
+<details><summary><b>"The uploaded file did not pass the security scan"</b></summary>
+Upload the official zip, unchanged. If you edited files inside it, undo the changes.
+</details>
+<details><summary><b>Does it add photos?</b></summary>
+No. Visuals come from charts, tables, shapes and icons. Add your own photos afterwards.
+</details>
+
+## Inside the repo
 
 ```
-build-pptx-deck/
-  SKILL.md                 the workflow Gemini follows
+pptx-native/               the skill (this folder is what Gemini and Antigravity load)
+  SKILL.md                 the workflow the agent follows
   references/              storylines, design directions, layout catalog, writing rules
-  scripts/build_deck.py    turns a JSON deck spec into a .pptx and checks it
+  scripts/build_deck.py    JSON deck spec -> .pptx, then lint
   scripts/dk_*.py          layouts, themes, charts, tables, icons, text measuring, checks
-  scripts/sheet_deck.py    makes contact sheets of rendered slides for visual review
-  scripts/icons.json       152 Lucide icons as vector point lists
+  scripts/sheet_deck.py    contact sheets for visual review
   examples/gallery.json    a spec that uses every layout
+install.sh · install.ps1   one-line installers for Antigravity
+bin/install.js             the npx installer
+docs/                      the website (GitHub Pages)
 ```
 
-Gemini writes a deck spec (JSON), runs `build_deck.py` to build the `.pptx` with `python-pptx`, fixes everything the checks report, renders the slides with LibreOffice to look at them, and delivers the file.
+Try the kit locally (Python 3.9+, `pip install python-pptx pillow`):
 
-To try the kit on your own computer (Python 3.9+, `pip install python-pptx pillow`):
-
-```
-python3 build-pptx-deck/scripts/build_deck.py build-pptx-deck/examples/gallery.json -o gallery.pptx
+```bash
+python3 pptx-native/scripts/build_deck.py pptx-native/examples/gallery.json -o gallery.pptx
 ```
 
 ## Licence
 
-MIT. Icons are from [Lucide](https://lucide.dev) under the ISC licence; see `THIRD_PARTY_NOTICES.md`. Not affiliated with Google or Microsoft.
+MIT. Icons in the skill are from [Lucide](https://lucide.dev) (ISC); see `THIRD_PARTY_NOTICES.md`.
+PPTX Native is an independent project, not affiliated with or endorsed by Google or Microsoft. Gemini and Google Antigravity are trademarks of Google LLC; PowerPoint is a trademark of Microsoft.

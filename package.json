@@ -1,0 +1,22 @@
+{
+  "name": "pptx-native",
+  "version": "1.1.0",
+  "description": "PPTX Native: a skill for Gemini and Google Antigravity that builds real, editable PowerPoint decks.",
+  "bin": {
+    "pptx-native": "bin/install.js"
+  },
+  "files": [
+    "bin",
+    "pptx-native"
+  ],
+  "engines": {
+    "node": ">=16.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/siddharthrath1999/pptx-native.git"
+  },
+  "homepage": "https://siddharthrath1999.github.io/pptx-native/",
+  "keywords": ["gemini", "antigravity", "agent-skill", "powerpoint", "pptx", "python-pptx"],
+  "license": "MIT"
+}
