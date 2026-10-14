@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deck Builder for Gemini</title>
+<meta name="description" content="A Gemini skill that turns a one-line request into a real, editable PowerPoint deck with charts, tables, icons and speaker notes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f5f0; --surface: #ffffff; --ink: #16181d; --muted: #5a5f6b; --line: #e3dfd6;
+  --accent: #0d7a5f; --accent-ink: #ffffff; --accent-soft: #dcefe8; --warm: #f2a33a; --code: #f0ece4;
+  --shadow: 0 1px 2px rgba(20, 20, 20, .04), 0 8px 24px rgba(20, 20, 20, .06);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111317; --surface: #1a1d23; --ink: #eef0f3; --muted: #a2a8b4; --line: #2b3039;
+    --accent: #3fc79c; --accent-ink: #0b1f18; --accent-soft: #173229; --warm: #f2b45a; --code: #23272f;
+    --shadow: none;
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.6 Inter, system-ui, -apple-system, "Segoe UI", sans-serif; }
+img { max-width: 100%; display: block; }
+a { color: var(--accent); }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+header.top { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+header.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 16px; }
+.brand { font-weight: 700; text-decoration: none; color: var(--ink); white-space: nowrap; }
+nav.links { display: flex; gap: 18px; overflow-x: auto; scrollbar-width: none; }
+nav.links a { color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; }
+nav.links a:hover { color: var(--ink); }
+.hero { padding: 72px 0 40px; }
+.eyebrow { text-transform: uppercase; letter-spacing: .12em; font-size: 13px; font-weight: 600; color: var(--accent); }
+h1, h2, h3 { font-family: Fraunces, Georgia, serif; line-height: 1.12; letter-spacing: -.01em; margin: 0; }
+h1 { font-size: clamp(38px, 6vw, 64px); margin: 12px 0 18px; max-width: 14ch; }
+h2 { font-size: clamp(28px, 4vw, 40px); margin-bottom: 12px; }
+h3 { font-size: 21px; margin-bottom: 6px; }
+.lede { font-size: 20px; color: var(--muted); max-width: 46ch; margin: 0 0 28px; }
+.btns { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 20px; border-radius: 10px; font-weight: 600; text-decoration: none; border: 1px solid var(--line); color: var(--ink); background: var(--surface); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.hero-shot { margin-top: 44px; border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--line); }
+section { padding: 56px 0; border-top: 1px solid var(--line); }
+.sub { color: var(--muted); max-width: 62ch; margin: 0 0 28px; }
+.grid { display: grid; gap: 16px; }
+.g2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.g3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; box-shadow: var(--shadow); }
+.card p { margin: 6px 0 0; color: var(--muted); }
+.steps { counter-reset: s; list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.steps li { counter-increment: s; position: relative; padding: 16px 18px 16px 62px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.steps li::before { content: counter(s); position: absolute; left: 18px; top: 14px; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-weight: 700; font-size: 15px; }
+.steps b { display: block; }
+.steps span { color: var(--muted); }
+.need { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.need li { padding-left: 30px; position: relative; }
+.need li::before { content: "\2713"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+code, kbd { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em; background: var(--code); padding: 2px 6px; border-radius: 6px; }
+.prompt { background: var(--code); border-radius: 12px; padding: 16px 18px; font-size: 16px; position: relative; }
+.prompt .tag { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 6px; }
+.formula { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; }
+.formula span { background: var(--accent-soft); color: var(--ink); border-radius: 999px; padding: 6px 14px; font-weight: 600; font-size: 15px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.chips span { border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: 14px; color: var(--muted); background: var(--surface); }
+.shots { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.shots figure { margin: 0; }
+.shots a { display: block; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow); }
+.shots figcaption { font-size: 14px; color: var(--muted); margin-top: 8px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.tabs button { font: inherit; font-size: 15px; font-weight: 600; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.panel[hidden] { display: none; }
+.note { border-left: 4px solid var(--warm); background: var(--surface); padding: 14px 18px; border-radius: 0 10px 10px 0; color: var(--muted); margin-top: 20px; }
+table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 14px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+.table-wrap { overflow-x: auto; }
+footer { padding: 40px 0 60px; color: var(--muted); font-size: 15px; border-top: 1px solid var(--line); }
+@media (max-width: 640px) {
+  body { font-size: 16px; }
+  nav.links { display: none; }
+  .hero { padding-top: 44px; }
+  section { padding: 44px 0; }
+  .steps li { padding-left: 56px; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#">Deck Builder for Gemini</a>
+    <nav class="links" aria-label="Sections">
+      <a href="#how">How it works</a>
+      <a href="#setup">Set up</a>
+      <a href="#use">Make a deck</a>
+      <a href="#prompts">Prompting</a>
+      <a href="#makes">What it makes</a>
+      <a href="#examples">Examples</a>
+      <a href="#limits">Limits</a>
+      <a href="#help">Help</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">A skill for the Gemini app</div>
+    <h1>Ask for a deck. Get a real PowerPoint.</h1>
+    <p class="lede">Type one line in Gemini. It researches, writes, designs and checks a full presentation, then hands you a .pptx file you can edit in PowerPoint, Keynote or Google Slides.</p>
+    <div class="btns">
+      <a class="btn primary" href="https://github.com/siddharthrath1999/gemini-pptx-deck-skill/releases/latest/download/build-pptx-deck.zip">Download the skill (.zip)</a>
+      <a class="btn" href="https://github.com/siddharthrath1999/gemini-pptx-deck-skill">View on GitHub</a>
+    </div>
+    <div class="hero-shot"><img src="img/upi-01.jpg" alt="Cover slide of a learning deck called How UPI works, made by Gemini with this skill" width="1200" height="675"></div>
+  </div>
+
+  <section id="how">
+    <h2>How it works</h2>
+    <p class="sub">A skill is a set of instructions and tools you add to Gemini once. After that, Gemini uses it whenever you ask for slides. This one comes with a small design engine, so the slides are real PowerPoint objects, not pictures or web pages.</p>
+    <div class="grid g3">
+      <div class="card"><h3>1. Research</h3><p>Reads your files and searches the web for facts, and keeps track of where each number came from.</p></div>
+      <div class="card"><h3>2. Story</h3><p>Plans the parts and writes one clear headline per slide, so the headlines alone tell the story.</p></div>
+      <div class="card"><h3>3. Design</h3><p>Picks colours, fonts and a slide style that suit your audience, and the best layout for each slide.</p></div>
+      <div class="card"><h3>4. Build</h3><p>Creates the .pptx with native charts, tables, icons and speaker notes.</p></div>
+      <div class="card"><h3>5. Check</h3><p>Automatically checks every slide for cut-off text, overlaps, hard-to-read colours and AI-sounding phrases. Then it looks at pictures of the slides and fixes problems.</p></div>
+      <div class="card"><h3>6. Deliver</h3><p>Gives you the file plus a short note: what it assumed, any gaps to fill, and its sources.</p></div>
+    </div>
+  </section>
+
+  <section id="setup">
+    <h2>Set up (about 2 minutes)</h2>
+    <div class="grid g2">
+      <div>
+        <h3>What you need</h3>
+        <ul class="need">
+          <li>A personal Google account (not work or school), age 18 or over</li>
+          <li>A <b>Google AI Pro</b> or <b>Ultra</b> plan, because the skill runs in <b>Task</b> mode</li>
+          <li>Keep Activity turned on in Gemini, and Personal Intelligence switched on for tasks</li>
+          <li>The Gemini website or the Gemini Mac app to upload the skill (you can use it on your phone afterwards)</li>
+        </ul>
+        <p class="note">Task mode is not offered in the European Economic Area, the UK, Switzerland or Nigeria.</p>
+      </div>
+      <ol class="steps">
+        <li><b>Download the skill</b><span>Get <code>build-pptx-deck.zip</code> from the button above. Don't unzip it.</span></li>
+        <li><b>Open Skills in Gemini</b><span>At gemini.google.com, click <b>Customise</b> in the left menu, then the <b>Skills</b> tab.</span></li>
+        <li><b>Upload</b><span>Click <b>Create</b>, then <b>Upload</b>, and choose the zip file.</span></li>
+        <li><b>Confirm</b><span>Check the name says <code>build-pptx-deck</code> and click <b>Create</b>. Done.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="use">
+    <h2>Make a deck</h2>
+    <ol class="steps">
+      <li><b>Start a new chat and choose a strong model</b><span>Pick <b>4 Argon</b> in the model menu if you have it.</span></li>
+      <li><b>Switch to Task</b><span>Click <b>Task</b> under the message box. This matters: in normal Chat mode Gemini can't run the skill's tools, so you'd get text, HTML or Google Slides instead of a .pptx.</span></li>
+      <li><b>Ask for your deck</b><span>Just describe what you want. Gemini picks the skill on its own, or type <kbd>@</kbd> (or <kbd>/</kbd>) and choose <code>build-pptx-deck</code> to be sure.</span></li>
+      <li><b>Wait, then download</b><span>A 40 to 60 slide deck can take a while because Gemini researches, builds and checks it. You can leave the page; tasks keep running. Click the file to download it.</span></li>
+      <li><b>Ask for changes in the same chat</b><span>For example: "Make slide 12 a chart", "Use our brand colours", or "Add a section on pricing". It rebuilds only what you mention.</span></li>
+    </ol>
+  </section>
+
+  <section id="prompts">
+    <h2>Write better prompts</h2>
+    <p class="sub">A one-line request works. Adding a few details gets you a deck that fits your situation better. Think of it as briefing a colleague.</p>
+    <div class="formula"><span>Topic</span><span>Who it's for</span><span>What they should do or know after</span><span>Length</span><span>Style</span><span>Your data or files</span></div>
+
+    <div class="grid g2">
+      <div class="prompt"><span class="tag">Quick</span>Make me a market analysis deck on the credit card market across banks in India.</div>
+      <div class="prompt"><span class="tag">Better</span>Make a 40-slide market analysis of India's credit card market for our product leadership team. Compare the top 10 issuers on cards, spend and spend per card, and end with three opportunities for a new co-brand card. Serious, clean style.</div>
+      <div class="prompt"><span class="tag">Learning</span>Make a fun 30-slide learning deck that teaches college students how UPI payments work. Use one running story, quiz questions for the room, and simple language.</div>
+      <div class="prompt"><span class="tag">Pitch</span>Make a 15-slide investor pitch for my startup using the attached notes and numbers. Bold, modern style. Our colours are #0E9F6E and #111827.</div>
+      <div class="prompt"><span class="tag">From your data</span>Turn the attached spreadsheet into a quarterly business review for my manager. Charts for every key metric, and a one-slide summary at the start.</div>
+      <div class="prompt"><span class="tag">Runbook</span>Make a step-by-step walkthrough deck for new support staff on how to handle a refund request, with owners and time for each step.</div>
+    </div>
+
+    <div class="grid g3" style="margin-top:24px">
+      <div class="card"><h3>Add your files</h3><p>Attach PDFs, spreadsheets, notes or old decks to the same message. Gemini uses them first and searches the web only for what's missing. Connected apps like Google Drive and Gmail work too.</p></div>
+      <div class="card"><h3>Say the length</h3><p>Without a number it plans a thorough deck: about 40 to 80 slides for an analysis, 12 to 25 for a pitch. Say "short" or give a number if you want less.</p></div>
+      <div class="card"><h3>Set the look</h3><p>Name a mood ("calm and premium", "playful", "dark and techy") or give colours as hex codes. Without this, it picks a look that suits the topic.</p></div>
+      <div class="card"><h3>Point at what matters</h3><p>Name the companies, regions, time period or questions you care about. Specific asks get specific slides.</p></div>
+      <div class="card"><h3>Ask for the format you need</h3><p>"Speaker notes in Hindi", "no quiz slides", "appendix with full tables", "one slide per company". It follows instructions like these.</p></div>
+      <div class="card"><h3>Read the handoff note</h3><p>It lists what Gemini assumed, any gaps marked like <code>[2025 revenue]</code>, and its sources. Fill the gaps before you present.</p></div>
+    </div>
+  </section>
+
+  <section id="makes">
+    <h2>What it can make</h2>
+    <p class="sub">Every element is a normal PowerPoint object you can click and edit.</p>
+    <div class="grid g2">
+      <div class="card">
+        <h3>34 slide layouts</h3>
+        <p>Chosen per slide to match the content.</p>
+        <div class="chips"><span>Cover</span><span>Agenda</span><span>Section</span><span>Statement</span><span>Big number</span><span>KPI tiles</span><span>Cards</span><span>Comparison</span><span>Two column</span><span>Pros and cons</span><span>Before and after</span><span>Table</span><span>Scorecard</span><span>Heatmap</span><span>Bar list</span><span>Split bar</span><span>Timeline</span><span>Process</span><span>Funnel</span><span>2x2 matrix</span><span>Layers</span><span>Roadmap</span><span>Runbook steps</span><span>Code</span><span>Quote</span><span>Quiz question</span><span>Recap</span><span>Next steps</span><span>Sources</span><span>Closing</span><span>Free canvas</span></div>
+      </div>
+      <div class="card">
+        <h3>Native charts</h3>
+        <p>Real PowerPoint charts with editable data behind them.</p>
+        <div class="chips"><span>Column</span><span>Bar</span><span>Stacked</span><span>100% stacked</span><span>Line</span><span>Area</span><span>Pie</span><span>Doughnut</span><span>Scatter</span><span>Waterfall</span></div>
+      </div>
+      <div class="card">
+        <h3>Its own look every time</h3>
+        <p>Nine starting styles (warm editorial, boardroom navy, executive slate, minimal, classic serif, dark tech, playful, soft pastel, bold contrast), and it can make a custom one from your colours.</p>
+      </div>
+      <div class="card">
+        <h3>Built to be presented</h3>
+        <p>Speaker notes on every slide, a source line on data slides, 152 vector icons, quiz slides with answers, part recaps, and decks of 100+ slides.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="examples">
+    <h2>Examples</h2>
+    <p class="sub">The first tab shows the built-in layouts with sample data. The others are real decks Gemini made with this skill from one-line requests.</p>
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-panel="p-gallery">Layout gallery</button>
+      <button role="tab" aria-selected="false" data-panel="p-upi">Learning deck: How UPI works</button>
+      <button role="tab" aria-selected="false" data-panel="p-cards">Market analysis: credit cards</button>
+      <button role="tab" aria-selected="false" data-panel="p-qc">Benchmark: quick commerce</button>
+    </div>
+
+    <div class="panel" id="p-gallery">
+      <div class="shots">
+        <figure><a href="img/gallery-warm-06.jpg"><img loading="lazy" src="img/gallery-warm-06.jpg" alt="KPI tiles slide"></a><figcaption>KPI tiles with icons</figcaption></figure>
+        <figure><a href="img/gallery-warm-07.jpg"><img loading="lazy" src="img/gallery-warm-07.jpg" alt="Column chart with highlight"></a><figcaption>Native chart with a highlighted bar</figcaption></figure>
+        <figure><a href="img/gallery-warm-15.jpg"><img loading="lazy" src="img/gallery-warm-15.jpg" alt="Scorecard slide"></a><figcaption>Scorecard for benchmarks</figcaption></figure>
+        <figure><a href="img/gallery-warm-26.jpg"><img loading="lazy" src="img/gallery-warm-26.jpg" alt="Comparison slide"></a><figcaption>Comparison columns</figcaption></figure>
+        <figure><a href="img/gallery-warm-12.jpg"><img loading="lazy" src="img/gallery-warm-12.jpg" alt="Split bar slide"></a><figcaption>Where the money goes</figcaption></figure>
+        <figure><a href="img/gallery-warm-18.jpg"><img loading="lazy" src="img/gallery-warm-18.jpg" alt="Process slide"></a><figcaption>Process with icons</figcaption></figure>
+        <figure><a href="img/gallery-dark-07.jpg"><img loading="lazy" src="img/gallery-dark-07.jpg" alt="Dark style chart slide"></a><figcaption>Dark tech style</figcaption></figure>
+        <figure><a href="img/gallery-playful-29.jpg"><img loading="lazy" src="img/gallery-playful-29.jpg" alt="Playful quiz slide"></a><figcaption>Playful style, quiz slide</figcaption></figure>
+        <figure><a href="img/gallery-serif-17.jpg"><img loading="lazy" src="img/gallery-serif-17.jpg" alt="Classic serif timeline"></a><figcaption>Classic serif style, timeline</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="panel" id="p-upi" hidden>
+      <div class="shots">
+        <figure><a href="img/upi-01.jpg"><img loading="lazy" src="img/upi-01.jpg" alt="UPI deck cover"></a><figcaption>Cover</figcaption></figure>
+        <figure><a href="img/upi-06.jpg"><img loading="lazy" src="img/upi-06.jpg" alt="UPI deck quiz question"></a><figcaption>Question for the room</figcaption></figure>
+        <figure><a href="img/upi-09.jpg"><img loading="lazy" src="img/upi-09.jpg" alt="UPI deck timeline"></a><figcaption>Ten-year timeline</figcaption></figure>
+        <figure><a href="img/upi-31.jpg"><img loading="lazy" src="img/upi-31.jpg" alt="UPI deck step by step flow"></a><figcaption>Step-by-step payment flow</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="panel" id="p-cards" hidden>
+      <div class="shots">
+        <figure><a href="img/cards-01.jpg"><img loading="lazy" src="img/cards-01.jpg" alt="Credit card deck cover"></a><figcaption>Cover</figcaption></figure>
+        <figure><a href="img/cards-14.jpg"><img loading="lazy" src="img/cards-14.jpg" alt="Issuer concentration bars"></a><figcaption>Market share by bank</figcaption></figure>
+        <figure><a href="img/cards-20.jpg"><img loading="lazy" src="img/cards-20.jpg" alt="Issuer scorecard"></a><figcaption>Issuer scorecard</figcaption></figure>
+        <figure><a href="img/cards-36.jpg"><img loading="lazy" src="img/cards-36.jpg" alt="Timeline of benefit cuts"></a><figcaption>Timeline of reward cuts</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="panel" id="p-qc" hidden>
+      <div class="shots">
+        <figure><a href="img/qc-01.jpg"><img loading="lazy" src="img/qc-01.jpg" alt="Quick commerce deck cover"></a><figcaption>Cover</figcaption></figure>
+        <figure><a href="img/qc-06.jpg"><img loading="lazy" src="img/qc-06.jpg" alt="Platform scorecard"></a><figcaption>Six-platform scorecard</figcaption></figure>
+        <figure><a href="img/qc-17.jpg"><img loading="lazy" src="img/qc-17.jpg" alt="Company profile KPI tiles"></a><figcaption>Company profile</figcaption></figure>
+        <figure><a href="img/qc-34.jpg"><img loading="lazy" src="img/qc-34.jpg" alt="Unit economics waterfall"></a><figcaption>Per-order waterfall</figcaption></figure>
+      </div>
+    </div>
+
+    <p class="note">The example decks were made by Gemini from online sources in October 2026. Their figures have not been independently checked, so treat them as examples of design, not as data.</p>
+  </section>
+
+  <section id="limits">
+    <h2>Good to know</h2>
+    <div class="grid g2">
+      <div class="card"><h3>Check the numbers</h3><p>Gemini researches carefully and cites sources, but it can still pick a weak source or misread one. Verify any figure you'll present or decide on.</p></div>
+      <div class="card"><h3>Fonts work everywhere</h3><p>It uses fonts every device has (Arial, Georgia, Calibri and similar), so the deck looks the same on Windows, Mac, phones and Google Slides. Custom brand fonts only if you ask.</p></div>
+      <div class="card"><h3>No photos</h3><p>Visuals come from charts, tables, shapes and icons. It doesn't generate or insert images. Add your own photos in PowerPoint afterwards.</p></div>
+      <div class="card"><h3>Task mode uses your plan's limits</h3><p>Long decks use more of your Gemini allowance. If you hit the limit, try again later or ask for a shorter deck.</p></div>
+    </div>
+  </section>
+
+  <section id="help">
+    <h2>If something goes wrong</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>What you see</th><th>What to do</th></tr></thead>
+        <tbody>
+          <tr><td>You get text, HTML, a Canvas page or Google Slides, not a .pptx</td><td>Start a new chat, click <b>Task</b> before you send, and mention the skill with <kbd>@</kbd>.</td></tr>
+          <tr><td>"Skill name already exists" when uploading</td><td>You already have it. To update, open the skill, click <b>More</b>, then <b>Replace skill</b>.</td></tr>
+          <tr><td>"The uploaded file did not pass the security scan"</td><td>Use the zip from the official download, unchanged. If you edited the files, undo your changes and try again.</td></tr>
+          <tr><td>The handoff note says the render check was skipped</td><td>The deck still passed the automatic checks. Open it and skim the slides, or ask Gemini to try the render check again.</td></tr>
+          <tr><td>A slide looks crowded or a chart is wrong</td><td>Tell Gemini the slide number and what to change, in the same chat.</td></tr>
+          <tr><td>The skill isn't used at all</td><td>Check it's switched on in Customise, then Skills. Type <kbd>@</kbd> and pick it by name.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Deck Builder for Gemini (<code>build-pptx-deck</code>) by Sidharth Rath. Open source under the MIT licence. Icons from the Lucide project (ISC licence). Not affiliated with Google or Microsoft.</p>
+    <p><a href="https://github.com/siddharthrath1999/gemini-pptx-deck-skill">Source code and full guide on GitHub</a></p>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.tabs button').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    document.querySelectorAll('.tabs button').forEach(function (b) { b.setAttribute('aria-selected', 'false'); });
+    document.querySelectorAll('.panel').forEach(function (p) { p.hidden = true; });
+    btn.setAttribute('aria-selected', 'true');
+    document.getElementById(btn.dataset.panel).hidden = false;
+  });
+});
+</script>
+</body>
+</html>

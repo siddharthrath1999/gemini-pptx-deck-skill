@@ -1,0 +1,1256 @@
+{
+ "meta": {
+  "title": "Layout gallery",
+  "author": "Sample data",
+  "date": "2026",
+  "footer": "Layout gallery",
+  "page_numbers": true
+ },
+ "theme": {
+  "preset": "editorial-warm"
+ },
+ "slides": [
+  {
+   "layout": "cover",
+   "kicker": "Layout gallery · sample data",
+   "title": "Every layout in the deck kit",
+   "subtitle": "One slide per layout, filled with invented numbers for a fictional coffee subscription business.",
+   "tags": [
+    "34 layouts",
+    "Native charts",
+    "Editable shapes"
+   ],
+   "notes": "This deck exists so the layouts can be seen before choosing them. All figures are invented."
+  },
+  {
+   "layout": "agenda",
+   "kicker": "Agenda",
+   "title": "What this gallery covers",
+   "items": [
+    {
+     "title": "Openers and dividers",
+     "text": "Cover, agenda, section, statement, closing."
+    },
+    {
+     "title": "Numbers and data",
+     "text": "KPIs, charts, tables, bars, heatmaps, scorecards."
+    },
+    {
+     "title": "Structures",
+     "text": "Timelines, processes, funnels, matrices, roadmaps."
+    },
+    {
+     "title": "Text and teaching",
+     "text": "Cards, comparisons, questions, quotes, runbook steps."
+    }
+   ],
+   "notes": "Four groups. Next: the first divider."
+  },
+  {
+   "layout": "section",
+   "number": "1",
+   "title": "Openers and dividers",
+   "subtitle": "Slides that set up a part of the story.",
+   "notes": "Divider slides default to the dark tone."
+  },
+  {
+   "layout": "statement",
+   "kicker": "Statement",
+   "text": "Subscribers who brew within two days of delivery stay three times longer.",
+   "support": "Use a statement slide when one sentence deserves the whole room.",
+   "notes": "Statement slides default to the accent tone."
+  },
+  {
+   "layout": "big_number",
+   "kicker": "Big number",
+   "title": "Retention after month three is the number that decides the business",
+   "value": "68%",
+   "label": "of subscribers are still active after three months",
+   "text": "The category average is closer to half. The gap comes from the first two deliveries.",
+   "side": [
+    {
+     "value": "4.6",
+     "label": "bags per subscriber per quarter"
+    },
+    {
+     "value": "£31",
+     "label": "average monthly spend"
+    },
+    {
+     "value": "11 days",
+     "label": "median time to second order"
+    }
+   ],
+   "source": "Source: invented sample data",
+   "notes": "One number, its meaning, and up to four supporting figures."
+  },
+  {
+   "layout": "kpis",
+   "kicker": "KPIs",
+   "title": "Four numbers describe the quarter",
+   "items": [
+    {
+     "value": "42.1k",
+     "label": "Active subscribers",
+     "delta": "+9% QoQ",
+     "note": "Net of 3.2k cancellations.",
+     "icon": "users"
+    },
+    {
+     "value": "£3.9m",
+     "label": "Quarterly revenue",
+     "delta": "+12% QoQ",
+     "note": "Subscriptions are 83% of the total.",
+     "icon": "banknote"
+    },
+    {
+     "value": "61%",
+     "label": "Gross margin",
+     "delta": "+2 pts",
+     "note": "Freight costs fell after the carrier change.",
+     "icon": "percent"
+    },
+    {
+     "value": "£18",
+     "label": "Cost to acquire",
+     "delta": "-£3",
+     "note": "Referral share rose to 34%.",
+     "icon": "target"
+    }
+   ],
+   "takeaway": "Growth held while the cost of each new subscriber fell.",
+   "source": "Source: invented sample data",
+   "notes": "Two to five tiles. Deltas are optional."
+  },
+  {
+   "layout": "chart",
+   "kicker": "Chart · column with highlight",
+   "title": "Revenue passed £3.9m in the third quarter",
+   "chart_title": "Quarterly revenue, £m",
+   "chart": {
+    "type": "column",
+    "categories": [
+     "Q4 2025",
+     "Q1 2026",
+     "Q2 2026",
+     "Q3 2026"
+    ],
+    "series": [
+     {
+      "name": "Revenue",
+      "values": [
+       2.8,
+       3.1,
+       3.5,
+       3.9
+      ]
+     }
+    ],
+    "number_format": "0.0",
+    "highlight": "Q3 2026"
+   },
+   "insights": [
+    {
+     "title": "Three straight quarters of growth",
+     "text": "Each quarter added between £0.3m and £0.4m."
+    },
+    {
+     "title": "Subscriptions lead",
+     "text": "One-off orders stayed flat at about £0.65m."
+    }
+   ],
+   "source": "Source: invented sample data",
+   "notes": "A native chart with a side panel. Highlight greys out the other bars."
+  },
+  {
+   "layout": "chart",
+   "kicker": "Chart · line",
+   "title": "The referral channel overtook paid social in June",
+   "chart": {
+    "type": "line",
+    "categories": [
+     "Jan",
+     "Feb",
+     "Mar",
+     "Apr",
+     "May",
+     "Jun",
+     "Jul",
+     "Aug"
+    ],
+    "series": [
+     {
+      "name": "Referral",
+      "values": [
+       18,
+       20,
+       23,
+       26,
+       29,
+       33,
+       36,
+       38
+      ]
+     },
+     {
+      "name": "Paid social",
+      "values": [
+       34,
+       33,
+       33,
+       31,
+       30,
+       29,
+       27,
+       26
+      ]
+     },
+     {
+      "name": "Search",
+      "values": [
+       21,
+       22,
+       21,
+       22,
+       21,
+       20,
+       21,
+       20
+      ]
+     }
+    ],
+    "number_format": "0",
+    "labels": false
+   },
+   "callout": {
+    "value": "38%",
+    "label": "of new subscribers came by referral in August",
+    "text": "Up from 18% in January."
+   },
+   "source": "Source: invented sample data",
+   "notes": "Line chart with a callout card."
+  },
+  {
+   "layout": "charts",
+   "kicker": "Charts · pair",
+   "title": "Order mix and cost mix moved in opposite directions",
+   "charts": [
+    {
+     "title": "Orders by plan",
+     "subtitle": "Share of orders, Q3 2026",
+     "type": "doughnut",
+     "categories": [
+      "Monthly",
+      "Fortnightly",
+      "Weekly",
+      "One-off"
+     ],
+     "series": [
+      {
+       "name": "Orders",
+       "values": [
+        46,
+        27,
+        10,
+        17
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Cost per order",
+     "subtitle": "£ per order, stacked",
+     "type": "stacked_column",
+     "categories": [
+      "Q1",
+      "Q2",
+      "Q3"
+     ],
+     "series": [
+      {
+       "name": "Beans",
+       "values": [
+        5.1,
+        5.0,
+        4.9
+       ]
+      },
+      {
+       "name": "Freight",
+       "values": [
+        3.2,
+        2.9,
+        2.4
+       ]
+      },
+      {
+       "name": "Packing",
+       "values": [
+        1.1,
+        1.1,
+        1.0
+       ]
+      }
+     ],
+     "number_format": "0.0"
+    }
+   ],
+   "source": "Source: invented sample data",
+   "notes": "Two or three charts side by side."
+  },
+  {
+   "layout": "chart",
+   "kicker": "Chart · waterfall",
+   "title": "Freight savings explain most of the margin gain",
+   "chart": {
+    "type": "waterfall",
+    "categories": [
+     "Q2 margin",
+     "Freight",
+     "Bean prices",
+     "Packing",
+     "Discounts",
+     "Q3 margin"
+    ],
+    "series": [
+     {
+      "name": "Margin",
+      "values": [
+       59,
+       2.6,
+       -0.9,
+       0.4,
+       -0.1,
+       61
+      ]
+     }
+    ],
+    "totals": [
+     0,
+     5
+    ],
+    "number_format": "0.0",
+    "min": 56
+   },
+   "takeaway": "Without the carrier change, margin would have fallen by about half a point.",
+   "source": "Source: invented sample data",
+   "notes": "Waterfall: list deltas and mark the total bars."
+  },
+  {
+   "layout": "bar_list",
+   "kicker": "Bar list",
+   "title": "Ethiopia sells twice as much as any other origin",
+   "items": [
+    {
+     "label": "Ethiopia",
+     "value": 31
+    },
+    {
+     "label": "Colombia",
+     "value": 16
+    },
+    {
+     "label": "Guatemala",
+     "value": 13
+    },
+    {
+     "label": "Kenya",
+     "value": 12
+    },
+    {
+     "label": "Brazil",
+     "value": 11
+    },
+    {
+     "label": "Rwanda",
+     "value": 9
+    },
+    {
+     "label": "Other",
+     "value": 8
+    }
+   ],
+   "unit": "%",
+   "highlight": "Ethiopia",
+   "insights": [
+    "Share of bags shipped, Q3 2026.",
+    "The top three origins make up 60% of volume.",
+    "Rwanda is the fastest grower from a small base."
+   ],
+   "source": "Source: invented sample data",
+   "notes": "Ranked bars drawn as shapes, for up to ten rows."
+  },
+  {
+   "layout": "split_bar",
+   "kicker": "Split bar",
+   "title": "Of a £12 bag, the roaster keeps about £2",
+   "bars": [
+    {
+     "label": "Where a £12 bag goes",
+     "segments": [
+      {
+       "label": "Beans £4.90",
+       "value": 4.9
+      },
+      {
+       "label": "Freight £2.40",
+       "value": 2.4
+      },
+      {
+       "label": "Packing £1.00",
+       "value": 1.0
+      },
+      {
+       "label": "Marketing £1.60",
+       "value": 1.6
+      },
+      {
+       "label": "Margin £2.10",
+       "value": 2.1
+      }
+     ]
+    },
+    {
+     "label": "The same bag in a supermarket",
+     "segments": [
+      {
+       "label": "Beans 28%",
+       "value": 28
+      },
+      {
+       "label": "Retailer 35%",
+       "value": 35
+      },
+      {
+       "label": "Distribution 17%",
+       "value": 17
+      },
+      {
+       "label": "Brand 20%",
+       "value": 20
+      }
+     ]
+    }
+   ],
+   "highlight": 4,
+   "takeaway": "Selling direct replaces the retailer's cut with freight and marketing.",
+   "source": "Source: invented sample data",
+   "notes": "One to three proportional bars."
+  },
+  {
+   "layout": "table",
+   "kicker": "Table",
+   "title": "The fortnightly plan earns the most per subscriber",
+   "columns": [
+    "Plan",
+    "Subscribers",
+    "Monthly price",
+    "Churn",
+    "Lifetime value"
+   ],
+   "rows": [
+    [
+     "Weekly",
+     "4,100",
+     "£44",
+     "9.1%",
+     "£310"
+    ],
+    [
+     "Fortnightly",
+     "11,300",
+     "£26",
+     "4.2%",
+     "£402"
+    ],
+    [
+     "Monthly",
+     "19,600",
+     "£14",
+     "3.8%",
+     "£236"
+    ],
+    [
+     "Gift",
+     "7,100",
+     "£18",
+     "n/a",
+     "£54"
+    ]
+   ],
+   "highlight_row": 1,
+   "takeaway": "Weekly subscribers pay the most but leave fastest.",
+   "source": "Source: invented sample data",
+   "notes": "A native table. One row can be highlighted."
+  },
+  {
+   "layout": "heatmap",
+   "kicker": "Heatmap",
+   "title": "Churn clusters in the second month across every plan",
+   "columns": [
+    "Month 1",
+    "Month 2",
+    "Month 3",
+    "Month 4",
+    "Month 5",
+    "Month 6"
+   ],
+   "rows": [
+    {
+     "name": "Weekly",
+     "values": [
+      6.0,
+      12.4,
+      9.8,
+      8.1,
+      7.7,
+      7.2
+     ]
+    },
+    {
+     "name": "Fortnightly",
+     "values": [
+      3.1,
+      7.9,
+      4.4,
+      3.6,
+      3.2,
+      3.0
+     ]
+    },
+    {
+     "name": "Monthly",
+     "values": [
+      2.2,
+      6.8,
+      4.0,
+      3.1,
+      2.9,
+      2.8
+     ]
+    }
+   ],
+   "format": "{:.1f}%",
+   "source": "Source: invented sample data",
+   "notes": "Values shaded by size."
+  },
+  {
+   "layout": "scorecard",
+   "kicker": "Scorecard",
+   "title": "No rival matches us on freshness, but two beat us on price",
+   "columns": [
+    "Freshness",
+    "Price",
+    "Range",
+    "Delivery",
+    "App"
+   ],
+   "rows": [
+    {
+     "name": "Northwind",
+     "scores": [
+      5,
+      3,
+      4,
+      4,
+      3
+     ],
+     "note": "Roasted to order"
+    },
+    {
+     "name": "Rival A",
+     "scores": [
+      3,
+      5,
+      3,
+      4,
+      4
+     ],
+     "note": "Cheapest per bag"
+    },
+    {
+     "name": "Rival B",
+     "scores": [
+      4,
+      4,
+      5,
+      3,
+      2
+     ],
+     "note": "Widest catalogue"
+    },
+    {
+     "name": "Rival C",
+     "scores": [
+      2,
+      4,
+      2,
+      5,
+      5
+     ],
+     "note": "Next-day delivery"
+    }
+   ],
+   "highlight": "Northwind",
+   "source": "Source: invented sample data, scored 1 to 5",
+   "notes": "Dot scores for benchmarking."
+  },
+  {
+   "layout": "section",
+   "number": "2",
+   "title": "Structures",
+   "subtitle": "Layouts for time, sequence and position.",
+   "tone": "accent2",
+   "notes": "Dividers can use any tone."
+  },
+  {
+   "layout": "timeline",
+   "kicker": "Timeline",
+   "title": "Five years from a market stall to 42,000 subscribers",
+   "items": [
+    {
+     "date": "2021",
+     "title": "Market stall",
+     "text": "Two origins, sold by the cup and the bag."
+    },
+    {
+     "date": "2022",
+     "title": "First roaster",
+     "text": "A 15 kg machine in a shared unit."
+    },
+    {
+     "date": "2023",
+     "title": "Subscriptions",
+     "text": "Monthly plan launches with 300 members."
+    },
+    {
+     "date": "2025",
+     "title": "Own roastery",
+     "text": "Capacity for 60,000 bags a month."
+    },
+    {
+     "date": "2026",
+     "title": "42,000 members",
+     "text": "Three plans and a gift range."
+    }
+   ],
+   "source": "Source: invented sample data",
+   "notes": "Up to seven milestones."
+  },
+  {
+   "layout": "process",
+   "kicker": "Process",
+   "title": "An order moves from roast to doorstep in four steps",
+   "steps": [
+    {
+     "title": "Roast",
+     "text": "Beans are roasted the morning after the order closes.",
+     "icon": "flame"
+    },
+    {
+     "title": "Rest",
+     "text": "Bags rest for 24 hours so the flavour settles.",
+     "icon": "hourglass"
+    },
+    {
+     "title": "Pack",
+     "text": "Orders are packed by plan and postcode.",
+     "icon": "package"
+    },
+    {
+     "title": "Deliver",
+     "text": "A tracked parcel arrives within two days.",
+     "icon": "truck"
+    }
+   ],
+   "takeaway": "The whole cycle takes four days, against three weeks for supermarket coffee.",
+   "notes": "Three to six steps."
+  },
+  {
+   "layout": "funnel",
+   "kicker": "Funnel",
+   "title": "Most trial visitors drop out before choosing a plan",
+   "stages": [
+    {
+     "label": "Visited site",
+     "value": 100000
+    },
+    {
+     "label": "Started quiz",
+     "value": 41000
+    },
+    {
+     "label": "Chose a plan",
+     "value": 12500
+    },
+    {
+     "label": "Paid",
+     "value": 9800
+    },
+    {
+     "label": "Second order",
+     "value": 7400
+    }
+   ],
+   "takeaway": "The quiz-to-plan step loses seven in ten people.",
+   "source": "Source: invented sample data",
+   "notes": "Conversion notes are computed when not given."
+  },
+  {
+   "layout": "matrix",
+   "kicker": "Matrix",
+   "title": "Gift buyers are the cheapest group to win and the hardest to keep",
+   "x_axis": "Cost to acquire",
+   "y_axis": "Lifetime value",
+   "quadrants": [
+    {
+     "title": "Referred regulars",
+     "text": "High value, low cost. Protect and grow."
+    },
+    {
+     "title": "Paid-social regulars",
+     "text": "High value, high cost. Improve targeting."
+    },
+    {
+     "title": "Gift recipients",
+     "text": "Low value, low cost. Convert to a plan."
+    },
+    {
+     "title": "Discount hunters",
+     "text": "Low value, high cost. Stop bidding."
+    }
+   ],
+   "highlight": 0,
+   "notes": "Quadrants run top-left, top-right, bottom-left, bottom-right."
+  },
+  {
+   "layout": "layers",
+   "kicker": "Layers",
+   "title": "Four layers sit between the farm and the cup",
+   "layers": [
+    {
+     "title": "Customer app",
+     "text": "Plans, pauses, taste quiz and referrals."
+    },
+    {
+     "title": "Fulfilment",
+     "text": "Roast scheduling, packing lines and carriers."
+    },
+    {
+     "title": "Sourcing",
+     "text": "Direct contracts with eleven cooperatives."
+    },
+    {
+     "title": "Data",
+     "text": "Taste profiles and demand forecasts feed every layer above."
+    }
+   ],
+   "notes": "Bands from top to bottom. Set pyramid to true to taper them."
+  },
+  {
+   "layout": "roadmap",
+   "kicker": "Roadmap",
+   "title": "Next year: a new plan first, new markets second",
+   "periods": [
+    "Q1",
+    "Q2",
+    "Q3",
+    "Q4"
+   ],
+   "lanes": [
+    {
+     "name": "Product",
+     "items": [
+      {
+       "label": "Decaf plan",
+       "start": 0,
+       "end": 1
+      },
+      {
+       "label": "Taste quiz v2",
+       "start": 1,
+       "end": 3
+      }
+     ]
+    },
+    {
+     "name": "Markets",
+     "items": [
+      {
+       "label": "Ireland pilot",
+       "start": 1,
+       "end": 2
+      },
+      {
+       "label": "Netherlands launch",
+       "start": 2,
+       "end": 4
+      }
+     ]
+    },
+    {
+     "name": "Operations",
+     "items": [
+      {
+       "label": "Second packing line",
+       "start": 0,
+       "end": 2
+      },
+      {
+       "label": "Carrier tender",
+       "start": 3,
+       "end": 4
+      }
+     ]
+    }
+   ],
+   "notes": "Bars are placed by period index."
+  },
+  {
+   "layout": "section",
+   "number": "3",
+   "title": "Text and teaching",
+   "subtitle": "Layouts for explaining, comparing and involving the room.",
+   "notes": "Third divider."
+  },
+  {
+   "layout": "cards",
+   "kicker": "Cards",
+   "title": "Three things bring a lapsed subscriber back",
+   "items": [
+    {
+     "title": "A pause button",
+     "text": "Two in five cancellations are really a request to skip a month.",
+     "icon": "timer",
+     "stat": "41%"
+    },
+    {
+     "title": "A new origin",
+     "text": "Limited releases reopen the app for people who had stopped looking.",
+     "icon": "sparkles",
+     "stat": "2.3x"
+    },
+    {
+     "title": "A smaller bag",
+     "text": "Lighter drinkers leave because coffee piles up, not because of price.",
+     "icon": "package",
+     "stat": "150 g"
+    }
+   ],
+   "source": "Source: invented sample data",
+   "notes": "Two to eight cards. Icons, stats and tags are optional."
+  },
+  {
+   "layout": "cards",
+   "kicker": "Cards · six, numbered",
+   "title": "Six checks every new origin passes before it ships",
+   "numbered": true,
+   "items": [
+    {
+     "title": "Cupping score",
+     "text": "At least 84 points from two tasters."
+    },
+    {
+     "title": "Farm visit",
+     "text": "A buyer has met the cooperative."
+    },
+    {
+     "title": "Price floor",
+     "text": "Paid above the fair trade minimum."
+    },
+    {
+     "title": "Moisture",
+     "text": "Between 10% and 12% on arrival."
+    },
+    {
+     "title": "Roast trials",
+     "text": "Three profiles tested and scored."
+    },
+    {
+     "title": "Shelf test",
+     "text": "Flavour holds for six weeks sealed."
+    }
+   ],
+   "notes": "Six cards wrap to two rows."
+  },
+  {
+   "layout": "comparison",
+   "kicker": "Comparison",
+   "title": "Each plan suits a different kind of drinker",
+   "columns": [
+    {
+     "title": "Monthly",
+     "icon": "calendar",
+     "items": [
+      {
+       "title": "One bag a month",
+       "text": "For one cup a day",
+       "icon": "package"
+      },
+      {
+       "title": "Skip any month",
+       "text": "No fee",
+       "icon": "refresh-cw"
+      },
+      {
+       "title": "Standard range",
+       "text": "Six origins",
+       "icon": "globe"
+      }
+     ],
+     "stat": "£14",
+     "stat_label": "per month"
+    },
+    {
+     "title": "Fortnightly",
+     "icon": "repeat",
+     "highlight": true,
+     "items": [
+      {
+       "title": "Two bags a month",
+       "text": "For a household",
+       "icon": "package"
+      },
+      {
+       "title": "Swap origins",
+       "text": "Any time",
+       "icon": "shuffle"
+      },
+      {
+       "title": "Limited releases",
+       "text": "First access",
+       "icon": "star"
+      }
+     ],
+     "stat": "£26",
+     "stat_label": "per month"
+    },
+    {
+     "title": "Weekly",
+     "icon": "zap",
+     "items": [
+      {
+       "title": "Four bags a month",
+       "text": "For offices",
+       "icon": "package"
+      },
+      {
+       "title": "Grind to order",
+       "text": "Three settings",
+       "icon": "settings"
+      },
+      {
+       "title": "Account manager",
+       "text": "Named contact",
+       "icon": "user"
+      }
+     ],
+     "stat": "£44",
+     "stat_label": "per month"
+    }
+   ],
+   "source": "Source: invented sample data",
+   "notes": "Columns with icon rows and a bottom stat."
+  },
+  {
+   "layout": "two_column",
+   "kicker": "Two column",
+   "title": "The roastery and the app solve different halves of the problem",
+   "left": {
+    "title": "What the roastery controls",
+    "text": "Freshness and consistency come from the physical operation.",
+    "items": [
+     "Roast date within four days of delivery",
+     "The same profile for every batch of an origin",
+     "Packing errors below one in two thousand"
+    ]
+   },
+   "right": {
+    "title": "What the app controls",
+    "text": "Fit and habit come from the software.",
+    "items": [
+     "A taste quiz that picks the first bag",
+     "Pause, skip and swap without contacting support",
+     "Reminders timed to when a bag should run out"
+    ]
+   },
+   "notes": "Plain columns, or cards when cards is true."
+  },
+  {
+   "layout": "bullets",
+   "kicker": "Bullets",
+   "title": "Four findings from the cancellation survey",
+   "items": [
+    "Too much coffee arriving was the top reason, ahead of price.",
+    "One in four people who cancelled did not know they could pause.",
+    "Gift recipients rarely convert without a prompt in the last week.",
+    "People who rate their first bag stay twice as long."
+   ],
+   "aside": {
+    "value": "1,840",
+    "title": "survey responses",
+    "text": "Collected from cancellation flows between April and September."
+   },
+   "source": "Source: invented sample data",
+   "notes": "Use bullet slides sparingly."
+  },
+  {
+   "layout": "question",
+   "kicker": "Hands up",
+   "title": "How many days after roasting does coffee taste best?",
+   "context": "Think about the bag in your kitchen, not the one in the shop.",
+   "options": [
+    "The same day",
+    "Two to ten days",
+    "About a month",
+    "It makes no difference"
+   ],
+   "icon": "circle-help",
+   "notes": "Ask for hands. The next slide gives the answer."
+  },
+  {
+   "layout": "pros_cons",
+   "kicker": "Pros and cons",
+   "title": "Opening a second roastery in the Netherlands",
+   "left": {
+    "title": "For",
+    "items": [
+     "Two-day delivery across five more countries",
+     "Avoids customs delays on every parcel",
+     "Spare capacity for the weekly plan"
+    ]
+   },
+   "right": {
+    "title": "Against",
+    "items": [
+     "About £2.4m before the first bag ships",
+     "A second team to hire and train",
+     "Splits volume while the UK site is at 70%"
+    ]
+   },
+   "notes": "Two cards with tick and cross lists."
+  },
+  {
+   "layout": "before_after",
+   "kicker": "Before and after",
+   "title": "The pause button turned cancellations into skipped months",
+   "before": {
+    "title": "Cancel was the only exit",
+    "items": [
+     "3,900 cancellations a quarter",
+     "Win-back emails recovered 6%",
+     "Support handled every request"
+    ]
+   },
+   "after": {
+    "title": "Pause sits beside cancel",
+    "items": [
+     "2,300 cancellations a quarter",
+     "1,700 pauses, of which 80% resume",
+     "No support contact needed"
+    ]
+   },
+   "source": "Source: invented sample data",
+   "notes": "The after card is emphasised."
+  },
+  {
+   "layout": "quote",
+   "kicker": "Quote",
+   "quote": "I stopped buying coffee at the supermarket the week the second bag arrived.",
+   "by": "Subscriber interview",
+   "role": "Fortnightly plan, joined 2025",
+   "tone": "alt",
+   "notes": "Only quote real people with real words. This one is invented for the gallery."
+  },
+  {
+   "layout": "steps",
+   "kicker": "Runbook steps",
+   "title": "Switching the roast schedule when a shipment is late",
+   "steps": [
+    {
+     "title": "Confirm the delay with the importer",
+     "text": "Get the new arrival date in writing.",
+     "owner": "Sourcing",
+     "time": "30 min"
+    },
+    {
+     "title": "Check remaining stock of the origin",
+     "code": "stock check --origin ETH-GUJI --unit kg",
+     "owner": "Roastery",
+     "time": "10 min"
+    },
+    {
+     "title": "Substitute in the planning tool",
+     "text": "Pick the closest taste profile, not the closest price.",
+     "owner": "Planning",
+     "time": "20 min"
+    },
+    {
+     "title": "Tell affected subscribers",
+     "text": "Send the substitution email before the roast, not after.",
+     "owner": "Support",
+     "time": "Same day"
+    }
+   ],
+   "notes": "For walkthroughs and runbooks. Continue on a second slide with start set to 5."
+  },
+  {
+   "layout": "code",
+   "kicker": "Code",
+   "title": "The demand forecast is a short scheduled query",
+   "caption": "forecast.sql",
+   "code": "SELECT origin,\n       date_trunc('week', ship_date) AS week,\n       sum(bags)                     AS bags,\n       avg(sum(bags)) OVER (\n         PARTITION BY origin\n         ORDER BY date_trunc('week', ship_date)\n         ROWS BETWEEN 3 PRECEDING AND CURRENT ROW\n       )                             AS four_week_avg\nFROM   shipments\nGROUP  BY 1, 2\nORDER  BY 1, 2;",
+   "insights": [
+    {
+     "title": "Runs every Monday",
+     "text": "Feeds the green bean order for the following month."
+    },
+    {
+     "title": "Four-week average",
+     "text": "Smooths out gift spikes around holidays."
+    }
+   ],
+   "tone": "light",
+   "notes": "Monospace panel with optional side notes."
+  },
+  {
+   "layout": "custom",
+   "kicker": "Custom",
+   "title": "A free canvas for anything the other layouts do not cover",
+   "elements": [
+    {
+     "type": "card",
+     "x": 0.75,
+     "y": 2.2,
+     "w": 3.6,
+     "h": 2.0,
+     "title": "Cards",
+     "text": "Placed by position in inches."
+    },
+    {
+     "type": "icon_badge",
+     "name": "rocket",
+     "x": 4.9,
+     "y": 2.2,
+     "w": 1.1,
+     "fill": "accent"
+    },
+    {
+     "type": "stat",
+     "x": 6.4,
+     "y": 2.15,
+     "w": 3,
+     "value": "7.5 in",
+     "label": "slide height"
+    },
+    {
+     "type": "rect",
+     "x": 0.75,
+     "y": 4.6,
+     "w": 11.83,
+     "h": 0.5,
+     "fill": "accent2",
+     "radius": 0.1
+    },
+    {
+     "type": "text",
+     "x": 0.95,
+     "y": 4.6,
+     "w": 11.4,
+     "h": 0.5,
+     "text": "Shapes, text, lines, icons, pills, charts and tables can be combined freely.",
+     "size": 14,
+     "bold": true,
+     "valign": "m",
+     "on": "accent2"
+    },
+    {
+     "type": "line",
+     "x": 0.75,
+     "y": 5.6,
+     "x2": 12.58,
+     "y2": 5.6,
+     "color": "ink",
+     "arrow": true
+    },
+    {
+     "type": "text",
+     "x": 0.75,
+     "y": 5.75,
+     "w": 8,
+     "text": "Lint still checks bounds, overflow and contrast.",
+     "size": 13,
+     "color": "muted"
+    }
+   ],
+   "notes": "Use custom when the content has a shape no layout fits."
+  },
+  {
+   "layout": "recap",
+   "kicker": "Recap",
+   "title": "Three things to remember",
+   "items": [
+    {
+     "title": "Freshness is the product",
+     "text": "Four days from roast to doorstep is the whole advantage."
+    },
+    {
+     "title": "Month two decides retention",
+     "text": "Churn peaks there on every plan."
+    },
+    {
+     "title": "Pause beats win-back",
+     "text": "Keeping a subscriber costs less than recovering one."
+    }
+   ],
+   "notes": "End each part with a recap."
+  },
+  {
+   "layout": "next_steps",
+   "kicker": "Next steps",
+   "title": "Four actions before the next review",
+   "items": [
+    {
+     "action": "Ship the smaller 150 g bag option",
+     "owner": "Product",
+     "when": "November"
+    },
+    {
+     "action": "Test a month-two check-in email",
+     "owner": "Lifecycle",
+     "when": "October"
+    },
+    {
+     "action": "Tender the Ireland carrier contract",
+     "owner": "Operations",
+     "when": "December"
+    },
+    {
+     "action": "Decide on the Netherlands site",
+     "owner": "Leadership",
+     "when": "Q1 2027"
+    }
+   ],
+   "notes": "Actions with owner and date."
+  },
+  {
+   "layout": "sources",
+   "kicker": "Appendix",
+   "title": "Sources and notes",
+   "items": [
+    "All figures in this gallery are invented sample data.",
+    "Icons are from Lucide, used under the ISC licence.",
+    "Charts and tables are native PowerPoint objects and can be edited directly.",
+    "Fonts are limited to those present on Windows, macOS, iOS and Android."
+   ],
+   "notes": "Sources can run to two columns."
+  },
+  {
+   "layout": "closing",
+   "title": "Questions",
+   "subtitle": "Every slide in this file is editable in PowerPoint, Keynote and Google Slides.",
+   "contact": "Layout gallery · sample data",
+   "notes": "Closing slide."
+  }
+ ]
+}
