@@ -1,0 +1,58 @@
+---
+import Icon from "./Icon.astro";
+import Github from "./Github.astro";
+import { GITHUB, ZIP_URL } from "../data/content";
+
+interface Props { page: "home" | "gallery" }
+const { page } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const home = `${base}index.html`;
+const link = (h: string) => (page === "home" ? h : `${home}${h}`);
+const cols = [
+  { title: "Product", links: [["#why", "Why PPTX Native"], ["#how", "How it works"], ["#audiences", "Audiences & edits"], ["#layouts", "Layouts"], ["#examples", "Examples"]].map(([h, t]) => [link(h), t]) },
+  { title: "Get started", links: [[link("#setup"), "Gemini app"], [link("#setup"), "Antigravity", "agy"], [ZIP_URL, "Download the zip"], [`${base}prompts.html`, "Prompt gallery"], [link("#prompts"), "Prompt guide"]] },
+  { title: "Project", links: [[GITHUB, "GitHub"], [`${GITHUB}/releases`, "Release notes"], [`${GITHUB}/issues`, "Report an issue"], [`${GITHUB}/blob/main/LICENSE`, "MIT licence"]] },
+];
+---
+<footer class="foot">
+  <div class="wrap">
+    <div class="grid">
+      <div class="brand">
+        <a class="logo" href={page === "home" ? "#main" : home} aria-label="PPTX Native, home"><img src={`${base}brand/wordmark-cream.svg`} alt="PPTX Native" width="104" height="44" loading="lazy" /></a>
+        <p>A free, open-source skill that turns a one-line request into a real, editable PowerPoint deck, or edits the one you have.</p>
+        <a class="btn sm" href={GITHUB}><Github />View source</a>
+      </div>
+      {cols.map((c) => (
+        <div>
+          <h2>{c.title}</h2>
+          <nav aria-label={c.title}>{c.links.map(([h, t, agy]) => <a href={h} data-agy={agy ? "1" : undefined}>{t}</a>)}</nav>
+        </div>
+      ))}
+    </div>
+    <div class="legal">
+      <p>Made by Sidharth Rath. Independent project, not affiliated with or endorsed by Google or Microsoft. Gemini and Google Antigravity are trademarks of Google LLC. PowerPoint and its logo are trademarks of Microsoft. Icons: Material Symbols (Apache 2.0) on this site, Lucide (ISC) in the skill.</p>
+      <a class="textlink" href={page === "home" ? "#main" : home}>Back to top<Icon name="arrow_upward" /></a>
+    </div>
+    <div class="big" aria-hidden="true"><img src={`${base}brand/wordmark-outline.svg`} alt="" loading="lazy" width="1363" height="575" /></div>
+  </div>
+</footer>
+
+<style>
+  .foot { border-top: 1px solid var(--line); padding: 64px 0 32px; color: var(--muted); font-size: 14px; overflow: hidden; }
+  .grid { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 32px; }
+  h2 { margin: 6px 0 14px; font: 500 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
+  nav a { display: block; padding: 5px 0; color: var(--muted); transition: color .2s; }
+  nav a:hover { color: var(--ink); }
+  .logo { display: inline-flex; }
+  .logo img { height: 44px; width: auto; }
+  .brand p { margin: 18px 0 20px; max-width: 34ch; line-height: 1.6; }
+  .legal { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 12.5px; color: var(--faint); }
+  .legal p { margin: 0; max-width: 80ch; line-height: 1.6; }
+  .big { margin-top: 40px; margin-bottom: -32px; height: clamp(90px, 13vw, 190px); overflow: hidden; pointer-events: none; user-select: none; mask-image: linear-gradient(#000 30%, transparent); -webkit-mask-image: linear-gradient(#000 30%, transparent); }
+  .big img { width: 100%; opacity: .16; }
+  @media (max-width: 980px) {
+    .grid { grid-template-columns: 1fr 1fr; }
+    .brand { grid-column: span 2; }
+  }
+  @media (max-width: 640px) { .grid { gap: 24px; } }
+</style>

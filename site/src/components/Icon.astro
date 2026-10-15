@@ -1,0 +1,18 @@
+---
+// Inline Material Symbols (rounded) icon, rendered at build time. No icon font is shipped.
+// Usage: <Icon name="download" />  ·  <Icon name="check_circle" fill />
+import icons from "@iconify-json/material-symbols/icons.json";
+
+interface Props { name: string; fill?: boolean; class?: string; size?: number; label?: string }
+const { name, fill = false, class: cls = "", size, label } = Astro.props;
+
+type Set = { icons: Record<string, { body: string; width?: number; height?: number }>; aliases?: Record<string, { parent: string }>; width?: number; height?: number };
+const set = icons as unknown as Set;
+const get = (n: string) => set.icons[n] ?? (set.aliases?.[n] ? set.icons[set.aliases[n].parent] : undefined);
+const base = name.replace(/_/g, "-");
+const order = fill ? [`${base}-rounded`, base, `${base}-outline-rounded`] : [`${base}-outline-rounded`, `${base}-rounded`, `${base}-outline`, base];
+const found = order.map(get).find(Boolean);
+if (!found) throw new Error(`Unknown icon: ${name}`);
+const w = found.width ?? set.width ?? 24, h = found.height ?? set.height ?? 24;
+---
+<svg class={`i ${cls}`} viewBox={`0 0 ${w} ${h}`} width={size} height={size} aria-hidden={label ? undefined : "true"} role={label ? "img" : undefined} aria-label={label} focusable="false" set:html={found.body} />

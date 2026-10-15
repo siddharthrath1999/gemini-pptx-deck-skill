@@ -1,0 +1,213 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import { img } from "../lib/images";
+import { PROMPTS, PROMPT_CATS } from "../data/content";
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+// [parts] become editable fields
+const fields = (t: string) => esc(t).replace(/\[([^\]]+)\]/g, (_m, v) => `<span class="f" contenteditable="plaintext-only" spellcheck="false" role="textbox" aria-label="Edit: ${v}">${v}</span>`);
+const catOf = (k: string) => PROMPT_CATS.find((c) => c.key === k)!;
+const count = (k: string) => (k === "all" ? PROMPTS.length : PROMPTS.filter((p) => p.cat === k).length);
+---
+<Base page="gallery" title="Prompt gallery · PPTX Native" description="Ready-made prompts for PPTX Native: strategy decks, learning decks, product and tech decks, and edits to decks you already have. Fill in your details and send them to Gemini.">
+  <section class="hero">
+    <div class="glow" aria-hidden="true"></div>
+    <div class="wrap grid">
+      <div class="copy">
+        <span class="eyebrow">{PROMPTS.length} prompts · 4 use cases</span>
+        <h1>Prompt gallery</h1>
+        <p class="lead">Prompts that already make good decks. Each one names the audience, the decision and the must-haves, and leaves the design to the skill.</p>
+      </div>
+      <ol class="steps" aria-label="How to use a prompt">
+        <li><span class="n">1</span><div><b>Change the <span class="demo-f">underlined</span> parts</b><span>Your topic, audience, length and files.</span></div></li>
+        <li><span class="n">2</span><div><b>Copy and open Gemini</b><span>Start a new chat and pick Task under the box.</span></div></li>
+        <li><span class="n">3</span><div><b>Paste, attach your files, send</b><span>Ask for changes in the same chat afterwards.</span></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="sentinel" id="barSentinel" aria-hidden="true"></div>
+  <div class="bar" id="gBar">
+    <div class="wrap bar-in">
+      <div class="tabs" role="tablist" aria-label="Filter prompts" id="gTabs">
+        {PROMPT_CATS.map((c, i) => <button type="button" role="tab" aria-selected={i === 0 ? "true" : "false"} aria-controls="gGrid" data-cat={c.key}><Icon name={c.icon} />{c.label}<span class="count">{count(c.key)}</span></button>)}
+      </div>
+      <div class="tools">
+        <label class="search"><Icon name="search" /><span class="sr">Search prompts</span><input id="gSearch" type="search" placeholder="Search prompts" autocomplete="off" /></label>
+        <button type="button" class="toggle" id="gFiles" aria-pressed="false"><span class="sw" aria-hidden="true"><i></i></span>Add "use my attached files first"</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="list" aria-label="Prompts">
+    <div class="wrap">
+      <ul class="cards" id="gGrid">
+        {PROMPTS.map((p) => {
+          const c = catOf(p.cat);
+          return (
+            <li class="card" data-cat={p.cat} data-search={`${p.title} ${p.text} ${c.label}`.toLowerCase()}>
+              <div class="prev"><Image src={img(p.img)} alt={`Example slide for ${p.title.toLowerCase()}`} widths={[420, 840]} sizes="(max-width: 640px) 92vw, (max-width: 1100px) 46vw, 380px" style={p.pos ? `object-position:center ${p.pos}` : undefined} /></div>
+              <div class="body">
+                <div class="head"><span class="cat"><Icon name={c.icon} />{c.label}</span><h2>{p.title}</h2></div>
+                <p class="text"><span class="at">@pptx-native</span> <span class="prompt" set:html={fields(p.text)} /></p>
+                <p class="why"><Icon name="lightbulb" />{p.why}</p>
+                <div class="act">
+                  <button type="button" class="btn sm" data-act="copy"><span class="when-idle"><Icon name="content_copy" /></span><span class="when-copied"><Icon name="check" /></span><span class="when-idle">Copy</span><span class="when-copied">Copied</span></button>
+                  <button type="button" class="btn sm light" data-act="open"><img src={`${base}logos/gemini-2025.svg`} alt="" width="16" height="16" />Copy &amp; open Gemini</button>
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+      <div class="empty" id="gEmpty" hidden>
+        <Icon name="search_off" />
+        <p>No prompts match. Try another word, or <button type="button" id="gReset">show all prompts</button>.</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { $, $$, copyText, toast } from "../scripts/util";
+  const grid = $("#gGrid")!, cards = $$("li.card", grid), search = $<HTMLInputElement>("#gSearch")!;
+  const tabs = $$<HTMLButtonElement>("#gTabs [role=tab]"), files = $("#gFiles")!, empty = $("#gEmpty")!;
+  let cat = "all";
+  let addFiles = false;
+  try { addFiles = localStorage.getItem("pn-files") === "1"; } catch { /* private mode */ }
+  files.setAttribute("aria-pressed", String(addFiles));
+
+  function apply() {
+    const q = search.value.trim().toLowerCase();
+    let shown = 0;
+    tabs.forEach((t) => t.setAttribute("aria-selected", String(t.dataset.cat === cat)));
+    cards.forEach((c) => {
+      const ok = (cat === "all" || c.dataset.cat === cat) && (!q || c.dataset.search!.includes(q));
+      c.hidden = !ok; if (ok) shown++;
+    });
+    empty.hidden = shown > 0;
+  }
+  tabs.forEach((t) => t.addEventListener("click", () => { cat = t.dataset.cat!; apply(); }));
+  search.addEventListener("input", apply);
+  $("#gReset")!.addEventListener("click", () => { search.value = ""; cat = "all"; apply(); search.focus(); });
+  files.addEventListener("click", () => {
+    addFiles = !addFiles;
+    files.setAttribute("aria-pressed", String(addFiles));
+    try { localStorage.setItem("pn-files", addFiles ? "1" : "0"); } catch { /* ignore */ }
+    toast(addFiles ? "Copied prompts will ask Gemini to use your files first" : "Turned off");
+  });
+
+  const promptOf = (card: HTMLElement) => {
+    let t = `@pptx-native ${card.querySelector(".prompt")!.textContent!.replace(/\s+/g, " ").trim()}`;
+    if (addFiles && card.dataset.cat !== "edit" && !/attached/i.test(t)) t += " Use my attached files first.";
+    return t;
+  };
+  grid.addEventListener("click", (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>("button[data-act]");
+    if (!b) return;
+    const card = b.closest<HTMLElement>("li.card")!;
+    if (b.dataset.act === "open") {
+      const w = window.open("https://gemini.google.com/app", "_blank", "noopener");
+      copyText(promptOf(card)).then(() => toast(w ? "Copied. In Gemini, pick Task, then paste." : "Copied. Open gemini.google.com and paste."));
+    } else {
+      copyText(promptOf(card), b).then(() => toast("Prompt copied"));
+    }
+  });
+  // editable fields: Enter finishes, empty fields get a placeholder back
+  grid.addEventListener("keydown", (e) => {
+    const f = e.target as HTMLElement;
+    if (f.classList?.contains("f") && e.key === "Enter") { e.preventDefault(); f.blur(); }
+  });
+  grid.addEventListener("focusout", (e) => {
+    const f = e.target as HTMLElement;
+    if (f.classList?.contains("f") && !f.textContent!.trim()) f.textContent = "…";
+  });
+
+  // the filter bar gets a solid backdrop once it sticks under the header
+  const bar = $("#gBar")!;
+  new IntersectionObserver(([e]) => bar.classList.toggle("stuck", !e.isIntersecting), { rootMargin: "-90px 0px 0px 0px" }).observe($("#barSentinel")!);
+
+  const hashCat = location.hash.slice(1);
+  if (tabs.some((t) => t.dataset.cat === hashCat)) cat = hashCat;
+  apply();
+</script>
+
+<style>
+  .hero { position: relative; overflow: hidden; padding: calc(var(--nav-h) + 72px) 0 32px; }
+  .glow { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(55% 60% at 40% -10%, rgba(59,79,216,.3), transparent 70%), radial-gradient(40% 50% at 90% 0%, rgba(255,107,61,.12), transparent 70%); }
+  .grid { position: relative; display: grid; grid-template-columns: 1.15fr .85fr; gap: 40px; align-items: center; }
+  .copy { display: grid; gap: 16px; justify-items: start; }
+  h1 { font-size: clamp(44px, 6vw, 76px); letter-spacing: -0.05em; line-height: .98; }
+  .lead { max-width: 52ch; }
+  .steps { list-style: none; margin: 0; padding: 6px; display: grid; border-radius: var(--r-lg); border: 1px solid var(--line-2); background: #121214; }
+  .steps li { display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start; padding: 12px; }
+  .steps li + li { border-top: 1px solid var(--line); }
+  .n { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; font: 500 12px/1 var(--mono); background: var(--accent-soft); color: var(--accent-2); border: 1px solid var(--accent-line); }
+  .steps b { display: block; font-weight: 500; font-size: 14.5px; line-height: 1.4; }
+  .steps div > span { display: block; color: var(--muted); font-size: 13px; line-height: 1.45; margin-top: 2px; }
+  .demo-f { color: var(--ink); border-bottom: 1.5px dashed var(--accent-2); }
+
+  .sentinel { height: 1px; }
+  .bar { position: sticky; top: calc(var(--nav-h) + 20px); z-index: 20; padding: 10px 0; }
+  .bar::before { content: ""; position: absolute; left: 0; right: 0; bottom: 40%; height: calc(var(--nav-h) + 70px); background: linear-gradient(var(--bg) 85%, rgba(10,10,11,0)); opacity: 0; transition: opacity .2s; z-index: -1; pointer-events: none; }
+  .bar:global(.stuck)::before { opacity: 1; }
+  .bar-in { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 8px; border-radius: 18px; border: 1px solid var(--line-2); background: #121214; box-shadow: 0 20px 40px -24px #000; }
+  .bar .tabs { margin: 0; border: 0; background: none; padding: 0; }
+  .tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .search { display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line-2); background: rgba(255,255,255,.03); color: var(--muted); transition: border-color .2s, box-shadow .2s; }
+  .search:focus-within { border-color: var(--accent-line); box-shadow: 0 0 0 4px rgba(255,107,61,.12); }
+  .search :global(.i) { width: 18px; height: 18px; }
+  .search input { width: 200px; border: 0; outline: 0; background: none; color: var(--ink); font: 400 13.5px var(--sans); }
+  .search input::placeholder { color: var(--faint); }
+  .toggle { display: inline-flex; align-items: center; gap: 10px; height: 38px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line-2); background: rgba(255,255,255,.03); color: var(--soft); font-size: 13px; font-weight: 500; cursor: pointer; }
+  .sw { width: 30px; height: 18px; border-radius: 99px; background: var(--bg-4); border: 1px solid var(--line-2); position: relative; transition: background-color .2s; }
+  .sw i { position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--muted); transition: transform .2s var(--ease), background-color .2s; }
+  .toggle[aria-pressed="true"] { color: var(--ink); border-color: var(--accent-line); }
+  .toggle[aria-pressed="true"] .sw { background: var(--accent); border-color: var(--accent); }
+  .toggle[aria-pressed="true"] .sw i { transform: translateX(12px); background: #fff; }
+
+  .list { padding-top: 24px; }
+  .cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .card { display: flex; flex-direction: column; border-radius: var(--r-lg); border: 1px solid var(--line); background: var(--bg-2); overflow: hidden; transition: border-color .2s; }
+  .card:hover { border-color: var(--line-2); }
+  .prev { aspect-ratio: 16 / 8.2; overflow: hidden; background: #0d0d0f; border-bottom: 1px solid var(--line); }
+  .prev :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .body { padding: 18px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .head { display: grid; gap: 6px; }
+  .cat { display: inline-flex; align-items: center; gap: 6px; font: 500 11px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .cat :global(.i) { width: 15px; height: 15px; color: var(--accent-2); }
+  .head h2 { font-size: 17px; letter-spacing: -0.02em; line-height: 1.3; }
+  .text { margin: 0; font-size: 14.5px; line-height: 1.65; color: var(--soft); padding: 14px; border-radius: 12px; background: var(--bg-3); border: 1px solid var(--line); }
+  .at { color: var(--ink); font-weight: 600; }
+  .text :global(.f) { color: var(--ink); border-bottom: 1.5px dashed var(--accent-line); padding: 0 1px; outline: none; cursor: text; transition: background-color .2s, border-color .2s; border-radius: 3px 3px 0 0; }
+  .text :global(.f:hover) { background: rgba(255,107,61,.08); border-bottom-color: var(--accent-2); }
+  .text :global(.f:focus) { background: rgba(255,107,61,.14); border-bottom-color: var(--accent); }
+  .why { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 1.5; color: var(--muted); }
+  .why :global(.i) { width: 17px; height: 17px; color: var(--warn); margin-top: 1px; }
+  .act { display: flex; gap: 8px; margin-top: auto; padding-top: 4px; }
+  .act .btn { flex: 1; }
+
+  .empty { display: grid; justify-items: center; gap: 10px; padding: 64px 0; color: var(--muted); text-align: center; }
+  .empty :global(.i) { width: 28px; height: 28px; }
+  .empty button { all: unset; cursor: pointer; color: var(--accent-2); text-decoration: underline; text-underline-offset: 3px; }
+  .empty button:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+
+  @media (max-width: 1100px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 980px) {
+    .grid { grid-template-columns: 1fr; gap: 24px; }
+    .bar .tabs { overflow-x: auto; flex-wrap: nowrap; max-width: 100%; scrollbar-width: none; }
+    .tools { width: 100%; }
+    .search { flex: 1; }
+    .search input { width: 100%; }
+  }
+  @media (max-width: 640px) {
+    .cards { grid-template-columns: 1fr; }
+    .hero { padding-top: calc(var(--nav-h) + 52px); }
+    .bar { position: relative; top: 0; }
+    .bar::before { display: none; }
+    .toggle { width: 100%; }
+  }
+</style>

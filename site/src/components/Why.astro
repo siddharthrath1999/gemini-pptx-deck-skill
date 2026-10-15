@@ -1,0 +1,122 @@
+---
+import { Image } from "astro:assets";
+import Icon from "./Icon.astro";
+import { img } from "../lib/images";
+import { COMPARE } from "../data/content";
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const mark = { yes: ["check_circle", true], no: ["close", false], part: ["remove", false] } as const;
+const label = { yes: "Yes", no: "No", part: "Partly" } as const;
+---
+<section id="why">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">Why it exists</span>
+      <h2>Most AI slides aren't really slides.</h2>
+      <p class="lead">Ask for a deck and you usually get one of three things. Each leaves the real work to you.</p>
+    </div>
+    <div class="grid rv">
+      <article class="card">
+        <span class="well"><Icon name="chat" /></span>
+        <h3>A chat answer</h3>
+        <p>Normal chat gives you an outline, text or a web page. Good notes, not something you can present.</p>
+        <div class="mk chat" aria-hidden="true">
+          <div class="msg"><img src={`${base}logos/gemini-2025.svg`} alt="" width="16" height="16" loading="lazy" /><div><b>Here's an outline for your deck:</b><span><em>Slide 1</em> Introduction</span><span>• Market overview</span><span>• Key players</span><span><em>Slide 2</em> Growth drivers</span></div></div>
+          <span class="tag"><Icon name="notes" />Text to rebuild by hand</span>
+        </div>
+      </article>
+      <article class="card">
+        <span class="well"><Icon name="image" /></span>
+        <h3>Pictures of slides</h3>
+        <p>Many AI slide tools paint each slide as an image. It looks finished until one number changes.</p>
+        <div class="mk pic" aria-hidden="true">
+          <Image src={img("run/s03.jpg")} alt="" widths={[400, 800]} sizes="(max-width: 980px) 90vw, 360px" />
+          <span class="sel"></span>
+          <span class="cur"><Icon name="block" />Can't select text</span>
+          <span class="tag"><Icon name="image" />slide_03.png</span>
+        </div>
+      </article>
+      <article class="card">
+        <span class="well"><Icon name="open_in_new" /></span>
+        <h3>A quick export</h3>
+        <p>Exports to Google Slides or HTML are editable, but often generic: thin research, default layouts, charts to rebuild.</p>
+        <div class="mk plain" aria-hidden="true">
+          <div class="slide"><b>Market Overview</b><i></i><i></i><i class="short"></i><span class="ph"><Icon name="broken_image" />chart.png</span></div>
+          <span class="tag"><Icon name="content_copy" />Same layout × 12</span>
+        </div>
+      </article>
+    </div>
+    <div class="compare rv">
+      <div class="scroll">
+        <table>
+          <thead><tr><th scope="col">What you get</th>{COMPARE.cols.map((c, i) => <th scope="col" class={i === COMPARE.cols.length - 1 ? "us" : ""}>{c}</th>)}</tr></thead>
+          <tbody>
+            {COMPARE.rows.map((r) => (
+              <tr>
+                <th scope="row">{r.label}</th>
+                {r.cells.map(([v, note], i) => {
+                  const [icon, fill] = mark[v as keyof typeof mark];
+                  return <td class={i === r.cells.length - 1 ? "us" : ""}><span class={`v ${v}`}><Icon name={icon} fill={fill} /><span class="sr">{label[v as keyof typeof label]}</span></span>{note && <small>{note}</small>}</td>;
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="fine">Typical results. Individual tools vary.</p>
+  </div>
+</section>
+
+<style>
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
+  .card { border-radius: var(--r-lg); border: 1px solid var(--line); background: var(--bg-2); padding: 22px; display: grid; gap: 12px; align-content: start; }
+  .card h3 { margin-top: 4px; }
+  .card p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.55; }
+  .mk { position: relative; margin-top: 6px; height: 156px; border-radius: 12px; border: 1px solid var(--line); background: #0d0d0f; overflow: hidden; }
+  .tag { position: absolute; left: 10px; bottom: 10px; display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 9px; border-radius: 7px; background: rgba(14,14,16,.92); border: 1px solid var(--line-2); font: 500 11px/1 var(--mono); color: var(--soft); }
+  .tag :global(.i) { width: 14px; height: 14px; color: var(--warn); }
+  .chat { padding: 12px; }
+  .msg { display: grid; grid-template-columns: 18px 1fr; gap: 10px; font-size: 12px; line-height: 1.55; color: #c4c7c5; }
+  .msg img { width: 16px; height: 16px; margin-top: 2px; }
+  .msg b { display: block; color: #e3e3e3; font-weight: 500; }
+  .msg span { display: block; }
+  .msg em { font-style: normal; color: #e3e3e3; font-weight: 500; }
+  .pic :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .sel { position: absolute; left: 6%; top: 11%; width: 66%; height: 22%; border: 1.5px dashed #ff8c64; border-radius: 3px; background: rgba(255,107,61,.06); }
+  .cur { position: absolute; left: 50%; top: 36%; display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 8px 0 5px; border-radius: 7px; background: #1a0b04; color: #ffd9c9; font: 500 11px/1 var(--sans); box-shadow: 0 6px 16px -6px #000; }
+  .cur :global(.i) { width: 15px; height: 15px; color: var(--accent-2); }
+  .plain { display: grid; place-items: center; padding: 12px 12px 42px; }
+  .slide { width: 82%; aspect-ratio: 16 / 8; border-radius: 4px; background: #fff; padding: 9px 12px; display: grid; grid-template-columns: 1fr 34%; grid-template-rows: auto repeat(3, 8px) 1fr; column-gap: 10px; row-gap: 6px; font-family: Arial, sans-serif; }
+  .slide b { grid-column: 1 / -1; font-size: 13px; color: #1f3864; font-weight: 700; }
+  .slide i { grid-column: 1; display: block; height: 6px; border-radius: 3px; background: #c9ccd3; }
+  .slide i.short { width: 58%; }
+  .ph { grid-column: 2; grid-row: 2 / 6; display: grid; place-items: center; align-content: center; gap: 2px; border: 1px dashed #b8bcc6; border-radius: 3px; color: #8a909c; font: 9px/1 Arial, sans-serif; background: #f2f3f6; }
+  .ph :global(.i) { width: 16px; height: 16px; }
+
+  .compare { border-radius: var(--r-lg); border: 1px solid var(--line-2); background: var(--bg-2); overflow: hidden; }
+  .scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { height: 54px; padding: 0 20px; text-align: left; border-bottom: 1px solid var(--line); font-size: 14.5px; font-weight: 400; }
+  tbody tr:last-child > * { border-bottom: 0; }
+  thead th { height: 48px; font: 500 11.5px/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  thead th:not(:first-child), td { text-align: center; width: 15%; }
+  .us { background: rgba(255,107,61,.06); }
+  thead .us { color: var(--accent-2); }
+  .v { display: inline-flex; vertical-align: middle; }
+  .yes { color: var(--ok); } .no { color: var(--faint); } .part { color: var(--warn); }
+  td small { display: block; color: var(--faint); font-size: 11.5px; margin-top: 1px; }
+  @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+  /* one wide column: mocks grow with the card so the picture keeps its framing */
+  /* one wide column: text on the left, mock on the right */
+  @media (min-width: 641px) and (max-width: 980px) {
+    .card { grid-template-columns: 1fr 1.15fr; grid-template-rows: auto auto 1fr; column-gap: 24px; }
+    .card > :not(.mk) { grid-column: 1; }
+    .mk { grid-column: 2; grid-row: 1 / 4; margin-top: 0; height: auto; min-height: 170px; }
+  }
+  @media (max-width: 640px) {
+    th, td { padding: 0 7px; height: 50px; font-size: 13px; line-height: 1.35; }
+    thead th { font-size: 9.5px; letter-spacing: .02em; }
+    th:first-child { padding-left: 14px; }
+    td small { display: none; }
+  }
+</style>

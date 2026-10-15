@@ -1,0 +1,23 @@
+---
+import Icon from "./Icon.astro";
+import { FAQ } from "../data/content";
+---
+<section id="faq">
+  <div class="wrap">
+    <div class="sec-head center rv"><span class="eyebrow">Questions</span><h2>Good to know.</h2></div>
+    <div class="list rv">
+      {FAQ.map(([q, a]) => <details><summary>{q}<Icon name="add" /></summary><p>{a}</p></details>)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .list { display: grid; gap: 8px; max-width: 860px; margin: 0 auto; }
+  details { border: 1px solid var(--line); border-radius: 16px; background: var(--bg-2); padding: 0 20px; transition: border-color .2s; }
+  details[open] { border-color: var(--line-2); }
+  summary { list-style: none; cursor: pointer; min-height: 60px; font-size: 15.5px; font-weight: 500; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+  summary::-webkit-details-marker { display: none; }
+  summary :global(.i) { color: var(--muted); transition: transform .25s var(--ease); }
+  details[open] summary :global(.i) { transform: rotate(45deg); }
+  p { margin: 0 0 18px; color: var(--muted); font-size: 15px; }
+</style>

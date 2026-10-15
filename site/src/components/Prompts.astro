@@ -1,0 +1,135 @@
+---
+import Icon from "./Icon.astro";
+import { PRINCIPLES, BUILDER, PROMPT_CATS } from "../data/content";
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+---
+<section id="prompts">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">Better prompts</span>
+      <h2>Clear beats long.</h2>
+      <p class="lead">More context isn't better context. Unrelated details pull slides off topic, and conflicting asks force guesses. Give the skill the few things only you know; it handles research, structure and design.</p>
+    </div>
+    <div class="principles rv">
+      {PRINCIPLES.map((p) => <article><span class="well hot"><Icon name={p.icon} /></span><h3>{p.title}</h3><p>{p.text}</p></article>)}
+    </div>
+    <div class="vs rv">
+      <article class="bad">
+        <h3 class="vs-head"><Icon name="warning" />Long but unclear</h3>
+        <p class="vs-text">Make a really good, detailed, professional, modern deck about EVs. Include <mark>everything</mark>: the history of cars, batteries, Tesla, China, policies, charging, startups. Make it look premium and colourful with lots of charts and <mark>keep it short but comprehensive</mark>.</p>
+        <ul class="notes"><li><Icon name="close" />No audience and no decision to support</li><li><Icon name="close" />"Everything" means no focus</li><li><Icon name="close" />Short and comprehensive contradict</li></ul>
+      </article>
+      <article class="good">
+        <h3 class="vs-head"><Icon name="check_circle" />Short and clear</h3>
+        <p class="vs-text">Make a 30-slide analysis of India's electric two-wheeler market <mark>for our leadership team, who must decide whether to enter in 2027</mark>. <mark>Use the attached market report first.</mark> One slide per major brand, and end with a go or no-go recommendation.</p>
+        <ul class="notes"><li><Icon name="check" />Audience and decision set the story</li><li><Icon name="check" />The source of truth is named</li><li><Icon name="check" />Must-haves are specific; design is left to the skill</li></ul>
+      </article>
+    </div>
+
+    <div class="sub-head rv"><h3>Build yours</h3><p class="lead">Pick options and copy the prompt into Gemini.</p></div>
+    <div class="builder rv" id="builder">
+      <div>
+        <div class="group"><label for="topic">Topic</label><input id="topic" class="topic" value={BUILDER.topic} autocomplete="off" /></div>
+        {BUILDER.groups.map((g) => (
+          <fieldset class="group" data-key={g.key} data-multi={g.multi ? "1" : undefined}>
+            <legend>{g.label}</legend>
+            <div class="opts">{g.options.map((o, i) => <button type="button" aria-pressed={g.active.includes(i) ? "true" : "false"}>{o}</button>)}</div>
+          </fieldset>
+        ))}
+      </div>
+      <div class="built">
+        <div class="box">
+          <p class="text" id="builtText" aria-live="polite"></p>
+          <div class="bar"><span class="chip on">@pptx-native</span><span class="chip"><Icon name="bolt" />Task</span>
+            <button type="button" class="btn sm primary" id="copyPrompt"><span class="when-idle"><Icon name="content_copy" /></span><span class="when-copied"><Icon name="check" /></span><span class="when-idle">Copy</span><span class="when-copied">Copied</span></button>
+          </div>
+        </div>
+        <p class="fine left">Then attach your files in the same message. Ask for changes afterwards in the same chat.</p>
+      </div>
+    </div>
+
+    <a class="gallery rv" href={`${base}prompts.html`}>
+      <div>
+        <span class="eyebrow">Prompt gallery</span>
+        <h3>Start from a prompt that already works.</h3>
+        <p>Ready-made prompts for strategy, teaching, product and editing decks. Fill in your details, see the kind of slide it makes, and send it to Gemini.</p>
+        <span class="peek">{PROMPT_CATS.slice(1).map((c) => <span class="chip"><Icon name={c.icon} />{c.label}</span>)}</span>
+      </div>
+      <span class="btn lg">Browse the gallery<Icon name="arrow_forward" /></span>
+    </a>
+  </div>
+</section>
+
+<script>
+  import { $, $$, copyText } from "../scripts/util";
+  const root = $("#builder")!, out = $("#builtText")!, topic = $<HTMLInputElement>("#topic")!;
+  const pick = (k: string) => $$(`[data-key="${k}"] button[aria-pressed="true"]`, root).map((b) => b.textContent!.trim());
+  const list = (a: string[]) => (a.length < 2 ? a.join("") : `${a.slice(0, -1).join(", ")} and ${a[a.length - 1]}`);
+  function compose() {
+    const extra = pick("extra");
+    let t = `Make a ${pick("len")[0]}-slide ${pick("deck")[0]} on ${topic.value.trim() || "your topic"} for ${pick("aud")[0]}.`;
+    const files = extra.filter((x) => x.startsWith("use "));
+    const rest = extra.filter((x) => !x.startsWith("use "));
+    if (files.length) t += ` ${files[0][0].toUpperCase()}${files[0].slice(1)}.`;
+    if (rest.length) t += ` Include ${list(rest)}.`;
+    out.textContent = t;
+  }
+  $$("fieldset", root).forEach((g) => {
+    const multi = g.dataset.multi === "1";
+    $$("button", g).forEach((b) => b.addEventListener("click", () => {
+      if (multi) b.setAttribute("aria-pressed", String(b.getAttribute("aria-pressed") !== "true"));
+      else $$("button", g).forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      compose();
+    }));
+  });
+  topic.addEventListener("input", compose);
+  $("#copyPrompt")!.addEventListener("click", (e) => copyText(`@pptx-native ${out.textContent}`, e.currentTarget as HTMLElement));
+  compose();
+</script>
+
+<style>
+  .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
+  .principles article { border-radius: var(--r-lg); border: 1px solid var(--line); background: var(--bg-2); padding: 22px; display: grid; gap: 10px; align-content: start; }
+  .principles h3 { margin-top: 6px; }
+  .principles p { margin: 0; color: var(--muted); font-size: 14.5px; }
+  .vs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 56px; }
+  .vs article { border-radius: var(--r-lg); border: 1px solid var(--line); background: var(--bg-2); padding: 22px; display: grid; gap: 14px; align-content: start; }
+  .vs .good { border-color: rgba(95,211,154,.28); }
+  .vs-head { display: flex; align-items: center; gap: 8px; font: 500 11.5px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+  .vs-head :global(.i) { width: 18px; height: 18px; }
+  .bad .vs-head { color: var(--warn); } .good .vs-head { color: var(--ok); }
+  .vs-text { margin: 0; font-size: 14.5px; line-height: 1.65; color: var(--soft); background: var(--bg-3); border-radius: 12px; padding: 14px 16px; border: 1px solid var(--line); }
+  mark { background: rgba(224,184,92,.14); color: #f0d98f; border-radius: 4px; padding: 0 3px; }
+  .good mark { background: rgba(95,211,154,.12); color: #a6ecc8; }
+  .notes { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 13.5px; color: var(--muted); }
+  .notes li { display: flex; gap: 10px; align-items: center; }
+  .notes :global(.i) { width: 17px; height: 17px; }
+  .sub-head { display: grid; gap: 12px; margin-bottom: 28px; }
+  .sub-head h3 { font-size: 24px; letter-spacing: -0.03em; }
+
+  .builder { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  .group { margin: 0 0 18px; padding: 0; border: 0; min-width: 0; }
+  .group label, .group legend { display: block; padding: 0; font: 500 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .opts { display: flex; gap: 6px; flex-wrap: wrap; }
+  .opts button { height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line-2); background: rgba(255,255,255,.025); color: var(--soft); cursor: pointer; font-size: 13.5px; transition: background-color .2s, border-color .2s, color .2s; }
+  .opts button:hover { color: var(--ink); border-color: var(--line-3); }
+  .opts button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent-line); color: #fff; }
+  .topic { width: 100%; height: 46px; border-radius: 12px; border: 1px solid var(--line-2); background: rgba(255,255,255,.03); color: var(--ink); font: 400 15px var(--sans); padding: 0 14px; outline: none; transition: border-color .2s, box-shadow .2s; }
+  .topic:focus { border-color: var(--accent-line); box-shadow: 0 0 0 4px rgba(255,107,61,.12); }
+  .built { position: sticky; top: calc(var(--nav-h) + 40px); display: grid; gap: 12px; }
+  .box { border-radius: 22px; padding: 18px 14px 12px 20px; background: #131315; border: 1px solid var(--line-2); box-shadow: 0 30px 90px -40px rgba(59,79,216,.5); }
+  .text { margin: 0; min-height: 120px; font-size: 16px; line-height: 1.5; }
+  .bar { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+  .bar .btn { margin-left: auto; }
+  .fine.left { text-align: left; margin: 0; }
+
+  .gallery { margin-top: 56px; border-radius: var(--r-xl); border: 1px solid var(--line-2); background: radial-gradient(70% 140% at 100% 0%, rgba(59,79,216,.2), transparent 60%), var(--bg-2); padding: 28px; display: grid; grid-template-columns: 1fr auto; gap: 20px 32px; align-items: center; transition: border-color .2s; }
+  .gallery:hover { border-color: var(--line-3); }
+  .gallery h3 { font-size: 24px; letter-spacing: -0.03em; margin-top: 12px; }
+  .gallery p { margin: 8px 0 0; color: var(--muted); font-size: 15px; max-width: 56ch; }
+  .peek { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 16px; }
+  @media (max-width: 980px) {
+    .principles, .vs, .builder, .gallery { grid-template-columns: 1fr; }
+    .built { position: static; }
+  }
+</style>

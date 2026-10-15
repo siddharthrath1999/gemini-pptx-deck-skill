@@ -1,0 +1,136 @@
+---
+import { Image, getImage } from "astro:assets";
+import Icon from "./Icon.astro";
+import { img, meta } from "../lib/images";
+import { EXAMPLES } from "../data/content";
+
+const decks = await Promise.all(EXAMPLES.map(async (d) => ({
+  title: d.title,
+  slides: await Promise.all(d.slides.map(async (p) => {
+    const m = await meta(p);
+    const [full, thumb] = await Promise.all([
+      getImage({ src: m, width: Math.min(m.width, 1600), format: "webp", quality: 82 }),
+      getImage({ src: m, width: 240, format: "webp", quality: 70 }),
+    ]);
+    return { full: full.src, thumb: thumb.src };
+  })),
+})));
+---
+<section id="examples">
+  <div class="wrap">
+    <div class="sec-head center rv">
+      <span class="eyebrow">Made with PPTX Native</span>
+      <h2>One-line requests. Real decks.</h2>
+      <p class="lead">Each was built by Gemini in Task mode from a single sentence. Open one to page through it.</p>
+    </div>
+    <ul class="grid" id="exGrid" data-decks={JSON.stringify(decks)}>
+      {EXAMPLES.map((d, i) => (
+        <li class="rv">
+          <button type="button" class="card" data-deck={i} aria-haspopup="dialog">
+            <span class="cover"><Image src={img(d.slides[0])} alt={`Cover of the ${d.title} deck`} widths={[600, 1100]} sizes="(max-width: 980px) 92vw, 590px" /></span>
+            <span class="meta">
+              <span class="title">{d.title}</span>
+              <span class="sub">{d.sub}</span>
+              <span class="stats">{d.stats.map((s) => <span class="chip">{s}</span>)}</span>
+              <span class="open"><Icon name="slideshow" />Page through {d.slides.length} slides</span>
+            </span>
+          </button>
+        </li>
+      ))}
+    </ul>
+    <p class="fine">Made from online sources in October 2026. Figures have not been independently checked.</p>
+  </div>
+</section>
+
+<dialog class="lb" id="lightbox" aria-labelledby="lbTitle">
+  <div class="lb-top"><h2 id="lbTitle"></h2><span class="lb-count" id="lbCount"></span><button type="button" class="btn icon" id="lbClose" aria-label="Close"><Icon name="close" /></button></div>
+  <div class="lb-main">
+    <button type="button" class="btn icon" id="lbPrev" aria-label="Previous slide"><Icon name="chevron_left" /></button>
+    <img id="lbImg" alt="" decoding="async" />
+    <button type="button" class="btn icon" id="lbNext" aria-label="Next slide"><Icon name="chevron_right" /></button>
+  </div>
+  <div class="lb-strip" id="lbStrip"></div>
+</dialog>
+
+<script>
+  import { $, $$ } from "../scripts/util";
+  type Deck = { title: string; slides: { full: string; thumb: string }[] };
+  const grid = $("#exGrid")!;
+  const decks: Deck[] = JSON.parse(grid.dataset.decks || "[]");
+  const dlg = $<HTMLDialogElement>("#lightbox")!, im = $<HTMLImageElement>("#lbImg")!, strip = $("#lbStrip")!;
+  const title = $("#lbTitle")!, count = $("#lbCount")!;
+  let deck: Deck | null = null, at = 0, opener: HTMLElement | null = null;
+
+  function go(i: number) {
+    if (!deck) return;
+    at = (i + deck.slides.length) % deck.slides.length;
+    im.src = deck.slides[at].full;
+    im.alt = `${deck.title}, slide ${at + 1} of ${deck.slides.length}`;
+    count.textContent = `${at + 1} / ${deck.slides.length}`;
+    $$("button", strip).forEach((b, k) => b.setAttribute("aria-current", String(k === at)));
+    // warm the next slide
+    const next = new Image(); next.src = deck.slides[(at + 1) % deck.slides.length].full;
+  }
+  function open(i: number, from: HTMLElement) {
+    deck = decks[i]; opener = from;
+    title.textContent = deck.title;
+    strip.innerHTML = "";
+    deck.slides.forEach((s, k) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.setAttribute("aria-label", `Slide ${k + 1}`);
+      const t = document.createElement("img"); t.src = s.thumb; t.alt = ""; t.width = 240; t.height = 135;
+      b.append(t); b.addEventListener("click", () => go(k)); strip.append(b);
+    });
+    go(0);
+    dlg.showModal();
+  }
+  $$<HTMLButtonElement>(".card", grid).forEach((b) => b.addEventListener("click", () => open(Number(b.dataset.deck), b)));
+  $("#lbPrev")!.addEventListener("click", () => go(at - 1));
+  $("#lbNext")!.addEventListener("click", () => go(at + 1));
+  $("#lbClose")!.addEventListener("click", () => dlg.close());
+  dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener("keydown", (e) => { if (e.key === "ArrowRight") go(at + 1); if (e.key === "ArrowLeft") go(at - 1); });
+  // swipe on touch screens
+  let sx = 0;
+  im.addEventListener("pointerdown", (e) => { sx = e.clientX; });
+  im.addEventListener("pointerup", (e) => { const d = e.clientX - sx; if (Math.abs(d) > 40) go(at + (d < 0 ? 1 : -1)); });
+  dlg.addEventListener("close", () => { opener?.focus(); document.documentElement.style.overflow = ""; });
+  new MutationObserver(() => { document.documentElement.style.overflow = dlg.open ? "hidden" : ""; }).observe(dlg, { attributes: true, attributeFilter: ["open"] });
+</script>
+
+<style>
+  .grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .card { all: unset; box-sizing: border-box; display: flex; flex-direction: column; width: 100%; height: 100%; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--line); background: var(--bg-2); cursor: pointer; transition: border-color .2s; }
+  .card:hover { border-color: var(--line-3); }
+  .card:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 3px; }
+  .cover { display: block; aspect-ratio: 16 / 9; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .cover :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
+  .card:hover .cover :global(img) { transform: scale(1.03); }
+  .meta { display: grid; gap: 6px; padding: 18px 20px 20px; }
+  .title { font-size: 18px; font-weight: 500; letter-spacing: -0.02em; color: var(--ink); }
+  .sub { color: var(--muted); font-size: 13.5px; }
+  .stats { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .stats .chip { height: 26px; font-size: 12px; }
+  .open { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 500; color: var(--accent-2); margin-top: 8px; }
+  .open :global(.i) { width: 18px; height: 18px; }
+
+  .lb { width: 100vw; height: 100vh; max-width: none; max-height: none; margin: 0; padding: 20px; border: 0; background: rgba(6,6,7,.94); color: var(--ink); }
+  .lb[open] { display: grid; grid-template-rows: auto 1fr auto; gap: 14px; }
+  .lb::backdrop { background: transparent; }
+  .lb-top { display: flex; align-items: center; gap: 12px; width: min(1200px, 100%); margin: 0 auto; }
+  .lb-top h2 { font-size: 16px; letter-spacing: -0.01em; }
+  .lb-count { font: 500 12px/1 var(--mono); color: var(--muted); margin-right: auto; }
+  .lb-main { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; min-height: 0; width: min(1280px, 100%); margin: 0 auto; }
+  .lb-main img { touch-action: pan-y; max-height: 100%; max-width: 100%; margin: 0 auto; border-radius: 12px; box-shadow: 0 40px 120px -30px #000; aspect-ratio: 16 / 9; object-fit: contain; }
+  .lb-strip { display: flex; gap: 8px; justify-content: center; overflow-x: auto; padding-bottom: 4px; }
+  .lb-strip :global(button) { all: unset; flex: none; cursor: pointer; border-radius: 7px; opacity: .45; transition: opacity .2s; }
+  .lb-strip :global(button[aria-current="true"]) { opacity: 1; outline: 2px solid var(--accent); }
+  .lb-strip :global(button:focus-visible) { outline: 2px solid var(--accent-2); }
+  .lb-strip :global(img) { width: 110px; height: auto; border-radius: 7px; }
+  @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+  @media (max-width: 640px) {
+    .lb { padding: 12px; }
+    .lb-main { grid-template-columns: 1fr; }
+    .lb-main :global(#lbPrev), .lb-main :global(#lbNext) { display: none; }
+  }
+</style>

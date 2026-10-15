@@ -1,0 +1,70 @@
+---
+import Icon from "./Icon.astro";
+import Github from "./Github.astro";
+import { NAV, GITHUB } from "../data/content";
+
+interface Props { page: "home" | "gallery" }
+const { page } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const home = `${base}index.html`;
+const gallery = `${base}prompts.html`;
+// On the gallery page, section links point back to the homepage.
+const link = (h: string) => (page === "home" ? h : `${home}${h}`);
+const links = page === "home" ? NAV : [{ href: "#how", label: "How it works" }, { href: "#audiences", label: "Audiences & edits" }, { href: "#setup", label: "Set up" }, { href: "#prompts", label: "Prompt guide" }];
+---
+<header class="nav" id="nav">
+  <div class="bar">
+    <a class="logo" href={page === "home" ? "#main" : home} aria-label="PPTX Native, home">
+      <img src={`${base}brand/wordmark-cream.svg`} alt="PPTX Native" width="81" height="34" />
+    </a>
+    <nav class="links" aria-label="Sections">
+      {links.map((l) => <a href={link(l.href)} data-spy={page === "home" ? l.href.slice(1) : undefined}>{l.label}</a>)}
+      {page === "gallery" && <a href={gallery} aria-current="page" class="current">Prompt gallery</a>}
+    </nav>
+    <div class="cta">
+      <a class="btn sm gh-btn" href={GITHUB} aria-label="PPTX Native on GitHub"><Github /><span class="label">GitHub</span><span class="count" id="stars" hidden></span></a>
+      <a class="btn sm primary install" href={link("#setup")}><Icon name="download" /><span class="label">Install free</span></a>
+      <button class="btn sm icon menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="menuSheet">
+        <span class="when-closed"><Icon name="menu" /></span><span class="when-open"><Icon name="close" /></span>
+      </button>
+    </div>
+  </div>
+  <div class="sheet" id="menuSheet">
+    {NAV.map((l) => <a href={link(l.href)}>{l.long ?? l.label}<Icon name="arrow_forward" /></a>)}
+    <a href={gallery}>Prompt gallery<Icon name="arrow_forward" /></a>
+  </div>
+</header>
+
+<style>
+  .nav { position: fixed; inset: 12px 0 auto; z-index: 60; pointer-events: none; }
+  .bar { pointer-events: auto; width: min(1216px, calc(100% - 24px)); height: var(--nav-h); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 10px 0 18px; border-radius: 18px; border: 1px solid var(--line); background: rgba(14, 14, 16, .78); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); transition: background-color .25s, border-color .25s; }
+  :global(.nav.scrolled) .bar { background: rgba(14, 14, 16, .92); border-color: var(--line-2); }
+  .logo { display: inline-flex; flex: none; }
+  .logo img { height: 34px; width: auto; }
+  .links { display: flex; gap: 2px; padding: 4px; border-radius: 13px; border: 1px solid var(--line); background: rgba(255,255,255,.02); }
+  .links a { height: 34px; display: inline-flex; align-items: center; padding: 0 13px; border-radius: 9px; font-size: 13.5px; font-weight: 500; color: var(--muted); border: 1px solid transparent; transition: background-color .2s, color .2s, border-color .2s; }
+  .links a:hover { color: var(--ink); background: rgba(255,255,255,.04); }
+  .links a:global(.active), .links a.current { color: var(--ink); background: rgba(255,255,255,.07); border-color: var(--line-2); box-shadow: var(--raise); }
+  .cta { display: flex; gap: 8px; align-items: center; }
+  .count { font: 500 12px/1 var(--mono); color: var(--muted); padding-left: 10px; border-left: 1px solid var(--line-2); display: inline-flex; align-items: center; gap: 4px; }
+  .menu-btn { display: none; }
+  .when-open { display: none; }
+  :global(.nav.open) .when-open { display: contents; }
+  :global(.nav.open) .when-closed { display: none; }
+  .sheet { pointer-events: auto; display: none; width: min(1216px, calc(100% - 24px)); margin: 8px auto 0; padding: 8px; border-radius: 18px; border: 1px solid var(--line-2); background: #121214; box-shadow: 0 30px 60px -20px #000; }
+  .sheet a { display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 14px; border-radius: 12px; font-size: 15.5px; font-weight: 500; color: var(--soft); }
+  .sheet a:hover { background: rgba(255,255,255,.05); color: var(--ink); }
+  .sheet a :global(.i) { color: var(--faint); }
+  :global(.nav.open) .sheet { display: block; }
+  @media (max-width: 1100px) {
+    .links { display: none; }
+    .menu-btn { display: inline-flex; }
+  }
+  @media (max-width: 640px) {
+    .bar { padding: 0 8px 0 14px; }
+    .logo img { height: 30px; }
+    .gh-btn .label, .gh-btn .count, .install .label { display: none; }
+    .cta .btn { width: 40px; padding: 0; --h: 40px; }
+    .cta .btn :global(.i), .cta .btn :global(.gh) { margin: 0; }
+  }
+</style>

@@ -1,0 +1,282 @@
+---
+import Icon from "./Icon.astro";
+import { WALK, INSTALL, ZIP_URL } from "../data/content";
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const skill = `${base}brand/skill.svg`;
+---
+<section id="setup">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">Set up in two minutes</span>
+      <h2>Pick where you work.</h2>
+      <p class="lead">No account, no payment. Use it in the Gemini app, or in Antigravity with one line.</p>
+    </div>
+    <div class="tabs rv" role="tablist" aria-label="Where you work" id="setupTabs">
+      <button type="button" role="tab" id="tab-app" aria-controls="panel-app" aria-selected="true" data-tab="app"><img src={`${base}logos/gemini-2025.svg`} alt="" width="16" height="16" />Gemini app</button>
+      <button type="button" role="tab" id="tab-agy" aria-controls="panel-agy" aria-selected="false" data-tab="agy"><img src={`${base}logos/antigravity.png`} alt="" width="16" height="16" />Antigravity</button>
+    </div>
+
+    <div class="panel rv" id="panel-app" role="tabpanel" aria-labelledby="tab-app">
+      <div>
+        <ol class="walk" id="walk">
+          {WALK.map((w, i) => (
+            <li><button type="button" aria-current={i === 0 ? "step" : "false"} data-i={i} data-url={w.url} data-target={w.target} data-side={w.side ? "1" : ""}>
+              <span class="n">{i + 1}</span><span><b>{w.title}</b><span class="d">{w.text}</span></span>
+            </button></li>
+          ))}
+        </ol>
+        <div class="walk-nav">
+          <button type="button" class="btn sm" id="walkPrev" disabled><Icon name="arrow_back" />Back</button>
+          <button type="button" class="btn sm" id="walkNext"><span id="walkNextLabel">Next step</span><Icon name="arrow_forward" /></button>
+        </div>
+        <div class="dl">
+          <span class="app skill"><img src={skill} alt="" width="24" height="24" /></span>
+          <div><b>pptx-native.zip</b><small>The skill · 105 KB · keep it zipped</small></div>
+          <a class="btn primary" href={ZIP_URL}><Icon name="download" />Download</a>
+        </div>
+      </div>
+
+      <div class="mock" aria-label="Illustration of the Gemini app" role="img">
+        <div class="mbar"><i></i><i></i><i></i><span class="url" id="mockUrl">{WALK[0].url}</span></div>
+        <div class="mbody">
+          <div class="mside"><div><Icon name="edit_square" />New chat</div><div><Icon name="folder" />Library</div><div id="sideCustom"><Icon name="tune" />Customise</div><div><Icon name="schedule" />Scheduled</div></div>
+          <div class="mmain" id="mockMain">
+            <div class="screen on">
+              <div class="mtitle">Downloads</div>
+              <div class="mcard"><span class="mfile" data-t="file"><Icon name="folder_zip" />pptx-native.zip</span><span class="sz">105 KB</span></div>
+              <div class="mcard dim1"><Icon name="picture_as_pdf" />quarterly_review.pdf</div>
+              <div class="mcard dim2"><Icon name="description" />notes.txt</div>
+            </div>
+            <div class="screen">
+              <div class="mtitle">Customise</div>
+              <div class="mtabs"><span>Discover</span><span>Connectors</span><span class="hl" data-t="skills-tab">Skills</span></div>
+              <div class="mcard"><img src={skill} alt="" width="16" height="16" />humanizer</div>
+              <div class="mcard"><img src={skill} alt="" width="16" height="16" />write-query</div>
+            </div>
+            <div class="screen">
+              <div class="mtitle">Skills <span class="pill">Create<Icon name="expand_more" /></span></div>
+              <div class="mcard"><img src={skill} alt="" width="16" height="16" />humanizer</div>
+              <div class="mcard"><img src={skill} alt="" width="16" height="16" />write-query</div>
+              <div class="mmenu"><div><Icon name="auto_awesome" />Create with Gemini</div><div><Icon name="edit" />Create manually</div><div class="hl" data-t="upload"><Icon name="upload" />Upload</div></div>
+            </div>
+            <div class="screen">
+              <div class="mtitle">Upload a skill</div>
+              <div class="drop"><div><span class="mfile"><Icon name="folder_zip" />pptx-native.zip</span><br /><br />Upload successful · review and confirm</div></div>
+              <div class="right"><span class="pill accent" data-t="create">Create</span></div>
+            </div>
+            <div class="screen">
+              <div class="mtitle">New chat</div>
+              <div class="minput"><b>@pptx-native</b> Make a 30-slide analysis of India's EV market for our leadership team.<div class="row2"><span class="chip">Argon</span></div></div>
+              <div class="modes"><span>Chat</span><span class="hl" data-t="task">Task</span></div>
+            </div>
+            <span class="cursor" id="cursor" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 3l14 8.2-6.2 1.3-3.3 5.8z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round" /></svg></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-agy" role="tabpanel" aria-labelledby="tab-agy" hidden>
+      <div>
+        <ol class="walk static">
+          <li><div class="step"><span class="n">1</span><span><b>Copy one line</b><span class="d">Pick your system in the terminal box, then click Copy.</span></span></div></li>
+          <li><div class="step"><span class="n">2</span><span><b>Paste it into Terminal</b><span class="d">It puts the skill where Antigravity looks and sets up the two Python packages it needs.</span></span></div></li>
+          <li><div class="step"><span class="n">3</span><span><b>Restart Antigravity and ask</b><span class="d">"Make me a 30-slide deck on our Q3 results." The deck is saved in your project.</span></span></div></li>
+        </ol>
+        <p class="fine left">Add <code>--project</code> to install into one project only. LibreOffice is optional; with it, the agent can look at its slides.</p>
+      </div>
+      <div class="term" data-cmds={JSON.stringify(INSTALL)}>
+        <div class="ttop"><i></i><i></i><i></i>
+          <div class="os" role="tablist" aria-label="Your system" id="osTabs">
+            <button type="button" role="tab" aria-selected="true" data-os="mac">macOS · Linux</button>
+            <button type="button" role="tab" aria-selected="false" data-os="win">Windows</button>
+            <button type="button" role="tab" aria-selected="false" data-os="npx">npx</button>
+          </div>
+        </div>
+        <div class="tbody">
+          <div class="cmd"><span class="p" aria-hidden="true">$</span><code id="termCmd">{INSTALL.mac}</code>
+            <button type="button" class="btn sm" id="copyCmd"><span class="when-idle"><Icon name="content_copy" /></span><span class="when-copied"><Icon name="check" /></span><span class="when-idle">Copy</span><span class="when-copied">Copied</span></button>
+          </div>
+          <div class="out" id="termOut">
+            <div class="w">PPTX Native · installing the skill</div>
+            <div><span class="g">✓</span> Skill copied to ~/.gemini/antigravity/skills/pptx-native</div>
+            <div><span class="g">✓</span> Skill copied to ~/.gemini/config/skills/pptx-native</div>
+            <div class="w">Checking what the skill needs</div>
+            <div><span class="g">✓</span> Installed python-pptx and Pillow</div>
+            <div><span class="g">✓</span> LibreOffice found (used to preview slides)</div>
+            <div class="w">Done</div>
+            <div class="y">  Restart Antigravity, then ask: "Make me a 30-slide deck on ..."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { $, $$, copyText, reduceMotion } from "../scripts/util";
+
+  /* tabs */
+  const tabs = $$<HTMLButtonElement>("#setupTabs [role=tab]");
+  function showTab(name: string) {
+    tabs.forEach((t) => t.setAttribute("aria-selected", String(t.dataset.tab === name)));
+    $("#panel-app")!.hidden = name !== "app";
+    $("#panel-agy")!.hidden = name !== "agy";
+    if (name === "agy") playTerm(); else place();
+  }
+  tabs.forEach((t) => t.addEventListener("click", () => showTab(t.dataset.tab!)));
+  // links marked data-agy (CTA, footer) open the Antigravity tab
+  document.addEventListener("click", (e) => { if ((e.target as Element).closest?.("[data-agy]")) showTab("agy"); });
+  if (location.hash === "#setup-antigravity") showTab("agy");
+
+  /* Gemini app walkthrough */
+  const steps = $$<HTMLButtonElement>("#walk button");
+  const screens = $$(".screen"), mockMain = $("#mockMain")!, cursor = $("#cursor")!;
+  const prev = $<HTMLButtonElement>("#walkPrev")!, next = $("#walkNext")!, nextLabel = $("#walkNextLabel")!;
+  let at = 0, clickTimer = 0;
+  function place() {
+    const s = steps[at];
+    const t = $(`[data-t="${s.dataset.target}"]`, mockMain);
+    if (!t || !mockMain.offsetWidth) return;
+    $$(".is-target", mockMain).forEach((x) => x.classList.remove("is-target"));
+    t.classList.add("is-target");
+    const r = t.getBoundingClientRect(), m = mockMain.getBoundingClientRect();
+    cursor.style.left = `${r.left - m.left + Math.min(r.width * 0.6, r.width - 10)}px`;
+    cursor.style.top = `${r.top - m.top + r.height * 0.6}px`;
+    cursor.classList.remove("click");
+    clearTimeout(clickTimer);
+    clickTimer = window.setTimeout(() => cursor.classList.add("click"), reduceMotion() ? 0 : 700);
+  }
+  function walk(i: number) {
+    at = Math.max(0, Math.min(steps.length - 1, i));
+    steps.forEach((b, k) => b.setAttribute("aria-current", k === at ? "step" : "false"));
+    screens.forEach((s, k) => s.classList.toggle("on", k === at));
+    $("#mockUrl")!.textContent = steps[at].dataset.url!;
+    $("#sideCustom")!.classList.toggle("hl", steps[at].dataset.side === "1");
+    prev.disabled = at === 0;
+    nextLabel.textContent = at === steps.length - 1 ? "Start over" : "Next step";
+    place();
+  }
+  steps.forEach((b, i) => b.addEventListener("click", () => walk(i)));
+  prev.addEventListener("click", () => walk(at - 1));
+  next.addEventListener("click", () => walk(at === steps.length - 1 ? 0 : at + 1));
+  new ResizeObserver(() => place()).observe(mockMain);
+  if (document.fonts) document.fonts.ready.then(place);
+  walk(0);
+
+  /* Antigravity terminal */
+  const term = $(".term")!;
+  const cmds: Record<string, string> = JSON.parse(term.dataset.cmds || "{}");
+  const code = $("#termCmd")!, lines = $$("#termOut > div");
+  let os = "mac", timers: number[] = [];
+  function playTerm() {
+    timers.forEach(clearTimeout); timers = [];
+    const full = cmds[os];
+    if (reduceMotion()) { code.textContent = full; lines.forEach((d) => d.classList.add("in")); return; }
+    lines.forEach((d) => d.classList.remove("in"));
+    code.textContent = "";
+    let i = 0;
+    const type = () => {
+      code.textContent = full.slice(0, ++i);
+      if (i < full.length) timers.push(window.setTimeout(type, 12));
+      else lines.forEach((d, k) => timers.push(window.setTimeout(() => d.classList.add("in"), 250 + k * 220)));
+    };
+    type();
+  }
+  $$<HTMLButtonElement>("#osTabs button").forEach((b, _, all) => b.addEventListener("click", () => {
+    all.forEach((x) => x.setAttribute("aria-selected", String(x === b)));
+    os = b.dataset.os!; playTerm();
+  }));
+  lines.forEach((d) => d.classList.add("in"));
+  $("#copyCmd")!.addEventListener("click", (e) => copyText(cmds[os], e.currentTarget as HTMLElement));
+</script>
+
+<style>
+  .panel { display: grid; grid-template-columns: .9fr 1.1fr; gap: 24px; align-items: start; }
+  .panel[hidden] { display: none; }
+  .walk { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+  .walk button, .step { all: unset; box-sizing: border-box; display: grid; grid-template-columns: 32px 1fr; gap: 14px; width: 100%; padding: 13px 14px; border-radius: 14px; border: 1px solid transparent; transition: background-color .2s, border-color .2s; }
+  .walk button { cursor: pointer; }
+  .walk button:hover { background: rgba(255,255,255,.02); }
+  .walk button:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+  .n { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font: 500 12.5px/1 var(--mono); border: 1px solid var(--line-2); color: var(--muted); transition: background-color .2s, color .2s, border-color .2s; }
+  .walk b { display: block; font-weight: 500; font-size: 15px; line-height: 30px; }
+  .d { display: block; color: var(--muted); font-size: 13.5px; line-height: 1.5; }
+  .walk button[aria-current="step"], .static .step { background: var(--bg-2); border-color: var(--line-2); }
+  .walk button[aria-current="step"] .n, .static .n { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .walk-nav { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .dl { display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: 16px; border: 1px solid var(--line-2); background: var(--bg-2); margin-top: 16px; }
+  .dl .app { --s: 48px; }
+  .dl b { display: block; font-weight: 500; font-size: 15px; }
+  .dl small { color: var(--muted); font-size: 13px; }
+  .dl .btn { margin-left: auto; }
+  .fine.left { text-align: left; }
+
+  .mock { position: relative; border-radius: 18px; overflow: hidden; border: 1px solid var(--line-2); background: #131314; box-shadow: 0 40px 100px -50px #000; aspect-ratio: 16 / 10.5; }
+  .mbar { height: 36px; display: flex; align-items: center; gap: 7px; padding: 0 14px; border-bottom: 1px solid var(--line); background: #0e0e0f; }
+  .mbar i { width: 10px; height: 10px; border-radius: 50%; background: #2a2a2e; }
+  .url { margin-left: 12px; height: 22px; padding: 0 10px; border-radius: 7px; background: rgba(255,255,255,.05); font: 11.5px/22px var(--mono); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mbody { position: absolute; inset: 36px 0 0; display: grid; grid-template-columns: 170px 1fr; }
+  .mside { border-right: 1px solid var(--line); padding: 14px 10px; display: grid; align-content: start; gap: 2px; font-size: 13px; color: #c4c7c5; }
+  .mside > div { height: 34px; padding: 0 10px; border-radius: 9px; display: flex; gap: 8px; align-items: center; }
+  .mside :global(.i) { width: 18px; height: 18px; }
+  .mside > div:global(.hl) { background: rgba(255,255,255,.08); color: #fff; }
+  .mmain { position: relative; }
+  .screen { position: absolute; inset: 0; padding: 20px 22px; opacity: 0; visibility: hidden; transition: opacity .35s var(--ease), visibility 0s .35s; }
+  .screen.on { opacity: 1; visibility: visible; transition-delay: 0s; }
+  .mtitle { font-size: 19px; font-weight: 500; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; color: #e3e3e3; }
+  .mtabs { display: flex; gap: 6px; margin-bottom: 16px; font-size: 12.5px; }
+  .mtabs span { padding: 6px 11px; border-radius: 999px; color: var(--muted); }
+  .mtabs .hl { background: rgba(255,255,255,.1); color: #fff; }
+  .mcard { height: 42px; padding: 0 13px; border-radius: 11px; border: 1px solid var(--line); background: rgba(255,255,255,.025); font-size: 13px; color: #c4c7c5; margin-bottom: 7px; display: flex; gap: 10px; align-items: center; }
+  .mcard :global(.i) { width: 18px; height: 18px; color: #a8abb0; }
+  .mcard img { opacity: .7; }
+  .dim1 { opacity: .5; } .dim2 { opacity: .35; }
+  .sz { margin-left: auto; font: 11.5px var(--mono); color: var(--muted); }
+  .pill { display: inline-flex; align-items: center; gap: 4px; height: 30px; padding: 0 12px; border-radius: 999px; background: #e9eaee; color: #10131c; font-size: 12.5px; font-weight: 600; }
+  .pill :global(.i) { width: 16px; height: 16px; }
+  .pill.accent { background: var(--accent); color: var(--accent-ink); }
+  .mmenu { position: absolute; right: 22px; top: 58px; width: 190px; border-radius: 13px; background: #1e1f20; border: 1px solid var(--line-2); padding: 5px; font-size: 13px; box-shadow: 0 20px 50px -10px #000; }
+  .mmenu > div { height: 34px; padding: 0 11px; border-radius: 8px; color: #c4c7c5; display: flex; gap: 8px; align-items: center; }
+  .mmenu :global(.i) { width: 17px; height: 17px; }
+  .mmenu .hl { background: rgba(255,255,255,.08); color: #fff; }
+  .drop { margin-top: 8px; border: 1.5px dashed var(--line-2); border-radius: 14px; height: 150px; display: grid; place-items: center; text-align: center; color: var(--muted); font-size: 13px; }
+  .right { display: flex; justify-content: flex-end; margin-top: 12px; }
+  .mfile { display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px; border-radius: 9px; background: var(--accent-soft); border: 1px solid var(--accent-line); color: #ffd9c9; font: 12px var(--mono); }
+  .mfile :global(.i) { width: 16px; height: 16px; color: currentColor; }
+  .minput { margin-top: 56px; border-radius: 22px; border: 1px solid var(--line-2); background: #1e1f20; padding: 14px 16px; font-size: 13.5px; color: #e3e3e3; }
+  .minput b { font-weight: 600; }
+  .row2 { display: flex; gap: 6px; margin-top: 12px; }
+  .modes { display: flex; justify-content: center; gap: 6px; margin-top: 10px; font-size: 12.5px; color: var(--muted); }
+  .modes span { padding: 5px 11px; border-radius: 999px; }
+  .modes .hl { background: rgba(255,255,255,.1); color: #fff; }
+  .cursor { position: absolute; z-index: 6; left: 50%; top: 50%; width: 22px; height: 22px; margin: -2px 0 0 -3px; pointer-events: none; filter: drop-shadow(0 3px 6px rgba(0,0,0,.6)); transition: left .6s var(--ease), top .6s var(--ease); }
+  .cursor::after { content: ""; position: absolute; left: -9px; top: -9px; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,140,100,.45); opacity: 0; }
+  .cursor:global(.click)::after { animation: clickp .5s var(--ease); }
+  @keyframes clickp { 0% { opacity: .9; transform: scale(.3); } 100% { opacity: 0; transform: scale(1.6); } }
+  .mmain :global(.is-target) { box-shadow: 0 0 0 2px var(--accent), 0 0 0 6px rgba(255,107,61,.14); }
+
+  .term { border-radius: 18px; overflow: hidden; border: 1px solid var(--line-2); background: #09090a; box-shadow: 0 40px 100px -50px #000; }
+  .ttop { display: flex; align-items: center; gap: 7px; min-height: 46px; padding: 6px 10px 6px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .ttop > i { width: 10px; height: 10px; border-radius: 50%; background: #2a2a2e; }
+  .os { display: flex; gap: 2px; margin-left: 12px; flex-wrap: wrap; }
+  .os button { height: 28px; padding: 0 10px; border-radius: 8px; border: 1px solid transparent; background: none; color: var(--muted); font: 500 12px var(--mono); cursor: pointer; }
+  .os button[aria-selected="true"] { background: rgba(255,255,255,.07); color: #fff; border-color: var(--line); }
+  .tbody { padding: 20px; font: 13px/1.75 var(--mono); min-height: 300px; }
+  .cmd { display: flex; gap: 10px; align-items: flex-start; }
+  .p { color: var(--accent-2); }
+  code { color: #fff; word-break: break-all; flex: 1; min-width: 0; font: inherit; }
+  .cmd .btn { flex: none; }
+  .out { margin-top: 12px; color: var(--soft); }
+  .out > div { opacity: 0; transform: translateY(4px); transition: opacity .3s var(--ease), transform .3s var(--ease); }
+  .out > div:global(.in) { opacity: 1; transform: none; }
+  .g { color: var(--ok); } .y { color: var(--warn); } .w { color: #fff; }
+
+  @media (max-width: 980px) { .panel { grid-template-columns: 1fr; } }
+  @media (max-width: 640px) {
+    .mbody { grid-template-columns: 1fr; }
+    .mside { display: none; }
+    .mock { aspect-ratio: 4 / 3.5; }
+    .dl { flex-wrap: wrap; }
+    .dl .btn { margin-left: 0; width: 100%; }
+  }
+</style>

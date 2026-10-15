@@ -1,0 +1,115 @@
+---
+import { Image } from "astro:assets";
+import Icon from "./Icon.astro";
+import { img } from "../lib/images";
+import { HERO_PROMPT, HERO_FAN, HERO_STATS } from "../data/content";
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const mid = (HERO_FAN.length - 1) / 2;
+---
+<section class="hero" id="top">
+  <div class="glow" aria-hidden="true"></div>
+  <div class="dots" aria-hidden="true"></div>
+  <div class="wrap copy">
+    <span class="brandline">
+      <Icon name="code" class="code" />
+      <span class="long">Open-source skill for</span><span class="short">Free skill for</span>
+      <span class="lg"><img src={`${base}logos/gemini-2025.svg`} alt="" width="16" height="16" />Gemini</span> and
+      <span class="lg"><img src={`${base}logos/antigravity.png`} alt="" width="16" height="16" />Antigravity</span>
+    </span>
+    <h1>Real PowerPoint, <span class="soft">straight from Gemini.</span></h1>
+    <p class="lead">Ask in one line. Get a researched, designed .pptx where every chart, table, icon and word stays editable. Or hand it the deck you already have.</p>
+    <div class="prompt" id="heroPrompt">
+      <div class="prompt-in">
+        <p class="prompt-text"><span id="typed" data-text={HERO_PROMPT}>{HERO_PROMPT}</span><span class="caret" aria-hidden="true"></span></p>
+        <div class="prompt-bar">
+          <span class="chip on"><img src={`${base}logos/gemini-2025.svg`} alt="" width="14" height="14" />@pptx-native</span>
+          <span class="chip"><Icon name="bolt" />Task</span>
+          <span class="chip model">Argon</span>
+          <span class="send" aria-hidden="true"><Icon name="arrow_upward" /></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="fan" id="fan" aria-hidden="true">
+    {HERO_FAN.map((p, i) => {
+      const o = i - mid;
+      return (
+        <div class={`card${Math.abs(o) === 3 ? " outer" : ""}`} style={`--o:${o};--a:${Math.abs(o)};--o2:${o * o}`}>
+          <Image src={img(p)} alt="" widths={[400, 800]} sizes="(max-width: 640px) 46vw, 340px" loading="eager" decoding="async" fetchpriority={o === 0 ? "high" : "low"} />
+        </div>
+      );
+    })}
+  </div>
+  <ul class="wrap stats" id="heroStats">
+    {HERO_STATS.map((s) => <li class="chip"><Icon name={s.icon} />{s.text}</li>)}
+  </ul>
+</section>
+
+<script>
+  import { $, reduceMotion } from "../scripts/util";
+  const typed = $("#typed")!, prompt = $("#heroPrompt")!, fan = $("#fan")!, stats = $("#heroStats")!;
+  const text = typed.dataset.text || "";
+  requestAnimationFrame(() => { fan.classList.add("play"); stats.classList.add("play"); });
+  const finish = () => { prompt.classList.add("sent"); setTimeout(() => prompt.classList.add("done"), 1600); };
+  if (reduceMotion()) { finish(); }
+  else {
+    typed.textContent = "";
+    let i = 0;
+    const step = () => {
+      typed.textContent = text.slice(0, ++i);
+      if (i < text.length) setTimeout(step, 22 + Math.random() * 26);
+      else setTimeout(finish, 350);
+    };
+    setTimeout(step, 250);
+  }
+</script>
+
+<style>
+  .hero { position: relative; overflow: hidden; padding: calc(var(--nav-h) + 12px + clamp(40px, 7vh, 88px)) 0 clamp(40px, 6vw, 72px); }
+  .glow { position: absolute; inset: 0; pointer-events: none; background:
+    radial-gradient(55% 45% at 50% -5%, rgba(59,79,216,.34), rgba(59,79,216,.08) 55%, transparent 75%),
+    radial-gradient(45% 30% at 50% 105%, rgba(255,107,61,.16), transparent 70%); }
+  .dots { position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(rgba(255,250,240,.07) 1px, transparent 1px); background-size: 26px 26px; mask-image: radial-gradient(ellipse 70% 50% at 50% 30%, #000, transparent 75%); -webkit-mask-image: radial-gradient(ellipse 70% 50% at 50% 30%, #000, transparent 75%); }
+  .copy { position: relative; z-index: 2; display: grid; justify-items: center; gap: 22px; text-align: center; }
+  .brandline { display: inline-flex; align-items: center; flex-wrap: wrap; justify-content: center; gap: 6px 8px; min-height: 36px; padding: 6px 14px 6px 12px; border-radius: 999px; border: 1px solid var(--line-2); background: rgba(255,255,255,.03); box-shadow: var(--raise); font-size: 13.5px; font-weight: 500; color: var(--soft); }
+  .brandline :global(.code) { width: 17px; height: 17px; color: var(--accent-2); }
+  .lg { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); }
+  .lg img { width: 16px; height: 16px; }
+  .short { display: none; }
+  h1 { font-size: clamp(44px, 7.2vw, 100px); letter-spacing: -0.055em; line-height: .96; max-width: 13ch; }
+  .soft { color: var(--muted); }
+  .lead { text-align: center; max-width: 52ch; }
+  .prompt { width: min(720px, 100%); border-radius: 22px; padding: 1px; background: linear-gradient(140deg, rgba(255,255,255,.2), rgba(255,255,255,.04) 40%, rgba(255,107,61,.5) 100%); box-shadow: 0 30px 90px -30px rgba(59,79,216,.5); margin-top: 6px; }
+  .prompt-in { border-radius: 21px; background: #131315; padding: 18px 14px 12px 20px; text-align: left; }
+  .prompt-text { margin: 0; min-height: 52px; font-size: clamp(16px, 1.5vw, 18px); line-height: 1.45; color: var(--ink); }
+  .caret { display: inline-block; width: 2px; height: 1.1em; vertical-align: -0.18em; background: var(--accent); margin-left: 2px; animation: blink 1s steps(1) infinite; }
+  .prompt.done .caret { animation: none; opacity: 0; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .prompt-bar { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+  .send { margin-left: auto; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(180deg, #ff7f55, #ff6233); color: var(--accent-ink); box-shadow: inset 0 1px 0 rgba(255,255,255,.35); transition: transform .2s var(--ease); }
+  .prompt.sent .send { animation: press .45s var(--ease); }
+  @keyframes press { 40% { transform: scale(.86); } }
+
+  .fan { position: relative; z-index: 1; height: clamp(190px, 25vw, 300px); margin-top: clamp(28px, 4vw, 48px); perspective: 1600px; }
+  .card { --w: min(320px, 30vw); position: absolute; left: 50%; top: 0; width: var(--w); aspect-ratio: 16 / 9; margin-left: calc(var(--w) / -2); border-radius: 10px; overflow: hidden; z-index: calc(10 - var(--a)); box-shadow: 0 30px 60px -28px rgba(0,0,0,.95), 0 0 0 1px rgba(255,255,255,.1);
+    transform: translateX(calc(var(--o) * min(14vw, 170px))) translateY(calc(var(--o2) * 7px)) rotate(calc(var(--o) * 3deg)) rotateY(calc(var(--o) * -10deg)); }
+  .card :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  :global(.js) .card { opacity: 0; transform: translateY(46px) scale(.7); transition: opacity .6s var(--ease), transform .9s var(--ease); transition-delay: calc(var(--a) * 70ms); }
+  :global(.js) .fan:global(.play) .card { opacity: 1; transform: translateX(calc(var(--o) * min(14vw, 170px))) translateY(calc(var(--o2) * 7px)) rotate(calc(var(--o) * 3deg)) rotateY(calc(var(--o) * -10deg)); }
+
+  .stats { position: relative; z-index: 2; list-style: none; margin-top: clamp(20px, 3vw, 36px); padding: 0; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .stats .chip { height: 34px; padding: 0 13px; font-size: 13px; background: #131315; }
+  :global(.js) .stats { opacity: 0; transform: translateY(8px); transition: opacity .5s var(--ease) .5s, transform .5s var(--ease) .5s; }
+  :global(.js) .stats:global(.play) { opacity: 1; transform: none; }
+
+  @media (max-width: 640px) {
+    .brandline { font-size: 12.5px; gap: 6px; padding: 6px 12px 6px 10px; flex-wrap: nowrap; white-space: nowrap; }
+    .long, .brandline :global(.code) { display: none; }
+    .short { display: inline; }
+    .model { display: none; }
+    .card { --w: 44vw; }
+    .outer { display: none; }
+    .fan { height: 46vw; }
+    .stats .chip:nth-child(2), .stats .chip:nth-child(3) { display: none; }
+  }
+</style>

@@ -1,0 +1,42 @@
+---
+import { Font } from "astro:assets";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+
+interface Props { title: string; description: string; page: "home" | "gallery" }
+const { title, description, page } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const ogImage = new URL(`${base}og.png`, Astro.site).href;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={ogImage} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#0a0a0b" />
+  <link rel="icon" href={`${base}brand/favicon.svg`} type="image/svg+xml" />
+  <Font cssVariable="--font-sans" preload />
+  <Font cssVariable="--font-mono" />
+  <script is:inline>document.documentElement.classList.add("js");</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <Nav page={page} />
+  <main id="main"><slot /></main>
+  <Footer page={page} />
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+    import "../scripts/site.ts";
+  </script>
+</body>
+</html>
