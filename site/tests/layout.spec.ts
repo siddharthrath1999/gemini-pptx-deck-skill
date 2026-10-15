@@ -11,7 +11,7 @@ const VIEWPORTS = [
 const PAGES = [{ name: "home", path: "/index.html" }, { name: "gallery", path: "/prompts.html" }];
 
 // Grids whose items must never overlap each other.
-const GRIDS = [".works .row", "#why .grid", "#exGrid", "#posterGrid", "#bento", ".principles", ".vs", ".cards", ".thumbs", ".stats"];
+const GRIDS = ["#path", "#how .strip", "#examples .cards", "#bento", "#setup .two", "#posterGrid", ".principles", ".vs", "#gGrid"];
 
 async function scrollThrough(page: Page) {
   await page.evaluate(async () => {
@@ -23,7 +23,11 @@ async function scrollThrough(page: Page) {
     window.scrollTo(0, 0);
   });
   // let lazy images finish
-  await page.waitForFunction(() => Array.from(document.images).filter((i) => i.offsetParent !== null && i.loading !== "lazy" || (i.offsetParent !== null && i.getBoundingClientRect().height > 0)).every((i) => i.complete), null, { timeout: 20_000 });
+  // (images parked off to the side in swipe rows load when swiped, so they are skipped)
+  await page.waitForFunction(() => Array.from(document.images).filter((i) => {
+    const r = i.getBoundingClientRect();
+    return i.offsetParent !== null && r.height > 0 && r.left < innerWidth && r.right > 0;
+  }).every((i) => i.complete), null, { timeout: 20_000 });
 }
 
 for (const vp of VIEWPORTS) {
@@ -47,7 +51,7 @@ for (const vp of VIEWPORTS) {
       expect(overflow, "horizontal overflow (px)").toBeLessThanOrEqual(0);
 
       // 3. every image loaded
-      const broken = await page.evaluate(() => Array.from(document.images).filter((i) => i.offsetParent !== null && i.naturalWidth === 0).map((i) => i.currentSrc || i.src));
+      const broken = await page.evaluate(() => Array.from(document.images).filter((i) => { const r = i.getBoundingClientRect(); return i.offsetParent !== null && r.left < innerWidth && r.right > 0 && i.complete && i.naturalWidth === 0; }).map((i) => i.currentSrc || i.src));
       expect(broken, "broken images").toEqual([]);
 
       // 4. every fade-in block became visible
@@ -60,7 +64,7 @@ for (const vp of VIEWPORTS) {
 
       // 6. visible elements stay inside the screen (except deliberate bleeds and scroll areas)
       const outside = await page.evaluate(() => {
-        const skip = (el: Element) => el.closest(".fan, .scroll, .tabs, dialog, .bar .tabs, .big, .glow, .dots");
+        const skip = (el: Element) => el.closest(".fan, .scroll, .tabs, dialog, .bar .tabs, .big, .glow, .dots, .strip, #examples .cards");
         return Array.from(document.querySelectorAll("main *, footer *"))
           .filter((el) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && !skip(el) && (r.right > innerWidth + 1 || r.left < -1); })
           .slice(0, 8).map((el) => `${el.tagName.toLowerCase()}.${(el.className as any)?.baseVal ?? el.className}`);
@@ -95,7 +99,7 @@ for (const vp of VIEWPORTS) {
 
 test("jumping to a section never hides its heading under the header", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  for (const id of ["why", "how", "audiences", "layouts", "setup", "prompts", "faq"]) {
+  for (const id of ["why", "how", "examples", "features", "setup", "faq"]) {
     await page.goto(`/index.html#${id}`);
     await page.waitForTimeout(400);
     const { navBottom, headTop, opacity } = await page.evaluate((id) => {

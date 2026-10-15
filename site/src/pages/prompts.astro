@@ -2,6 +2,8 @@
 import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
+import Prompts from "../components/Prompts.astro";
+import Layouts from "../components/Layouts.astro";
 import { img } from "../lib/images";
 import { PROMPTS, PROMPT_CATS } from "../data/content";
 
@@ -12,14 +14,15 @@ const fields = (t: string) => esc(t).replace(/\[([^\]]+)\]/g, (_m, v) => `<span 
 const catOf = (k: string) => PROMPT_CATS.find((c) => c.key === k)!;
 const count = (k: string) => (k === "all" ? PROMPTS.length : PROMPTS.filter((p) => p.cat === k).length);
 ---
-<Base page="gallery" title="Prompt gallery · PPTX Native" description="Ready-made prompts for PPTX Native: strategy decks, learning decks, product and tech decks, and edits to decks you already have. Fill in your details and send them to Gemini.">
+<Base page="gallery" title="Prompts and layouts · PPTX Native" description="Ready-made prompts for PPTX Native, a prompt builder, and all 34 slide layouts. Fill in your details and send them to Gemini.">
   <section class="hero">
     <div class="glow" aria-hidden="true"></div>
     <div class="wrap grid">
       <div class="copy">
         <span class="eyebrow">{PROMPTS.length} prompts · 4 use cases</span>
-        <h1>Prompt gallery</h1>
-        <p class="lead">Prompts that already make good decks. Each one names the audience, the decision and the must-haves, and leaves the design to the skill.</p>
+        <h1>Prompts and layouts</h1>
+        <p class="lead">Prompts that already make good decks, a builder for your own, and every layout the skill can pick from.</p>
+        <nav class="jump" aria-label="On this page"><a class="chip" href="#gallery"><Icon name="format_quote" />{PROMPTS.length} ready prompts</a><a class="chip" href="#build"><Icon name="tune" />Build your own</a><a class="chip" href="#layouts"><Icon name="dashboard" />34 layouts</a></nav>
       </div>
       <ol class="steps" aria-label="How to use a prompt">
         <li><span class="n">1</span><div><b>Change the <span class="demo-f">underlined</span> parts</b><span>Your topic, audience, length and files.</span></div></li>
@@ -29,6 +32,7 @@ const count = (k: string) => (k === "all" ? PROMPTS.length : PROMPTS.filter((p) 
     </div>
   </section>
 
+  <div class="zone" id="gallery">
   <div class="sentinel" id="barSentinel" aria-hidden="true"></div>
   <div class="bar" id="gBar">
     <div class="wrap bar-in">
@@ -69,6 +73,9 @@ const count = (k: string) => (k === "all" ? PROMPTS.length : PROMPTS.filter((p) 
       </div>
     </div>
   </section>
+  </div>
+  <Prompts />
+  <Layouts />
 </Base>
 
 <script>
@@ -137,6 +144,10 @@ const count = (k: string) => (k === "all" ? PROMPTS.length : PROMPTS.filter((p) 
 
 <style>
   .hero { position: relative; overflow: hidden; padding: calc(var(--nav-h) + 72px) 0 32px; }
+  .zone { scroll-margin-top: calc(var(--nav-h) + 12px); }
+  .jump { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+  .jump .chip { height: 34px; padding: 0 12px; transition: border-color .2s, color .2s; }
+  .jump .chip:hover { border-color: var(--line-3); color: var(--ink); }
   .glow { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(55% 60% at 40% -10%, rgba(59,79,216,.3), transparent 70%), radial-gradient(40% 50% at 90% 0%, rgba(255,107,61,.12), transparent 70%); }
   .grid { position: relative; display: grid; grid-template-columns: 1.15fr .85fr; gap: 40px; align-items: center; }
   .copy { display: grid; gap: 16px; justify-items: start; }

@@ -1,190 +1,128 @@
 ---
+// How it works: five linked steps from a real run, then the slides it produced.
+// Desktop reads left to right; below 900px the same list becomes a vertical timeline.
 import { Image } from "astro:assets";
 import Icon from "./Icon.astro";
 import { img } from "../lib/images";
-import { RUN } from "../data/content";
-const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
-const labels = ["your request", ...RUN.steps.map((s) => s.label)];
+import { HOW, EXAMPLES } from "../data/content";
+const run = EXAMPLES[0];
 ---
 <section id="how">
   <div class="wrap">
     <div class="sec-head rv">
       <span class="eyebrow">How it works</span>
-      <h2>One request, start to finish.</h2>
-      <p class="lead">A real run in Gemini's Task mode: the steps it took, the slides it made, and its answer. It plays once when you get here; tap any step to see it.</p>
+      <h2>One sentence in.<br />A finished deck out.</h2>
+      <p class="lead">A real run in Gemini's Task mode, step by step. You write the first line; the skill does the rest.</p>
     </div>
-    <div class="replay rv" id="replay" data-labels={JSON.stringify(labels)}>
-      <div class="thread">
-        <div class="top"><img src={`${base}logos/gemini-2025.svg`} alt="" width="18" height="18" loading="lazy" />Gemini · Task<span class="chip on">@pptx-native</span></div>
-        <ol class="body" id="thread">
-          <li class="msg user shown is-step" data-step="0"><button type="button"><b>@pptx-native</b> {RUN.request}</button></li>
-          {RUN.steps.map((s, i) => (
-            <li class="msg is-step" data-step={i + 1}>
-              <button type="button">
-                <span class="ic">
-                  <span class="s-wait"><Icon name={s.icon} /></span>
-                  <span class="s-run"><Icon name="progress_activity" /></span>
-                  <span class="s-done"><Icon name="check_circle" /></span>
-                </span>
-                <span><b>{s.title}</b><small>{s.sub}</small></span>
-              </button>
-            </li>
-          ))}
-        </ol>
-        <div class="composer" aria-hidden="true"><Icon name="add" /><span class="ph">Ask a follow-up</span><span class="chip">Argon</span><Icon name="mic" /></div>
-      </div>
 
-      <div class="board" id="board" aria-live="polite">
-        <div class="label">Being made · <b id="boardLabel">{labels[0]}</b>
-          <button type="button" class="again" id="replayAgain" hidden><Icon name="restart_alt" />Play again</button>
-        </div>
-        <div class="scene active">
-          <div class="prompt-card"><b>@pptx-native</b> {RUN.request}<div class="att"><span class="chip on"><Icon name="extension" />pptx-native</span><span class="chip"><Icon name="bolt" />Task</span><span class="chip">Argon</span></div></div>
-        </div>
-        <div class="scene">
-          {RUN.research.map(([icon, text, tag]) => <div class="row"><span class="well sm"><Icon name={icon} /></span>{text}<span class={`r ${tag === "set aside" ? "" : "ok"}`}>{tag}</span></div>)}
-        </div>
-        <div class="scene">
-          <ol class="outline">{RUN.outline.map((t, i) => <li><span>0{i + 1}</span>{t}</li>)}</ol>
-        </div>
-        <div class="scene">
-          <div class="palette">{RUN.palette.map((c) => <i style={`background:${c}`}></i>)}</div>
-          <div class="type-spec"><b>Aa</b><span>{RUN.font}</span></div>
-        </div>
-        <div class="scene">
-          <div class="thumbs">{RUN.thumbs.map((p) => <Image src={img(p)} alt="" widths={[320, 640]} sizes="(max-width: 640px) 30vw, 180px" />)}</div>
-        </div>
-        <div class="scene">
-          {RUN.checks.map(([icon, text, tag]) => <div class="row"><span class="well sm ok"><Icon name={icon} /></span>{text}<span class="r ok">{tag}</span></div>)}
-        </div>
-        <div class="scene">
-          <figure class="real">
-            <Image src={img("run/gemini-answer.jpg")} alt="Gemini's real answer: the 15-slide deck file and the handoff note" />
-            <figcaption><Icon name="photo_camera" />Real screenshot · Gemini Task mode, October 2026</figcaption>
-          </figure>
-        </div>
-        <div class="progress"><i id="replayBar"></i></div>
+    <ol class="path" id="path">
+      {HOW.steps.map((s, i) => (
+        <li style={`--i:${i}`}>
+          <span class="dot"><Icon name={s.icon} /></span>
+          <div class="body">
+            <h3><span class="n">{i + 1}</span>{s.title}</h3>
+            <p>{s.text}</p>
+            <div class="art" aria-hidden="true">
+              {i === 0 && <span class="ask"><b>@pptx-native</b> {HOW.request}</span>}
+              {i === 1 && <span class="srcs">{HOW.sources.map((x) => <span class="tag">{x}</span>)}<span class="tag more">+8 more</span></span>}
+              {i === 2 && <span class="look"><span class="sw">{HOW.palette.map((c) => <i style={`background:${c}`}></i>)}</span><span>Five-part story · Georgia and Arial</span></span>}
+              {i === 3 && <span class="ok">{HOW.checks.map((c) => <span><Icon name="check_circle" fill />{c}</span>)}</span>}
+              {i === 4 && <span class="file"><Icon name="present_to_all" /><span><b>india-ev-two-wheelers.pptx</b>15 slides · 12 sources</span></span>}
+            </div>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <div class="out rv">
+      <div class="out-head">
+        <h3>What came out</h3>
+        <button type="button" class="textlink" data-deck="0" data-slide="0" aria-haspopup="dialog">Page through the slides<Icon name="arrow_forward" /></button>
       </div>
+      <ul class="strip">
+        {run.slides.map((p, k) => (
+          <li><button type="button" data-deck="0" data-slide={k} aria-haspopup="dialog" aria-label={`Open slide ${k + 1} of the ${run.title} deck`}>
+            <Image src={img(p)} alt="" widths={[320, 560]} sizes="(max-width: 900px) 62vw, 150px" />
+          </button></li>
+        ))}
+      </ul>
     </div>
   </div>
 </section>
 
 <script>
-  import { $, $$, onFirstView, reduceMotion } from "../scripts/util";
-  const root = $("#replay")!;
-  const labels: string[] = JSON.parse(root.dataset.labels || "[]");
-  const msgs = $$(".is-step", root), scenes = $$(".scene", root), thread = $("#thread", root)!;
-  const label = $("#boardLabel", root)!, bar = $("#replayBar", root)!, again = $("#replayAgain", root)!;
-  const last = scenes.length - 1;
-  let now = -1, timer = 0, hovering = false, playing = false;
-
-  function show(i: number) {
-    now = i;
-    msgs.forEach((m, k) => {
-      m.classList.toggle("shown", k <= i);
-      m.classList.toggle("current", k === i && k > 0 && i < last);
-      m.classList.toggle("done", k > 0 && (k < i || i === last));
-      m.querySelector("button")!.setAttribute("aria-current", k === i ? "step" : "false");
-    });
-    scenes.forEach((s, k) => s.classList.toggle("active", k === i));
-    label.textContent = labels[i];
-    bar.style.width = `${((i + 1) / scenes.length) * 100}%`;
-    const m = msgs[i];
-    const top = m.offsetTop - thread.offsetTop + m.offsetHeight - thread.clientHeight + 16;
-    thread.scrollTo({ top: Math.max(0, top), behavior: reduceMotion() ? "auto" : "smooth" });
-    again.hidden = !(i === last && !playing);
-  }
-  function stop() { clearTimeout(timer); playing = false; again.hidden = now !== last; }
-  function tick() {
-    if (!playing) return;
-    if (hovering) { timer = window.setTimeout(tick, 400); return; }
-    if (now >= last) { stop(); return; }
-    show(now + 1);
-    timer = window.setTimeout(tick, 2300);
-  }
-  function play(from = 0) { stop(); playing = true; show(from); timer = window.setTimeout(tick, 2300); }
-
-  msgs.forEach((m, i) => m.querySelector("button")!.addEventListener("click", () => { stop(); show(i); }));
-  again.addEventListener("click", () => play(0));
-  root.addEventListener("pointerenter", () => { hovering = true; });
-  root.addEventListener("pointerleave", () => { hovering = false; });
-  show(0);
-  if (reduceMotion()) show(last);
-  else onFirstView(root, () => play(0), 0.4);
+  import { $, onFirstView, reduceMotion } from "../scripts/util";
+  const path = $("#path")!;
+  if (reduceMotion()) path.classList.add("go");
+  else onFirstView(path, () => path.classList.add("go"), 0.3);
 </script>
 
 <style>
-  .replay { display: grid; grid-template-columns: 1fr 1.08fr; gap: 20px; height: clamp(540px, 72vh, 660px); }
-  .thread { border-radius: var(--r-lg); border: 1px solid var(--line-2); background: #131314; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
-  .top { display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 16px; border-bottom: 1px solid var(--line); font-size: 13.5px; font-weight: 500; color: var(--soft); flex: none; }
-  .top img { width: 18px; height: 18px; }
-  .top .chip { margin-left: auto; height: 26px; font-size: 12px; }
-  .body { list-style: none; margin: 0; padding: 18px; display: flex; flex-direction: column; gap: 10px; overflow: hidden; flex: 1; min-height: 0; }
-  .msg { opacity: 0; transform: translateY(8px); transition: opacity .4s var(--ease), transform .45s var(--ease); }
-  .msg.shown { opacity: 1; transform: none; }
-  .msg button { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; width: 100%; padding: 6px 8px; border-radius: 10px; font-size: 14px; line-height: 1.5; color: #c4c7c5; transition: background-color .2s; }
-  .msg button:hover { background: rgba(255,255,255,.03); }
-  .msg button:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
-  .msg button[aria-current="step"] { background: rgba(255,255,255,.04); }
-  .user { align-self: flex-end; max-width: 84%; }
-  .user button { display: block; background: #1e1f20; border-radius: 22px 22px 6px 22px; padding: 12px 16px; color: #e3e3e3; }
-  .user button:hover, .user button[aria-current="step"] { background: #232426; }
-  .msg b { color: #e3e3e3; font-weight: 500; }
-  .user b { font-weight: 600; color: #fff; }
-  .msg small { display: block; font: 400 12px/1.4 var(--mono); color: #80868b; margin-top: 3px; }
-  .ic { width: 22px; height: 22px; display: grid; place-items: center; }
-  .ic :global(.i) { width: 18px; height: 18px; }
-  .s-wait { color: #a8abb0; } .s-run { color: var(--accent-2); display: none; } .s-done { color: var(--ok); display: none; }
-  .s-wait, .s-run, .s-done { line-height: 0; }
-  .current .s-wait, .done .s-wait { display: none; }
-  .current .s-run { display: block; animation: spin 1.1s linear infinite; }
-  .done .s-done { display: block; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .composer { flex: none; margin: 0 14px 14px; height: 46px; border-radius: 23px; background: #1e1f20; display: flex; align-items: center; gap: 10px; padding: 0 12px 0 14px; color: #8e918f; font-size: 13.5px; }
-  .composer .ph { flex: 1; }
-  .composer :global(.i) { color: #a8abb0; }
-  .composer .chip { height: 26px; border-color: transparent; background: none; color: #c4c7c5; }
+  .path { --dot: 44px; position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+  /* the connecting line: a quiet track, and an accent fill that runs once */
+  .path::before, .path::after { content: ""; position: absolute; top: calc(var(--dot) / 2 - 1px); left: 10%; right: 10%; height: 2px; border-radius: 2px; }
+  .path::before { background: var(--line-2); }
+  .path::after { background: linear-gradient(90deg, var(--accent), var(--accent-2)); transform-origin: left; }
+  :global(.js) .path::after { transform: scaleX(0); transition: transform 1.8s var(--ease) .2s; }
+  :global(.js) .path:global(.go)::after { transform: none; }
 
-  .board { position: relative; border-radius: var(--r-lg); border: 1px solid var(--line); background: radial-gradient(90% 70% at 70% 0%, rgba(59,79,216,.14), transparent 60%), var(--bg-2); overflow: hidden; min-height: 0; }
-  .label { position: absolute; inset: 0 0 auto; height: 52px; padding: 0 12px 0 20px; z-index: 2; font: 400 11.5px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: flex; gap: 8px; align-items: center; border-bottom: 1px solid var(--line); background: rgba(17,17,19,.7); }
-  .label b { color: var(--ink); font-weight: 400; }
-  .again { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--line-2); background: rgba(255,255,255,.04); color: var(--soft); font: 500 12px/1 var(--sans); letter-spacing: 0; text-transform: none; cursor: pointer; }
-  .again:hover { color: var(--ink); border-color: var(--line-3); }
-  .again :global(.i) { width: 16px; height: 16px; }
-  .scene { position: absolute; inset: 52px 0 2px; padding: 24px; display: grid; grid-template-columns: minmax(0, 1fr); align-content: center; gap: 10px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: opacity .4s var(--ease), transform .5s var(--ease), visibility 0s .4s; }
-  .scene.active { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
-  .row { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 9px 14px 9px 10px; border-radius: 12px; background: rgba(255,255,255,.03); border: 1px solid var(--line); font-size: 14px; }
-  .well.ok { color: var(--ok); }
-  .r { margin-left: auto; font: 400 11.5px var(--mono); color: var(--muted); white-space: nowrap; }
-  .r.ok { color: var(--ok); }
-  .prompt-card { border-radius: 16px; border: 1px solid var(--line-2); background: var(--bg-3); padding: 18px; font-size: 16px; line-height: 1.5; }
-  .prompt-card b { font-weight: 600; }
-  .att { display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap; }
-  .outline { list-style: none; margin: 0; padding: 0; }
-  .outline li { display: grid; grid-template-columns: 34px 1fr; gap: 8px; padding: 11px 2px; border-bottom: 1px solid var(--line); font-size: 15px; }
-  .outline span { font: 400 12px/1.8 var(--mono); color: var(--accent-2); }
-  .palette { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-  .palette i { aspect-ratio: 1 / 1.3; border-radius: 12px; display: block; border: 1px solid var(--line); }
-  .type-spec { display: flex; gap: 18px; align-items: end; margin-top: 6px; }
-  .type-spec b { font: 400 60px/1 Georgia, serif; }
-  .type-spec span { color: var(--muted); font-size: 14px; }
-  .thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .thumbs :global(img) { width: 100%; border-radius: 6px; aspect-ratio: 16 / 9; object-fit: cover; }
-  .real { margin: 0; display: grid; gap: 10px; }
-  .real :global(img) { width: 100%; border-radius: 12px; border: 1px solid var(--line-2); }
-  .real figcaption { display: inline-flex; align-items: center; gap: 6px; font: 500 11.5px/1 var(--mono); color: var(--muted); }
-  .real figcaption :global(.i) { width: 16px; height: 16px; }
-  .progress { position: absolute; inset: auto 0 0; height: 2px; background: var(--line); z-index: 3; }
-  .progress i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .4s var(--ease); }
-  @media (max-width: 980px) {
-    .replay { grid-template-columns: 1fr; height: auto; }
-    .board { order: -1; aspect-ratio: 4 / 3.4; }
-    .body { flex: none; height: 300px; }
+  li { position: relative; display: grid; grid-template-rows: var(--dot) 1fr; gap: 16px; justify-items: center; }
+  .dot { position: relative; z-index: 1; width: var(--dot); height: var(--dot); border-radius: 50%; display: grid; place-items: center; background: #1d1310; border: 1px solid var(--accent-line); color: var(--accent-2); }
+  .dot :global(.i) { width: 21px; height: 21px; }
+  .body { width: 100%; display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--bg-2); }
+  h3 { display: flex; align-items: center; gap: 8px; font-size: 16px; }
+  .n { font: 500 11px/1 var(--mono); color: var(--faint); }
+  .body > p { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--muted); }
+  .art { margin-top: auto; padding-top: 10px; font-size: 12.5px; line-height: 1.5; color: var(--soft); }
+  .art > span { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; min-height: 68px; border-radius: 10px; background: var(--bg-3); border: 1px solid var(--line); align-content: flex-start; }
+  .ask { display: block !important; }
+  .ask b { color: var(--accent-2); font-weight: 500; }
+  .tag { height: 22px; display: inline-flex; align-items: center; padding: 0 7px; border-radius: 6px; border: 1px solid var(--line-2); font: 500 11px/1 var(--mono); color: var(--soft); }
+  .tag.more { color: var(--muted); border-style: dashed; }
+  .look { flex-direction: column; }
+  .sw { display: flex; gap: 4px; }
+  .sw i { width: 18px; height: 18px; border-radius: 5px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
+  .ok { flex-direction: column; gap: 4px !important; }
+  .ok > span { display: flex; align-items: center; gap: 6px; }
+  .ok :global(.i) { width: 16px; height: 16px; color: var(--ok); }
+  .file { align-items: center; flex-wrap: nowrap !important; gap: 10px !important; }
+  .file :global(.i) { width: 26px; height: 26px; color: var(--accent-2); }
+  .file span { display: grid; color: var(--muted); font-size: 12px; min-width: 0; }
+  .file b { color: var(--ink); font-weight: 500; font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* each step lights up as the line reaches it */
+  :global(.js) .dot, :global(.js) .body { transition: border-color .4s, color .4s, background-color .4s, opacity .5s var(--ease), transform .5s var(--ease); transition-delay: calc(var(--i) * 320ms + 150ms); }
+  :global(.js) .body { opacity: .35; transform: translateY(8px); }
+  :global(.js) .path:global(.go) .body { opacity: 1; transform: none; }
+  :global(.js) .path:not(:global(.go)) .dot { color: var(--muted); border-color: var(--line-2); background: var(--bg-3); }
+
+  .out { margin-top: 36px; }
+  .out-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+  .out-head h3 { font-size: 17px; }
+  .out-head button { background: none; border: 0; padding: 0; cursor: pointer; }
+  .strip { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 10px; }
+  .strip button { display: block; width: 100%; padding: 0; border: 1px solid var(--line-2); border-radius: 8px; overflow: hidden; background: none; cursor: zoom-in; transition: border-color .2s, transform .25s var(--ease); }
+  .strip button:hover { border-color: var(--line-3); transform: translateY(-2px); }
+  .strip :global(img) { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+
+  @media (max-width: 900px) {
+    /* vertical timeline: line on the left, every step fully visible */
+    .path { --dot: 40px; grid-template-columns: 1fr; gap: 12px; }
+    .path::before, .path::after { top: 20px; bottom: 20px; left: calc(var(--dot) / 2 - 1px); right: auto; width: 2px; height: auto; }
+    .path::after { background: linear-gradient(var(--accent), var(--accent-2)); transform-origin: top; }
+    :global(.js) .path::after { transform: scaleY(0); }
+    li { grid-template-rows: none; grid-template-columns: var(--dot) minmax(0, 1fr); justify-items: stretch; align-items: start; gap: 14px; }
+    .body { padding: 14px; }
+    .art > span { min-height: 0; }
+    .strip { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -16px; padding: 0 16px 4px; }
+    .strip::-webkit-scrollbar { display: none; }
+    .strip li { flex: 0 0 31%; scroll-snap-align: start; }
   }
   @media (max-width: 640px) {
-    .board { aspect-ratio: 3 / 3.7; }
-    .scene { padding: 16px; }
-    .body { height: 260px; }
-    .row { font-size: 13px; }
+    .strip li { flex-basis: 62%; }
+  }
+  @media (min-width: 901px) and (max-width: 1100px) {
+    .body { padding: 14px 12px; }
+    .file b { white-space: normal; overflow-wrap: anywhere; }
   }
 </style>

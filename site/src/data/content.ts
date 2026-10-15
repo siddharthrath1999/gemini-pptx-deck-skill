@@ -5,30 +5,15 @@ export const GITHUB = `https://github.com/${REPO}`;
 export const ZIP_URL = `${GITHUB}/releases/latest/download/pptx-native.zip`;
 
 export const NAV = [
-  { href: "#why", label: "Why", long: "Why PPTX Native" },
   { href: "#how", label: "How it works" },
-  { href: "#audiences", label: "Audiences & edits" },
-  { href: "#layouts", label: "Layouts" },
+  { href: "#examples", label: "Examples" },
+  { href: "#features", label: "What you get" },
   { href: "#setup", label: "Set up" },
-  { href: "#prompts", label: "Prompts" },
   { href: "#faq", label: "FAQ" },
 ];
 
 export const HERO_PROMPT = "Make a 15-slide analysis of India's electric two-wheeler market for our leadership team.";
 export const HERO_FAN = ["examples/upi-01.jpg", "run/s03.jpg", "audiences/board-2.jpg", "run/s01.jpg", "audiences/pitch-3.jpg", "run/s12.jpg", "examples/upi-31.jpg"];
-export const HERO_STATS = [
-  { icon: "slideshow", text: "15 to 120 slides" },
-  { icon: "bar_chart", text: "Native charts" },
-  { icon: "record_voice_over", text: "Notes on every slide" },
-  { icon: "edit", text: "Every element editable" },
-];
-
-export const WORKS = [
-  { logo: "logos/gemini-2025.svg", tint: "gemini", alt: "Gemini", title: "Gemini app", text: "Upload once. Runs in Task mode on the web and the Mac app." },
-  { logo: "logos/antigravity.png", tint: "agy", alt: "Google Antigravity", title: "Google Antigravity", text: "One line in Terminal. Runs on your own computer." },
-  { logo: "logos/powerpoint.svg", tint: "ppt", alt: "PowerPoint", title: "Opens anywhere", text: "PowerPoint, Keynote, Google Slides and LibreOffice." },
-];
-
 // value: "yes" | "no" | "part", with an optional note
 type Cell = [string, string?];
 export const COMPARE: { cols: string[]; rows: { label: string; cells: Cell[] }[] } = {
@@ -43,40 +28,19 @@ export const COMPARE: { cols: string[]; rows: { label: string; cells: Cell[] }[]
   ],
 };
 
-export const RUN = {
-  request: "Make a 15-slide analysis of India's electric two-wheeler market for our leadership team, who must decide whether to enter in 2027.",
+// How it works: the real run, as five linked steps. `art` is the small proof shown in each step.
+export const HOW = {
+  request: "Make a 15-slide analysis of India's electric two-wheeler market for our leadership team.",
   steps: [
-    { icon: "travel_explore", title: "Searched India's electric two-wheeler market data", sub: "Vahan, FADA, CRISIL, EVreporter, PM E-DRIVE notices", label: "research" },
-    { icon: "account_tree", title: "Planned a five-part story", sub: "thesis, demand, competition, economics, 2027 entry", label: "storyline" },
-    { icon: "palette", title: "Made a custom executive-slate theme", sub: "Georgia headlines, Arial body, emerald and copper", label: "design" },
-    { icon: "dashboard", title: "Built 15 slides and ran the checker", sub: "native charts, a table, a scorecard and a roadmap", label: "slides" },
-    { icon: "rule", title: "Fixed text overflow on slides 3, 5, 6, 7 and 8", sub: "then rendered every slide and refined 9, 10 and 13", label: "checks and fixes" },
-    { icon: "task_alt", title: "Presented the deck", sub: "15 slides, 12 sources, nothing left to fill in", label: "delivery" },
+    { icon: "chat", title: "Ask", text: "One line in Task mode. Attach your files if you have them." },
+    { icon: "travel_explore", title: "Research", text: "Reads your files first, then searches primary sources." },
+    { icon: "palette", title: "Plan and design", text: "Plans the story, then picks a look for the room." },
+    { icon: "rule", title: "Check", text: "Renders every slide, looks at it, and fixes what's off." },
+    { icon: "task_alt", title: "Deliver", text: "A .pptx where every chart, table and word is editable." },
   ],
-  research: [
-    ["account_balance", "Vahan dashboard · registrations, Jan to Sep 2026", "primary"],
-    ["receipt_long", "FADA · monthly retail sales", "primary"],
-    ["gavel", "Ministry of Heavy Industries · PM E-DRIVE", "primary"],
-    ["query_stats", "CRISIL Intelligence · FY31 outlook", "industry"],
-    ["request_quote", "Company results · TVS, Bajaj, Ather, Ola", "filings"],
-  ],
-  outline: [
-    "Executive thesis: four makers hold 76% of sales",
-    "Market demand: retail volumes up 5.5x in four years",
-    "Competition: TVS and Bajaj overtook Ola in FY26",
-    "Economics: e-scooters cost 40% less per km to run",
-    "2027 entry: commuter e-motorcycles and B2B fleets",
-  ],
+  sources: ["Vahan", "FADA", "CRISIL", "PM E-DRIVE"],
   palette: ["#13242b", "#f3f5f3", "#1f7a52", "#c96a2b", "#2f5d9e"],
-  font: "Georgia headlines, Arial body. Chosen by Gemini for a board audience.",
-  thumbs: ["run/s01.jpg", "run/s02.jpg", "run/s03.jpg", "run/s04.jpg", "run/s05.jpg", "run/s06.jpg", "run/s09.jpg", "run/s12.jpg", "run/s14.jpg"],
-  checks: [
-    ["check", "Text overflow on slides 3, 5, 6, 7 and 8", "fixed"],
-    ["check", "Overlap on slide 14", "fixed"],
-    ["check", "Lint rerun after the fixes", "0 issues"],
-    ["visibility", "Rendered 15 slides and looked at each sheet", "done"],
-    ["auto_fix_high", "Refined slides 9, 10 and 13 after looking", "done"],
-  ],
+  checks: ["Overflow fixed on 5 slides", "All 15 slides reviewed"],
 };
 
 export const AUDIENCES = [
@@ -144,14 +108,6 @@ export const EXAMPLES = [
   { title: "Quick commerce benchmark", sub: "Competitive benchmark · editorial slate", stats: ["47 slides", "11 charts", "6 platforms"], slides: [1, 4, 6, 17, 22, 28, 34, 41].map((n) => `examples/qc-${String(n).padStart(2, "0")}.jpg`) },
 ];
 
-export const WALK = [
-  { title: "Download the skill", text: "Use the Download button below. Keep the file zipped.", url: `github.com/${REPO}`, target: "file", side: false },
-  { title: "Open Customise, then Skills", text: "In Gemini's left menu, click Customise and open the Skills tab.", url: "gemini.google.com/customize", target: "skills-tab", side: true },
-  { title: "Click Create, then Upload", text: "The Create button sits at the top right of your skills.", url: "gemini.google.com/customize/skills", target: "upload", side: true },
-  { title: "Choose the zip and click Create", text: "Gemini scans it, shows the skill, and you confirm.", url: "gemini.google.com/customize/skills", target: "create", side: true },
-  { title: "Switch to Task and ask", text: "New chat, pick Task under the box, type @pptx-native and describe your deck.", url: "gemini.google.com/app", target: "task", side: false },
-];
-
 export const INSTALL = {
   mac: `curl -fsSL https://raw.githubusercontent.com/${REPO}/main/install.sh | bash`,
   win: `irm https://raw.githubusercontent.com/${REPO}/main/install.ps1 | iex`,
@@ -178,12 +134,9 @@ export const FAQ = [
   ["Is it really free?", "Yes. PPTX Native is open source under the MIT licence. To use it in the Gemini app you need a Google AI Pro or Ultra plan, because it runs in Task mode. In Antigravity, your usual Antigravity plan applies."],
   ["Why does it need Task mode in Gemini?", "Task mode gives Gemini a small computer where it can run the skill's tools. In normal chat it can't, so you'd get text, HTML or a Google Slides export instead of a .pptx."],
   ["Can it edit a deck I already have?", "Yes. Attach the .pptx and say what to change. It can rewrite text, update tables and chart data, replace notes, reorder or delete slides, and redesign or add slides in your deck's own fonts and colours. New and redesigned slides need a 16:9 deck."],
-  ["Can I edit everything it makes?", "Yes. Every text box, shape, chart and table is a normal PowerPoint object, and charts keep their data."],
   ["Are the numbers right?", "It researches and cites sources, but it can still pick a weak source or misread one. Check figures before you present. The handoff note lists every source."],
   ["Can it use my brand?", "Give your colours as hex codes in the prompt. Fonts default to ones every device has; ask for a brand font only if everyone presenting has it installed."],
   ["Does it add photos?", "No. Visuals come from charts, tables, shapes and icons. Add your own photos afterwards."],
-  ["Upload says \"did not pass the security scan\".", "Upload the official zip, unchanged. If you edited files inside it, undo the changes and try again."],
-  ["Is this made by Google or Microsoft?", "No. PPTX Native is an independent open-source project. Gemini, Antigravity and PowerPoint logos appear only to show where the skill works and what it makes."],
 ];
 
 export const PROMPT_CATS = [

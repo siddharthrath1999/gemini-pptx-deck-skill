@@ -10,7 +10,6 @@ const home = `${base}index.html`;
 const gallery = `${base}prompts.html`;
 // On the gallery page, section links point back to the homepage.
 const link = (h: string) => (page === "home" ? h : `${home}${h}`);
-const links = page === "home" ? NAV : [{ href: "#how", label: "How it works" }, { href: "#audiences", label: "Audiences & edits" }, { href: "#setup", label: "Set up" }, { href: "#prompts", label: "Prompt guide" }];
 ---
 <header class="nav" id="nav">
   <div class="bar">
@@ -18,8 +17,8 @@ const links = page === "home" ? NAV : [{ href: "#how", label: "How it works" }, 
       <img src={`${base}brand/wordmark-cream.svg`} alt="PPTX Native" width="81" height="34" />
     </a>
     <nav class="links" aria-label="Sections">
-      {links.map((l) => <a href={link(l.href)} data-spy={page === "home" ? l.href.slice(1) : undefined}>{l.label}</a>)}
-      {page === "gallery" && <a href={gallery} aria-current="page" class="current">Prompt gallery</a>}
+      {NAV.map((l) => <a href={link(l.href)} data-spy={page === "home" ? l.href.slice(1) : undefined}>{l.label}</a>)}
+      <a href={gallery} aria-current={page === "gallery" ? "page" : undefined} class={page === "gallery" ? "current" : undefined}>Prompts</a>
     </nav>
     <div class="cta">
       <a class="btn sm gh-btn" href={GITHUB} aria-label="PPTX Native on GitHub"><Github /><span class="label">GitHub</span><span class="count" id="stars" hidden></span></a>
@@ -30,8 +29,8 @@ const links = page === "home" ? NAV : [{ href: "#how", label: "How it works" }, 
     </div>
   </div>
   <div class="sheet" id="menuSheet">
-    {NAV.map((l) => <a href={link(l.href)}>{l.long ?? l.label}<Icon name="arrow_forward" /></a>)}
-    <a href={gallery}>Prompt gallery<Icon name="arrow_forward" /></a>
+    {NAV.map((l) => <a href={link(l.href)}>{l.label}<Icon name="arrow_forward" /></a>)}
+    <a href={gallery}>Prompts and layouts<Icon name="arrow_forward" /></a>
   </div>
 </header>
 

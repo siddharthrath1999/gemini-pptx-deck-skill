@@ -9,8 +9,8 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 const home = `${base}index.html`;
 const link = (h: string) => (page === "home" ? h : `${home}${h}`);
 const cols = [
-  { title: "Product", links: [["#why", "Why PPTX Native"], ["#how", "How it works"], ["#audiences", "Audiences & edits"], ["#layouts", "Layouts"], ["#examples", "Examples"]].map(([h, t]) => [link(h), t]) },
-  { title: "Get started", links: [[link("#setup"), "Gemini app"], [link("#setup"), "Antigravity", "agy"], [ZIP_URL, "Download the zip"], [`${base}prompts.html`, "Prompt gallery"], [link("#prompts"), "Prompt guide"]] },
+  { title: "Product", links: [[link("#how"), "How it works"], [link("#examples"), "Examples"], [link("#features"), "What you get"], [link("#faq"), "FAQ"]] },
+  { title: "Get started", links: [[link("#setup-gemini"), "Gemini app"], [link("#setup-antigravity"), "Antigravity"], [ZIP_URL, "Download the zip"], [`${base}prompts.html`, "Prompts"], [`${base}prompts.html#layouts`, "Layouts"]] },
   { title: "Project", links: [[GITHUB, "GitHub"], [`${GITHUB}/releases`, "Release notes"], [`${GITHUB}/issues`, "Report an issue"], [`${GITHUB}/blob/main/LICENSE`, "MIT licence"]] },
 ];
 ---
@@ -25,13 +25,13 @@ const cols = [
       {cols.map((c) => (
         <div>
           <h2>{c.title}</h2>
-          <nav aria-label={c.title}>{c.links.map(([h, t, agy]) => <a href={h} data-agy={agy ? "1" : undefined}>{t}</a>)}</nav>
+          <nav aria-label={c.title}>{c.links.map(([h, t]) => <a href={h}>{t}</a>)}</nav>
         </div>
       ))}
     </div>
     <div class="legal">
       <p>Made by Sidharth Rath. Independent project, not affiliated with or endorsed by Google or Microsoft. Gemini and Google Antigravity are trademarks of Google LLC. PowerPoint and its logo are trademarks of Microsoft. Icons: Material Symbols (Apache 2.0) on this site, Lucide (ISC) in the skill.</p>
-      <a class="textlink" href={page === "home" ? "#main" : home}>Back to top<Icon name="arrow_upward" /></a>
+      <a class="textlink" href="#main">Back to top<Icon name="arrow_upward" /></a>
     </div>
     <div class="big" aria-hidden="true"><img src={`${base}brand/wordmark-outline.svg`} alt="" loading="lazy" width="1363" height="575" /></div>
   </div>

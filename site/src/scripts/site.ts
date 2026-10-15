@@ -2,6 +2,13 @@
 import { $, $$ } from "./util";
 
 const nav = $("#nav")!;
+
+/* old homepage links keep working after sections moved or merged */
+if (document.getElementById("how")) {
+  const moved: Record<string, string> = { "#audiences": "#examples", "#inside": "#features", "#prompts": "prompts.html#build", "#layouts": "prompts.html#layouts" };
+  const to = moved[location.hash];
+  if (to) location.replace(new URL(to, location.href).href);
+}
 const menuBtn = $("#menuBtn")!;
 
 /* menu */
