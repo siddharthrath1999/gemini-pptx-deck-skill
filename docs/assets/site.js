@@ -131,21 +131,6 @@
     $("#heroStats").style.opacity = 1;
   }
 
-  /* ---------- gentle tilt + cursor light ---------- */
-  var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-  function tilt(el, max) {
-    if (reduce || !fine) return;
-    el.addEventListener("mousemove", function (e) {
-      var r = el.getBoundingClientRect();
-      var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
-      el.style.setProperty("--mx", px * 100 + "%");
-      el.style.setProperty("--my", py * 100 + "%");
-      el.style.transform = "perspective(900px) rotateX(" + ((0.5 - py) * max) + "deg) rotateY(" + ((px - 0.5) * max) + "deg)";
-    });
-    el.addEventListener("mouseleave", function () { el.style.transform = ""; });
-  }
-  $$(".tilt").forEach(function (el) { tilt(el, 6); });
-
   /* ---------- how it works: a real Task run, replayed ---------- */
   var RUN = {
     thread: [
@@ -376,7 +361,6 @@
     el.className = "poster"; el.dataset.cat = l[2]; el.dataset.i = i;
     el.innerHTML = '<img loading="lazy" src="' + src + '" alt="' + l[0] + ' layout"><h4>' + l[0] + "</h4><p>" + l[1] + "</p>";
     el.addEventListener("mouseenter", function () { setLayoutBg(src); });
-    tilt(el, 6);
     grid.appendChild(el);
   });
   $$("#layoutFilters button").forEach(function (b) {
@@ -428,7 +412,6 @@
     b.innerHTML = '<div class="cover"><img loading="lazy" src="' + src(e[0], e[4][0]) + '" alt="Cover of the ' + e[1] + ' deck"></div><div class="meta"><h3>' + e[1] + "</h3><p>" + e[2] + '</p><div class="stats">' + e[3].map(function (s) { return '<span class="chip">' + s + "</span>"; }).join("") + '</div><span class="open"><span class="ms">slideshow</span>Page through ' + e[4].length + " slides</span></div>";
     b.addEventListener("mouseenter", function () { setExBg(src(e[0], e[4][1])); });
     b.addEventListener("click", function () { lbFrom = b; openLb(e); });
-    tilt(b, 5);
     exRow.appendChild(b);
   });
   if (hasGsap && !reduce) ScrollTrigger.batch($$(".ex-card"), { start: "top 90%", onEnter: function (els) { gsap.to(els, { opacity: 1, y: 0, duration: 1, ease: "expo.out", stagger: 0.1, overwrite: true }); } });
