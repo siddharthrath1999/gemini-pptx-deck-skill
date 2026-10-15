@@ -113,6 +113,12 @@ export const INSTALL = {
   win: `irm https://raw.githubusercontent.com/${REPO}/main/install.ps1 | iex`,
   npx: `npx github:${REPO}`,
 };
+// The same installs, into the current project only (./.agents/skills).
+export const INSTALL_PROJECT = {
+  mac: `curl -fsSL https://raw.githubusercontent.com/${REPO}/main/install.sh | bash -s -- --project`,
+  win: `$env:PPTX_NATIVE_PROJECT = "1"; irm https://raw.githubusercontent.com/${REPO}/main/install.ps1 | iex`,
+  npx: `npx github:${REPO} --project`,
+};
 
 export const PRINCIPLES = [
   { icon: "groups", title: "Say the job", text: "Who it's for and what they should decide or learn. That one line shapes the structure more than anything else." },

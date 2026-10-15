@@ -1,0 +1,43 @@
+# Checks the skill itself: the test deck builds with a clean lint, the installers parse,
+# and dist/pptx-native.zip matches the pptx-native/ folder (so the download never goes stale).
+name: Skill
+
+on:
+  push:
+    branches: [main]
+    paths: ["pptx-native/**", "dist/**", "install.sh", "install.ps1", "bin/**", ".github/workflows/skill.yml"]
+  pull_request:
+    paths: ["pptx-native/**", "dist/**", "install.sh", "install.ps1", "bin/**", ".github/workflows/skill.yml"]
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install python-pptx pillow
+      - name: Build the gallery deck (every layout) and require a clean lint
+        run: |
+          python pptx-native/scripts/build_deck.py pptx-native/examples/gallery.json -o /tmp/gallery.pptx | tee /tmp/build.txt
+          grep -q "Lint: 0 errors" /tmp/build.txt
+      - name: The zip matches the skill folder
+        run: |
+          python - <<'PY'
+          import hashlib, subprocess, sys, zipfile
+          z = zipfile.ZipFile("dist/pptx-native.zip")
+          inzip = {n for n in z.namelist() if not n.endswith("/")}
+          tracked = set(subprocess.check_output(["git", "ls-files", "pptx-native"], text=True).split())
+          bad = sorted(inzip ^ tracked)
+          bad += [n for n in sorted(inzip & tracked) if hashlib.sha256(z.read(n)).digest() != hashlib.sha256(open(n, "rb").read()).digest()]
+          if bad:
+              sys.exit("dist/pptx-native.zip is out of date. Differs: " + ", ".join(bad))
+          print(f"zip matches pptx-native/ ({len(inzip)} files)")
+          PY
+      - name: Installers parse
+        run: |
+          bash -n install.sh
+          node --check bin/install.js
+          pwsh -NoProfile -Command '$e = $null; [void][System.Management.Automation.Language.Parser]::ParseFile("install.ps1", [ref]$null, [ref]$e); if ($e.Count) { $e; exit 1 }'

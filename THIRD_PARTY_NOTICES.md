@@ -2,7 +2,7 @@
 
 ## Lucide icons
 
-`build-pptx-deck/scripts/icons.json` contains 152 icons from the Lucide project (https://lucide.dev), converted from SVG paths to point lists.
+`pptx-native/scripts/icons.json` contains 152 icons from the Lucide project (https://lucide.dev), converted from SVG paths to point lists.
 
 ISC License
 
@@ -11,3 +11,11 @@ Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2022 as part of
 Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 
 THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+## Website (site/)
+
+The website is not part of the skill zip. It uses:
+
+- **Material Symbols** icons by Google, under the Apache License 2.0 (https://github.com/google/material-design-icons), inlined as SVG at build time.
+- **Geist** and **Geist Mono** fonts by Vercel, under the SIL Open Font License 1.1 (https://github.com/vercel/geist-font), self-hosted at build time.
+- Gemini, Google Antigravity and PowerPoint logos appear only to show where the skill works and what it makes. They are trademarks of Google LLC and Microsoft.

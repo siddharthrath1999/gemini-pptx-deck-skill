@@ -90,6 +90,10 @@ test("setup: download link, system switch, copy command", async ({ page }) => {
   await expect(page.locator("#setup-gemini a", { hasText: "Download" })).toHaveAttribute("href", /releases\/latest\/download\/pptx-native\.zip$/);
   await page.getByRole("tab", { name: "Windows" }).click();
   await expect(page.locator("#termCmd")).toHaveText(/^irm https/);
+  await expect(page.locator("#projCmd")).toHaveText(/^\$env:PPTX_NATIVE_PROJECT = "1"; irm https/);
+  await page.getByRole("tab", { name: "macOS · Linux" }).click();
+  await expect(page.locator("#projCmd")).toHaveText(/\| bash -s -- --project$/);
+  await page.getByRole("tab", { name: "Windows" }).click();
   await page.locator("#copyCmd").click();
   await expect(page.locator("#copyCmd")).toHaveAttribute("data-copied", "1");
   expect(await clip(page)).toMatch(/^irm https:\/\/raw\.githubusercontent\.com\/siddharthrath1999\/pptx-native\/main\/install\.ps1 \| iex$/);

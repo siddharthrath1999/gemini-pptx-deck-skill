@@ -1,0 +1,30 @@
+name: Something went wrong
+description: A deck came out wrong, the upload failed, or the installer broke.
+labels: [bug]
+body:
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where did you use it?
+      options: [Gemini app (web), Gemini app (Mac), Google Antigravity, Another agent]
+    validations:
+      required: true
+  - type: textarea
+    id: ask
+    attributes:
+      label: What did you ask for?
+      description: Paste your prompt. Remove anything private.
+    validations:
+      required: true
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened?
+      description: The error text, or what looked wrong in the deck. Screenshots help.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Skill version
+      description: Shown on the releases page, for example v1.2.1.

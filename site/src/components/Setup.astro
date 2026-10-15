@@ -1,7 +1,7 @@
 ---
 // Set up: two plain cards, one per place you can use the skill. Side by side on desktop, stacked on phones.
 import Icon from "./Icon.astro";
-import { ZIP_URL, INSTALL, PROMPT_CATS } from "../data/content";
+import { ZIP_URL, INSTALL, INSTALL_PROJECT, PROMPT_CATS } from "../data/content";
 const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 ---
 <section id="setup">
@@ -35,7 +35,7 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
         </header>
         <ol class="steps">
           <li><span class="n">1</span><div><b>Copy one line</b>
-            <div class="term" data-cmds={JSON.stringify(INSTALL)}>
+            <div class="term" data-cmds={JSON.stringify(INSTALL)} data-project={JSON.stringify(INSTALL_PROJECT)}>
               <div class="os" role="tablist" aria-label="Your system" id="osTabs">
                 <button type="button" role="tab" aria-selected="true" data-os="mac">macOS · Linux</button>
                 <button type="button" role="tab" aria-selected="false" data-os="win">Windows</button>
@@ -48,7 +48,7 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
           <li><span class="n">2</span><div><b>Paste it into Terminal</b><span>It installs the skill and the two Python packages it needs.</span></div></li>
           <li><span class="n">3</span><div><b>Restart Antigravity and ask</b><span>“Make me a 30-slide deck on our Q3 results.” The deck is saved in your project.</span></div></li>
         </ol>
-        <p class="note"><Icon name="info" />To install into one project only, add <code>--project</code> to the end of the command.</p>
+        <p class="note"><Icon name="info" /><span>Only for the current project? Run <code id="projCmd">{INSTALL_PROJECT.mac}</code> instead.</span></p>
       </article>
     </div>
 
@@ -67,11 +67,12 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
   import { $, $$, copyText } from "../scripts/util";
   const term = $(".term")!;
   const cmds: Record<string, string> = JSON.parse(term.dataset.cmds || "{}");
-  const code = $("#termCmd")!;
+  const project: Record<string, string> = JSON.parse(term.dataset.project || "{}");
+  const code = $("#termCmd")!, proj = $("#projCmd")!;
   let os = "mac";
   $$<HTMLButtonElement>("#osTabs button").forEach((b, _, all) => b.addEventListener("click", () => {
     all.forEach((x) => x.setAttribute("aria-selected", String(x === b)));
-    os = b.dataset.os!; code.textContent = cmds[os];
+    os = b.dataset.os!; code.textContent = cmds[os]; proj.textContent = project[os];
   }));
   $("#copyCmd")!.addEventListener("click", (e) => copyText(cmds[os], e.currentTarget as HTMLElement));
 </script>
@@ -88,6 +89,7 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
   .n { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; font: 500 12.5px/1 var(--mono); color: var(--accent-2); background: var(--accent-soft); border: 1px solid var(--accent-line); }
   .steps b { display: block; font-size: 15px; font-weight: 500; line-height: 28px; }
   .steps li > div > span { display: block; color: var(--muted); font-size: 14px; line-height: 1.5; }
+  .note code { overflow-wrap: anywhere; }
   code { font: 500 12.5px var(--mono); color: var(--soft); background: var(--bg-3); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; }
   .dl { margin-top: 10px; }
   .note { margin: auto 0 0; display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 1.5; color: var(--faint); }

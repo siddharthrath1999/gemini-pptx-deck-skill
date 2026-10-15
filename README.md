@@ -64,7 +64,7 @@ Paste one line into Terminal:
 | Windows (PowerShell) | `irm https://raw.githubusercontent.com/siddharthrath1999/pptx-native/main/install.ps1 \| iex` |
 | Any system with Node | `npx github:siddharthrath1999/pptx-native` |
 
-The installer copies the skill to `~/.gemini/antigravity/skills/` and `~/.gemini/config/skills/`, installs `python-pptx` and `Pillow` if they're missing, and checks for LibreOffice (optional; with it, the agent can look at its slides). Add `--project` to install into `./.agents/skills` of the current project only. Restart Antigravity, then ask for a deck.
+The installer copies the skill to `~/.gemini/antigravity/skills/` and `~/.gemini/config/skills/`, installs `python-pptx` and `Pillow` if they're missing, and checks for LibreOffice (optional; with it, the agent can look at its slides). To install into `./.agents/skills` of the current project only, end the macOS or Linux command with `bash -s -- --project`, run `$env:PPTX_NATIVE_PROJECT = "1"` first on Windows, or add `--project` to the npx command. Restart Antigravity, then ask for a deck.
 
 ## How it works
 
