@@ -162,7 +162,7 @@
     outline: ["Executive thesis: four makers hold 76% of sales", "Market demand: retail volumes up 5.5x in four years", "Competition: TVS and Bajaj overtook Ola in FY26", "Economics: e-scooters cost 40% less per km to run", "2027 entry: commuter e-motorcycles and B2B fleets"],
     palette: ["#13242b", "#f3f5f3", "#1f7a52", "#c96a2b", "#2f5d9e"],
     font: "Georgia headlines, Arial body. Chosen by Gemini for a board audience.",
-    thumbs: ["run/s01.jpg", "run/s02.jpg", "run/s03.jpg", "run/s04.jpg", "run/s05.jpg", "run/s06.jpg", "run/s09.jpg", "run/s12.jpg", "run/s14.jpg"],
+    thumbs: ["run/m/s01.jpg", "run/m/s02.jpg", "run/m/s03.jpg", "run/m/s04.jpg", "run/m/s05.jpg", "run/m/s06.jpg", "run/m/s09.jpg", "run/m/s12.jpg", "run/m/s14.jpg"],
     checks: [["check", "Text overflow on slides 3, 5, 6, 7 and 8", "fixed"], ["check", "Overlap on slide 14", "fixed"], ["check", "Lint rerun after the fixes", "0 issues"], ["visibility", "Rendered 15 slides and looked at each sheet", "done"], ["auto_fix_high", "Refined slides 9, 10 and 13 after looking", "done"]]
   };
   var thread = $("#thread");
@@ -379,6 +379,10 @@
     tilt(el, 6);
     grid.appendChild(el);
   });
+  $$("#layoutFilters button").forEach(function (b) {
+    var f = b.dataset.f, n = f === "all" ? L.length : L.filter(function (l) { return l[2] === f; }).length;
+    $(".count", b).textContent = n;
+  });
   function applyFilter() {
     var shown = 0, total = 0;
     $$(".poster", grid).forEach(function (p) {
@@ -407,13 +411,17 @@
 
   /* ---------- examples + lightbox ---------- */
   var EX = [
+    ["run", "India's electric two-wheeler market", "Market entry analysis · executive slate · the run above", ["15 slides", "12 sources", "Native charts"], [1, 2, 3, 4, 6, 9, 12, 14]],
     ["upi", "How UPI works", "Learning deck · cream, saffron and navy", ["60 slides", "6 quizzes", "Notes on every slide"], [1, 6, 9, 12, 31, 36, 52, 55]],
     ["cards", "India's credit card market", "Market analysis · boardroom navy", ["45 slides", "5 parts", "40 issuers"], [1, 3, 6, 14, 16, 20, 36, 40]],
     ["qc", "Quick commerce benchmark", "Competitive benchmark · editorial slate", ["47 slides", "11 charts", "6 platforms"], [1, 4, 6, 17, 22, 28, 34, 41]]
   ];
   var exRow = $("#exRow"), setExBg = backdrop($("#exBackdrop"));
   var lb = $("#lightbox"), lbImg = $("#lbImg"), lbStrip = $("#lbStrip"), lbTitle = $("#lbTitle"), lbList = [], lbI = 0, lbFrom = null;
-  function src(key, p) { return "assets/examples/" + key + "-" + String(p).padStart(2, "0") + ".jpg"; }
+  function src(key, p, big) {
+    if (key === "run") return "assets/run/" + (big ? "" : "m/") + "s" + String(p).padStart(2, "0") + ".jpg";
+    return "assets/examples/" + key + "-" + String(p).padStart(2, "0") + ".jpg";
+  }
   EX.forEach(function (e) {
     var b = document.createElement("button");
     b.className = "ex-card rv";
@@ -424,11 +432,11 @@
     exRow.appendChild(b);
   });
   if (hasGsap && !reduce) ScrollTrigger.batch($$(".ex-card"), { start: "top 90%", onEnter: function (els) { gsap.to(els, { opacity: 1, y: 0, duration: 1, ease: "expo.out", stagger: 0.1, overwrite: true }); } });
-  setExBg(src("upi", 6));
+  setExBg(src("run", 3));
   function openLb(e) {
-    lbList = e[4].map(function (p) { return src(e[0], p); }); lbTitle.textContent = e[1];
+    lbList = e[4].map(function (p) { return src(e[0], p, true); }); lbTitle.textContent = e[1];
     lbStrip.innerHTML = "";
-    lbList.forEach(function (s, i) { var t = new Image(); t.src = s; t.alt = "Slide " + (i + 1); t.addEventListener("click", function () { showLb(i); }); lbStrip.appendChild(t); });
+    lbList.forEach(function (s, i) { var t = new Image(); t.src = s.replace("/run/s", "/run/m/s"); t.alt = "Slide " + (i + 1); t.addEventListener("click", function () { showLb(i); }); lbStrip.appendChild(t); });
     showLb(0); lb.classList.add("open"); if (lenis) lenis.stop();
     $("#lbClose").focus();
   }
@@ -480,9 +488,14 @@
   function placeHot() {
     var t = $(W[wi][3], mockMain);
     if (!t || !mockMain.offsetWidth) return;
+    $$(".is-target", mockMain).forEach(function (x) { if (x !== t) x.classList.remove("is-target"); });
+    t.classList.add("is-target");
     var r = t.getBoundingClientRect(), m = mockMain.getBoundingClientRect();
-    hot.style.left = (r.left - m.left + r.width / 2) + "px";
-    hot.style.top = (r.top - m.top + r.height / 2) + "px";
+    hot.style.left = (r.left - m.left + Math.min(r.width * 0.6, r.width - 10)) + "px";
+    hot.style.top = (r.top - m.top + r.height * 0.6) + "px";
+    hot.classList.remove("click");
+    clearTimeout(placeHot.t);
+    placeHot.t = setTimeout(function () { hot.classList.add("click"); }, reduce ? 0 : 720);
   }
   function showWalk(i) {
     wi = Math.max(0, Math.min(W.length - 1, i));

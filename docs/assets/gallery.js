@@ -14,7 +14,7 @@
   ];
 
   var P = [
-    ["biz", "Market analysis", "examples/cards-14.jpg", "analysis",
+    ["biz", "Market analysis", "run/m/s03.jpg", "analysis",
       "Make a [30]-slide analysis of [India's electric two-wheeler market] for [our leadership team], who must decide [whether to enter in 2027]. End with a clear recommendation.",
       "Naming the decision gives the deck a destination, so every slide builds towards it."],
     ["biz", "Board update", "audiences/board-2.jpg", "board",
@@ -23,13 +23,13 @@
     ["biz", "Investor pitch", "audiences/pitch-3.jpg", "pitch",
       "Make a [12]-slide seed pitch for [Lumen Bikes, a bike subscription startup] for [early-stage investors]. Cover the problem, the proof, growth, the team and the ask of [$500,000].",
       "Listing the beats keeps it tight. The look turns bold on its own because the audience is investors."],
-    ["biz", "Competitor benchmark", "examples/qc-17.jpg", "benchmark",
+    ["biz", "Competitor benchmark", "run/m/s06.jpg", "benchmark",
       "Benchmark [India's six quick commerce apps] for [our strategy team] in [40] slides. One profile slide per company, a scorecard across [delivery speed, assortment, pricing and profitability], and what it means for us.",
       "Fixed criteria make companies comparable, and “what it means for us” forces a point of view."],
     ["biz", "Quarterly business review", "layouts/l06.jpg", "review",
       "Turn the attached [sales sheet] into a [20]-slide quarterly review for [the sales leadership team]. Show results against target, what drove the gap, and next quarter's plan.",
       "The attached sheet becomes the source of truth, so numbers come from your data, not the web."],
-    ["biz", "Strategy options", "layouts/l15.jpg", "options",
+    ["biz", "Strategy options", "run/m/s12.jpg", "options",
       "Make a [15]-slide deck comparing [three ways to enter the Middle East market] for [our executive committee]. Score each option on [cost, speed, risk and upside] and recommend one.",
       "Asking for scores and a pick avoids a neutral list of pros and cons."],
 
@@ -55,7 +55,7 @@
     ["tech", "Product launch", "audiences/launch-3.jpg", "launch",
       "Make a [15]-slide launch deck for [Lumen Cargo, our new cargo bike plan] for [the city teams who will roll it out]. Cover what it is, how it works, the timeline and what each team must do.",
       "Writing for the people who roll it out makes the deck about actions and dates, not hype."],
-    ["tech", "Product roadmap", "layouts/l22.jpg", "roadmap",
+    ["tech", "Product roadmap", "run/m/s14.jpg", "roadmap",
       "Make a [12]-slide roadmap for [our mobile app] over [the next four quarters] for [engineering and design leads]. Group the work into [growth, reliability and platform].",
       "Named lanes give the roadmap slide its structure."],
     ["tech", "Incident review", "layouts/l17.jpg", "incident",
@@ -71,10 +71,10 @@
       "Make a [15]-slide monthly product review for [our product team] from the attached [metrics export]. Lead with what changed, show the funnel, and list three experiments for next month.",
       "Leading with change, not totals, keeps the review short."],
 
-    ["edit", "Redesign weak slides", "edit/after.jpg", "redesign",
+    ["edit", "Redesign weak slides", "gallery/redesign.jpg", "redesign",
       "Redesign slides [4 to 9] of the attached deck. Keep our fonts, colours and wording, and replace bullet lists with better layouts.",
       "Naming the slides and what to keep means only those slides change."],
-    ["edit", "Update the numbers", "edit/before-chart.jpg", "update",
+    ["edit", "Update the numbers", "run/m/s04.jpg", "update",
       "Update every figure in the attached deck for [Q3 FY27] using the attached sheet. Change [FY26] to [FY27] everywhere, and list anything you couldn't update.",
       "Asking for a list of misses tells you exactly what to check by hand."],
     ["edit", "Cut it down", "layouts/l02.jpg", "shorten",
@@ -83,10 +83,10 @@
     ["edit", "Add a section", "edit/after-new.jpg", "add",
       "Add a [5]-slide section on [competitor pricing] after slide [12] of the attached deck, in the same style as the rest.",
       "New slides take the deck's own theme colours and fonts."],
-    ["edit", "Rewrite the notes", "layouts/l04.jpg", "notes",
+    ["edit", "Rewrite the notes", "gallery/notes.jpg|bottom", "notes",
       "Rewrite the speaker notes in the attached deck for [investors]. Keep the slides as they are. Each note should say the one point to land and lead into the next slide.",
       "“Keep the slides as they are” limits the edit to notes only."],
-    ["edit", "Reorder for the answer first", "layouts/l26.jpg", "reorder",
+    ["edit", "Reorder for the answer first", "run/m/s02.jpg", "reorder",
       "Reorder the attached deck so [the recommendation] comes first, then the evidence. Delete slides that repeat a point, and tell me which ones you removed.",
       "A change log of removed slides makes the cut easy to review."]
   ];
@@ -105,10 +105,10 @@
     card.className = "p-card"; card.dataset.cat = p[0];
     card.dataset.search = (p[1] + " " + p[4] + " " + c[1]).toLowerCase();
     card.innerHTML =
-      '<div class="p-prev"><img loading="lazy" src="assets/' + p[2] + '" alt="Example ' + esc(p[3]) + ' slide"><span class="chip"><span class="ms">' + c[2] + "</span>" + esc(c[1]) + '</span><span class="kind">' + esc(p[3]) + "</span></div>" +
-      '<div class="p-body"><h3>' + esc(p[1]) + '</h3><div class="p-text"><span class="at">@pptx-native</span> <span class="body">' + render(p[4]) + "</span></div>" +
+      '<div class="p-prev"><img loading="lazy" src="assets/' + p[2].split("|")[0] + '" alt="Example ' + esc(p[3]) + ' slide"' + (p[2].split("|")[1] ? ' style="object-position:center ' + p[2].split("|")[1] + '"' : "") + '></div>' +
+      '<div class="p-body"><div class="p-head"><span class="p-cat"><span class="ms">' + c[2] + "</span>" + esc(c[1]) + '</span><h3>' + esc(p[1]) + '</h3></div><div class="p-text"><span class="at">@pptx-native</span> <span class="body">' + render(p[4]) + "</span></div>" +
       '<div class="p-why"><span class="ms">lightbulb</span><span>' + esc(p[5]) + "</span></div>" +
-      '<div class="p-act"><button class="btn sm" data-act="copy"><span class="ms">content_copy</span><span>Copy</span></button><button class="btn sm primary" data-act="open"><span class="ms">open_in_new</span><span>Copy &amp; open Gemini</span></button></div></div>';
+      '<div class="p-act"><button class="btn sm" data-act="copy"><span class="ms">content_copy</span><span>Copy</span></button><button class="btn sm light" data-act="open"><img src="assets/logos/gemini-2025.svg" alt="" width="16" height="16"><span>Copy &amp; open Gemini</span></button></div></div>';
     grid.appendChild(card);
   });
 
@@ -186,6 +186,9 @@
   if (CATS.some(function (c) { return c[0] === hashCat; })) cat = hashCat;
   apply();
 
+  var bar = $("#gBar");
+  function stuck() { var top = parseFloat(getComputedStyle(bar).top) || 0; bar.classList.toggle("stuck", getComputedStyle(bar).position === "sticky" && bar.getBoundingClientRect().top <= top + 1); }
+  window.addEventListener("scroll", stuck, { passive: true }); stuck();
   var nav = $("#nav"), menuBtn = $("#menuBtn");
   menuBtn.addEventListener("click", function () {
     var open = !nav.classList.contains("open");

@@ -41,11 +41,17 @@
 <main>
   <section class="g-hero">
     <div class="glow" aria-hidden="true"></div>
-    <div class="wrap">
-      <a class="textlink back" href="index.html#prompts"><span class="ms">arrow_back</span>Prompt guide</a>
-      <span class="eyebrow">Prompt gallery</span>
-      <h1>Start from a prompt that already works.</h1>
-      <p class="lead">Each prompt names the audience, the decision and the must-haves, and leaves design to the skill. Click any <span class="f-demo">underlined part</span> to change it, then copy it into Gemini in Task mode.</p>
+    <div class="wrap g-hero-grid">
+      <div class="g-hero-copy">
+        <span class="eyebrow">24 prompts · 4 use cases</span>
+        <h1>Prompt gallery</h1>
+        <p class="lead">Prompts that already make good decks. Each one names the audience, the decision and the must-haves, and leaves the design to the skill.</p>
+      </div>
+      <ol class="g-steps" aria-label="How to use a prompt">
+        <li><span class="n">1</span><div><b>Change the <span class="f-demo">underlined</span> parts</b><span>Your topic, audience, length and files.</span></div></li>
+        <li><span class="n">2</span><div><b>Copy and open Gemini</b><span>Start a new chat and pick Task under the box.</span></div></li>
+        <li><span class="n">3</span><div><b>Paste, attach your files, send</b><span>Ask for changes in the same chat afterwards.</span></div></li>
+      </ol>
     </div>
   </section>
 
@@ -63,11 +69,6 @@
     <div class="wrap">
       <div class="g-grid" id="gGrid"></div>
       <div class="g-empty" id="gEmpty" hidden><span class="ms s24">search_off</span><p>No prompts match. Try another word, or <button class="textlink" id="gReset">show all prompts</button>.</p></div>
-      <div class="g-how">
-        <div><span class="n">1</span><b>Change the underlined parts</b><span>Your topic, audience, length and files.</span></div>
-        <div><span class="n">2</span><b>Copy and open Gemini</b><span>Start a new chat and pick Task under the box.</span></div>
-        <div><span class="n">3</span><b>Paste, attach, send</b><span>Attach your files in the same message. Ask for changes after.</span></div>
-      </div>
     </div>
   </section>
 </main>
