@@ -6,9 +6,7 @@
     "dev": "astro dev",
     "build": "astro build && node prune.mjs dist",
     "preview": "astro preview --port 4321",
-    "check": "npm run build && playwright test",
-    "publish:next": "SITE_BASE=/pptx-native/next/ SITE_OUT=../docs/next astro build && node prune.mjs ../docs/next",
-    "publish:live": "SITE_BASE=/pptx-native/ SITE_OUT=../docs astro build && node prune.mjs ../docs"
+    "check": "npm run build && playwright test"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",

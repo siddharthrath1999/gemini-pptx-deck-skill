@@ -57,7 +57,7 @@ const count = (k: string) => (k === "all" ? PROMPTS.length : PROMPTS.filter((p) 
               <div class="body">
                 <div class="head"><span class="cat"><Icon name={c.icon} />{c.label}</span><h2>{p.title}</h2></div>
                 <p class="text"><span class="at">@pptx-native</span> <span class="prompt" set:html={fields(p.text)} /></p>
-                <p class="why"><Icon name="lightbulb" />{p.why}</p>
+                <details class="why" open><summary><Icon name="lightbulb" />Why it works</summary><p>{p.why}</p></details>
                 <div class="act">
                   <button type="button" class="btn sm" data-act="copy"><span class="when-idle"><Icon name="content_copy" /></span><span class="when-copied"><Icon name="check" /></span><span class="when-idle">Copy</span><span class="when-copied">Copied</span></button>
                   <button type="button" class="btn sm light" data-act="open"><img src={`${base}logos/gemini-2025.svg`} alt="" width="16" height="16" />Copy &amp; open Gemini</button>
@@ -133,6 +133,9 @@ const count = (k: string) => (k === "all" ? PROMPTS.length : PROMPTS.filter((p) 
     if (f.classList?.contains("f") && !f.textContent!.trim()) f.textContent = "…";
   });
 
+  // on phones the "why it works" tips start closed to keep cards short
+  if (matchMedia("(max-width: 640px)").matches) $$<HTMLDetailsElement>("details.why", grid).forEach((d) => (d.open = false));
+
   // the filter bar gets a solid backdrop once it sticks under the header
   const bar = $("#gBar")!;
   new IntersectionObserver(([e]) => bar.classList.toggle("stuck", !e.isIntersecting), { rootMargin: "-90px 0px 0px 0px" }).observe($("#barSentinel")!);
@@ -196,8 +199,11 @@ const count = (k: string) => (k === "all" ? PROMPTS.length : PROMPTS.filter((p) 
   .text :global(.f) { color: var(--ink); border-bottom: 1.5px dashed var(--accent-line); padding: 0 1px; outline: none; cursor: text; transition: background-color .2s, border-color .2s; border-radius: 3px 3px 0 0; }
   .text :global(.f:hover) { background: rgba(255,107,61,.08); border-bottom-color: var(--accent-2); }
   .text :global(.f:focus) { background: rgba(255,107,61,.14); border-bottom-color: var(--accent); }
-  .why { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 1.5; color: var(--muted); }
-  .why :global(.i) { width: 17px; height: 17px; color: var(--warn); margin-top: 1px; }
+  .why { font-size: 13px; line-height: 1.5; color: var(--muted); }
+  .why summary { list-style: none; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font: 500 11px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .why summary::-webkit-details-marker { display: none; }
+  .why summary :global(.i) { width: 16px; height: 16px; color: var(--warn); }
+  .why p { margin: 6px 0 0 22px; }
   .act { display: flex; gap: 8px; margin-top: auto; padding-top: 4px; }
   .act .btn { flex: 1; }
 
@@ -220,5 +226,10 @@ const count = (k: string) => (k === "all" ? PROMPTS.length : PROMPTS.filter((p) 
     .bar { position: relative; top: 0; }
     .bar::before { display: none; }
     .toggle { width: 100%; }
+    /* compact cards: a strip of the slide's headline, tighter spacing */
+    .prev { aspect-ratio: 16 / 5; }
+    .body { padding: 14px; gap: 10px; }
+    .text { padding: 12px; font-size: 14px; line-height: 1.6; }
+    .why summary { min-height: 24px; }
   }
 </style>

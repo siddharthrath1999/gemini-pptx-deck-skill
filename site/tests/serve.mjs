@@ -1,4 +1,4 @@
-// Tiny static server for the tests: serves dist/ on 127.0.0.1:4322.
+// Tiny static server for the tests: serves dist/ on 127.0.0.1:4322 (also under SITE_BASE).
 // (Python's http.server drops connections under parallel load.)
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
@@ -6,6 +6,7 @@ import { extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../dist/", import.meta.url));
+const base = process.env.SITE_BASE || "/";
 const types = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".json": "application/json",
   ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp", ".avif": "image/avif",
@@ -14,6 +15,8 @@ const types = {
 
 createServer(async (req, res) => {
   let path = decodeURIComponent(new URL(req.url, "http://x").pathname);
+  // a build for GitHub Pages links to /pptx-native/...; serve those from the same folder
+  if (base !== "/" && path.startsWith(base)) path = "/" + path.slice(base.length);
   if (path.endsWith("/")) path += "index.html";
   const file = normalize(join(root, path));
   if (!file.startsWith(root)) { res.writeHead(403).end(); return; }

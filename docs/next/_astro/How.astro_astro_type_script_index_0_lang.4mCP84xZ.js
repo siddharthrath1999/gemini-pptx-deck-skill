@@ -1,1 +1,0 @@
-import{a as e,i as t,t as n}from"./util.B2FAqcPq.js";var r=n(`#path`);e()?r.classList.add(`go`):t(r,()=>r.classList.add(`go`),.3);

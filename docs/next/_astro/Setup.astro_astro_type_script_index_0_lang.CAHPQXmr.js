@@ -1,1 +1,0 @@
-import{n as e,r as t,t as n}from"./util.B2FAqcPq.js";var r=n(`.term`),i=JSON.parse(r.dataset.cmds||`{}`),a=n(`#termCmd`),o=`mac`;e(`#osTabs button`).forEach((e,t,n)=>e.addEventListener(`click`,()=>{n.forEach(t=>t.setAttribute(`aria-selected`,String(t===e))),o=e.dataset.os,a.textContent=i[o]})),n(`#copyCmd`).addEventListener(`click`,e=>t(i[o],e.currentTarget));

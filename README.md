@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/banner.png" alt="PPTX Native: real PowerPoint, straight from Gemini" width="100%">
+  <img src=".github/readme/banner.png" alt="PPTX Native: real PowerPoint, straight from Gemini" width="100%">
 </p>
 
 <p align="center">
@@ -9,7 +9,7 @@
   <a href="#audiences-and-edits">Audiences &amp; edits</a> ·
   <a href="#examples">Examples</a> ·
   <a href="#better-prompts">Prompts</a> ·
-  <a href="https://siddharthrath1999.github.io/pptx-native/prompts.html">Prompt gallery</a> ·
+  <a href="https://siddharthrath1999.github.io/pptx-native/prompts.html">Prompts and layouts</a> ·
   <a href="#faq">FAQ</a>
 </p>
 
@@ -23,7 +23,7 @@
 
 **PPTX Native** is a free, open-source skill for Gemini and Google Antigravity. Ask in one line. Get a researched, designed `.pptx` where every chart, table, icon and word stays editable in PowerPoint, Keynote, Google Slides and LibreOffice. Or hand it the deck you already have and say what to change.
 
-<p align="center"><img src="docs/assets/run/m/s01.jpg" width="32%"> <img src="docs/assets/run/m/s03.jpg" width="32%"> <img src="docs/assets/run/m/s12.jpg" width="32%"></p>
+<p align="center"><img src=".github/readme/run/m/s01.jpg" width="32%"> <img src=".github/readme/run/m/s03.jpg" width="32%"> <img src=".github/readme/run/m/s12.jpg" width="32%"></p>
 <p align="center"><sub>Three of the 15 slides Gemini built from one sentence in a real Task run, October 2026.</sub></p>
 
 ## Why it exists
@@ -87,7 +87,7 @@ Under the hood, Gemini writes the deck as a JSON spec and the bundled Python kit
 
 **It designs for who's in the room.** One company, four requests: the structure, slide types, wording and look all change, not just the colours.
 
-<p align="center"><img src="docs/assets/audiences/board-2.jpg" width="24%"> <img src="docs/assets/audiences/pitch-3.jpg" width="24%"> <img src="docs/assets/audiences/workshop-2.jpg" width="24%"> <img src="docs/assets/audiences/launch-3.jpg" width="24%"></p>
+<p align="center"><img src=".github/readme/audiences/board-2.jpg" width="24%"> <img src=".github/readme/audiences/pitch-3.jpg" width="24%"> <img src=".github/readme/audiences/workshop-2.jpg" width="24%"> <img src=".github/readme/audiences/launch-3.jpg" width="24%"></p>
 <p align="center"><sub>Board update, investor pitch, team workshop and product launch for Lumen Bikes, a fictional company. Sample data.</sub></p>
 
 **It edits the deck you already have.** Attach a `.pptx` and say what to change. It reads every slide first, then changes only what you asked for, in your deck's own fonts and colours.
@@ -100,7 +100,7 @@ Under the hood, Gemini writes the deck as a JSON spec and the bundled Python kit
 | "Add a decisions slide after the table" | Inserts a new slide that matches the rest |
 | "Rewrite the speaker notes for investors" | Changes notes only |
 
-<p align="center"><img src="docs/assets/gallery/redesign.jpg" width="70%"></p>
+<p align="center"><img src=".github/readme/gallery/redesign.jpg" width="70%"></p>
 <p align="center"><sub>Before and after: "Turn slide 2 into something better than bullets."</sub></p>
 
 New and redesigned slides need a 16:9 deck. On other sizes it edits text, tables, charts and notes. New slides use the deck's theme colours and fonts, not its master artwork.
@@ -119,8 +119,8 @@ Four decks Gemini made with PPTX Native, each from a single sentence:
 
 | Electric two-wheelers · market entry | How UPI works · learning deck | India's credit cards · analysis | Quick commerce · benchmark |
 |---|---|---|---|
-| <img src="docs/assets/run/m/s02.jpg"> | <img src="docs/assets/examples/upi-01.jpg"> | <img src="docs/assets/examples/cards-14.jpg"> | <img src="docs/assets/examples/qc-17.jpg"> |
-| <img src="docs/assets/run/m/s14.jpg"> | <img src="docs/assets/examples/upi-06.jpg"> | <img src="docs/assets/examples/cards-20.jpg"> | <img src="docs/assets/examples/qc-34.jpg"> |
+| <img src=".github/readme/run/m/s02.jpg"> | <img src=".github/readme/examples/upi-01.jpg"> | <img src=".github/readme/examples/cards-14.jpg"> | <img src=".github/readme/examples/qc-17.jpg"> |
+| <img src=".github/readme/run/m/s14.jpg"> | <img src=".github/readme/examples/upi-06.jpg"> | <img src=".github/readme/examples/cards-20.jpg"> | <img src=".github/readme/examples/qc-34.jpg"> |
 | 15 slides, 12 sources | 60 slides, 6 quizzes | 45 slides, 5 parts | 47 slides, 11 charts |
 
 <sub>Made from online sources in October 2026. Figures have not been independently checked. Page through them on the <a href="https://siddharthrath1999.github.io/pptx-native/#examples">website</a>.</sub>
@@ -140,7 +140,7 @@ Four decks Gemini made with PPTX Native, each from a single sentence:
 
 Attach your files in the same message, and ask for changes in the same chat afterwards ("Make slide 12 a chart" rebuilds just that slide). The handoff note lists every source and any gap left as a placeholder like `[2025 revenue]`.
 
-**[Prompt gallery →](https://siddharthrath1999.github.io/pptx-native/prompts.html)** 24 ready-made prompts for business and strategy, learning and training, product and tech, and editing decks. Each has fields you can change, a preview slide and a line on why it works.
+**[Prompts and layouts →](https://siddharthrath1999.github.io/pptx-native/prompts.html)** 24 ready-made prompts for business and strategy, learning and training, product and tech, and editing decks, each with fields you can change, a preview slide and a line on why it works. The same page has a prompt builder and all 34 layouts.
 
 ## What's inside
 
@@ -194,7 +194,8 @@ pptx-native/               the skill (this folder is what Gemini and Antigravity
   examples/gallery.json    a spec that uses every layout
 install.sh · install.ps1   one-line installers for Antigravity
 bin/install.js             the npx installer
-docs/                      the website (GitHub Pages): index.html and prompts.html
+site/                      the website (Astro). npm run dev to work on it, npm run check to build and test it.
+                           Every push to main that touches site/ is built, checked and deployed to GitHub Pages.
 ```
 
 Try the kit locally (Python 3.9+, `pip install python-pptx pillow`):
