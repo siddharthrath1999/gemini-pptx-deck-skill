@@ -3,13 +3,13 @@ import Icon from "./Icon.astro";
 import Github from "./Github.astro";
 import { GITHUB, ZIP_URL } from "../data/content";
 
-interface Props { page: "home" | "gallery" }
+interface Props { page: "home" | "gallery" | "other" }
 const { page } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 const home = `${base}index.html`;
 const link = (h: string) => (page === "home" ? h : `${home}${h}`);
 const cols = [
-  { title: "Product", links: [[link("#how"), "How it works"], [link("#examples"), "Examples"], [link("#features"), "What you get"], [link("#faq"), "FAQ"]] },
+  { title: "Product", links: [[link("#how"), "How it works"], [link("#examples"), "Examples"], [link("#features"), "Features"], [link("#faq"), "FAQ"]] },
   { title: "Get started", links: [[link("#setup-gemini"), "Gemini app"], [link("#setup-antigravity"), "Antigravity"], [ZIP_URL, "Download the zip"], [`${base}prompts.html`, "Prompts"], [`${base}prompts.html#layouts`, "Layouts"]] },
   { title: "Project", links: [[GITHUB, "GitHub"], [`${GITHUB}/releases`, "Release notes"], [`${GITHUB}/issues`, "Report an issue"], [`${GITHUB}/blob/main/LICENSE`, "MIT licence"]] },
 ];

@@ -1,0 +1,25 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+---
+<Base page="other" noindex title="Page not found · PPTX Native" description="This page doesn't exist. Go to the PPTX Native homepage or the prompts page.">
+  <section class="nf">
+    <div class="wrap">
+      <span class="eyebrow">404</span>
+      <h1>This page doesn't exist.</h1>
+      <p class="lead">The link may be old, or the page moved when the site was simplified.</p>
+      <div class="row">
+        <a class="btn primary lg" href={`${base}index.html`}><Icon name="home" />Go to the homepage</a>
+        <a class="btn lg" href={`${base}prompts.html`}>Prompts and layouts<Icon name="arrow_forward" /></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { min-height: 70vh; display: grid; align-items: center; padding-top: calc(var(--nav-h) + 72px); }
+  .wrap { display: grid; gap: 20px; justify-items: start; }
+  h1 { font-size: clamp(40px, 6vw, 72px); letter-spacing: -0.045em; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+</style>

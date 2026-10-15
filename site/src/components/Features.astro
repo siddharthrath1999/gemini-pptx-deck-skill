@@ -9,28 +9,28 @@ const narrow = "(max-width: 640px) 90vw, (max-width: 980px) 45vw, 280px";
 ---
 <section id="features">
   <div class="wrap">
-    <div class="sec-head rv"><span class="eyebrow">What you get</span><h2>Built to be presented, not just generated.</h2></div>
+    <div class="sec-head rv"><span class="eyebrow">Features</span><h2>Built to be presented, not just generated.</h2></div>
     <div class="bento" id="bento">
-      <article class="tile w2 rv"><div class="demo"><div class="chart"><div class="cap"><span>Riders, thousands</span><b>Edit data in PowerPoint</b></div><div class="bars">{bars.map((h, i) => <i class={i === 6 ? "hl" : ""} style={`--h:${h};--i:${i}`}></i>)}</div></div></div><h3>Native charts, data inside</h3><p>Column, bar, line, pie, scatter, waterfall and more. Click a chart in PowerPoint and edit its numbers.</p></article>
+      <article class="tile w2 rv"><div class="demo" aria-hidden="true"><div class="chart"><div class="cap"><span>Riders, thousands</span><b>Edit data in PowerPoint</b></div><div class="bars">{bars.map((h, i) => <i class={i === 6 ? "hl" : ""} style={`--h:${h};--i:${i}`}></i>)}</div></div></div><h3>Native charts, data inside</h3><p>Column, bar, line, pie, scatter, waterfall and more. Click a chart in PowerPoint and edit its numbers.</p></article>
 
-      <article class="tile rv"><div class="demo"><div class="cycle fit" data-cycle>
+      <article class="tile rv"><div class="demo" aria-hidden="true"><div class="cycle fit" data-cycle>
         {["l06", "l15", "l20", "l22"].map((n, i) => <Image class={i === 0 ? "on" : ""} src={img(`layouts/${n}.jpg`)} alt="" widths={[400, 760]} sizes={narrow} />)}
       </div></div><h3>34 layouts</h3><p>Picked from the shape of your content. <a class="more" href={`${base}prompts.html#layouts`}>See them all</a></p></article>
 
-      <article class="tile rv"><div class="demo"><ul class="ticks">
+      <article class="tile rv"><div class="demo" aria-hidden="true"><ul class="ticks">
         <li style="--i:0"><Icon name="description" />Your files<em>first</em></li>
         <li style="--i:1"><Icon name="account_balance" />Regulator data<em>primary</em></li>
         <li style="--i:2"><Icon name="request_quote" />Company filings<em>primary</em></li>
         <li style="--i:3"><Icon name="query_stats" />Industry reports<em>dated</em></li>
       </ul></div><h3>Researched and sourced</h3><p>Every data slide names its source.</p></article>
 
-      <article class="tile rv"><div class="demo"><ul class="ticks ok">
+      <article class="tile rv"><div class="demo" aria-hidden="true"><ul class="ticks ok">
         {["No text overflow", "No overlaps", "Readable contrast", "Plain wording"].map((t, i) => <li style={`--i:${i}`}><Icon name="check_circle" />{t}</li>)}
       </ul></div><h3>Checks its own work</h3><p>Renders the slides and looks at them before handing over.</p></article>
 
-      <article class="tile rv"><div class="demo"><div class="notes"><small>Speaker notes · slide 4</small><span class="tw" data-type={notes}>{notes}</span></div></div><h3>Speaker notes</h3><p>What to say on every slide.</p></article>
+      <article class="tile rv"><div class="demo" aria-hidden="true"><div class="notes"><small>Speaker notes · slide 4</small><span class="tw" data-type={notes}>{notes}</span></div></div><h3>Speaker notes</h3><p>What to say on every slide.</p></article>
 
-      <article class="tile w2 rv"><div class="demo"><div class="rewrite"><small>Headline</small><s>In today's fast-paced landscape, we leverage synergies to unlock growth</s><strong>Riders doubled in three quarters, and Pune turned profitable</strong></div></div><h3>Writes like a person</h3><p>Sentence headlines that state the point, numbers with units and dates, no stock AI phrasing.</p></article>
+      <article class="tile w2 rv"><div class="demo" aria-hidden="true"><div class="rewrite"><small>Headline</small><s>In today's fast-paced landscape, we leverage synergies to unlock growth</s><strong>Riders doubled in three quarters, and Pune turned profitable</strong></div></div><h3>Writes like a person</h3><p>Sentence headlines that state the point, numbers with units and dates, no stock AI phrasing.</p></article>
     </div>
   </div>
 </section>

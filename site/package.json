@@ -11,6 +11,7 @@
     "publish:live": "SITE_BASE=/pptx-native/ SITE_OUT=../docs astro build && node prune.mjs ../docs"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
     "@iconify-json/material-symbols": "^1.2.95",
     "@playwright/test": "^1.64.1",
     "astro": "^7.3.8",

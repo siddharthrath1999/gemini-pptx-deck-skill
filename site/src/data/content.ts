@@ -7,7 +7,7 @@ export const ZIP_URL = `${GITHUB}/releases/latest/download/pptx-native.zip`;
 export const NAV = [
   { href: "#how", label: "How it works" },
   { href: "#examples", label: "Examples" },
-  { href: "#features", label: "What you get" },
+  { href: "#features", label: "Features" },
   { href: "#setup", label: "Set up" },
   { href: "#faq", label: "FAQ" },
 ];

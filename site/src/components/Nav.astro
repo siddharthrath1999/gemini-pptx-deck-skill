@@ -3,7 +3,7 @@ import Icon from "./Icon.astro";
 import Github from "./Github.astro";
 import { NAV, GITHUB } from "../data/content";
 
-interface Props { page: "home" | "gallery" }
+interface Props { page: "home" | "gallery" | "other" }
 const { page } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 const home = `${base}index.html`;
@@ -22,7 +22,7 @@ const link = (h: string) => (page === "home" ? h : `${home}${h}`);
     </nav>
     <div class="cta">
       <a class="btn sm gh-btn" href={GITHUB} aria-label="PPTX Native on GitHub"><Github /><span class="label">GitHub</span><span class="count" id="stars" hidden></span></a>
-      <a class="btn sm primary install" href={link("#setup")}><Icon name="download" /><span class="label">Install free</span></a>
+      <a class="btn sm primary install" href={link("#setup")} aria-label="Install free"><Icon name="download" /><span class="label">Install free</span></a>
       <button class="btn sm icon menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="menuSheet">
         <span class="when-closed"><Icon name="menu" /></span><span class="when-open"><Icon name="close" /></span>
       </button>

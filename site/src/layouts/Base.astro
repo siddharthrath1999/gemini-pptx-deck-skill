@@ -4,8 +4,8 @@ import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import "../styles/global.css";
 
-interface Props { title: string; description: string; page: "home" | "gallery" }
-const { title, description, page } = Astro.props;
+interface Props { title: string; description: string; page: "home" | "gallery" | "other"; noindex?: boolean }
+const { title, description, page, noindex = false } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 const ogImage = new URL(`${base}og.png`, Astro.site).href;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
@@ -25,6 +25,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content="#0a0a0b" />
   <link rel="icon" href={`${base}brand/favicon.svg`} type="image/svg+xml" />
+  <link rel="apple-touch-icon" href={`${base}brand/apple-touch-icon.png`} />
+  {noindex && <meta name="robots" content="noindex" />}
+  <slot name="head" />
   <Font cssVariable="--font-sans" preload />
   <Font cssVariable="--font-mono" />
   <script is:inline>document.documentElement.classList.add("js");</script>

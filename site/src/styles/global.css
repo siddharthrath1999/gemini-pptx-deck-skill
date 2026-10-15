@@ -11,8 +11,8 @@
   --line-3: rgba(255, 250, 240, 0.2);
   --ink: #f3efe6;
   --soft: #c9c5bc;
-  --muted: #8d8a83;
-  --faint: #6a6862;
+  --muted: #9a978f;
+  --faint: #85827b; /* 4.6:1 on the darkest cards; small print stays readable */
   --accent: #ff6b3d;
   --accent-2: #ff8c64;
   --accent-ink: #1a0b04;

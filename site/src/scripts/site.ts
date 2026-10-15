@@ -20,6 +20,8 @@ function setMenu(open: boolean) {
 menuBtn.addEventListener("click", () => setMenu(!nav.classList.contains("open")));
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
 $$("#menuSheet a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
+// a tap anywhere outside the header closes the menu
+document.addEventListener("click", (e) => { if (nav.classList.contains("open") && !nav.contains(e.target as Node)) setMenu(false); });
 
 /* header turns solid after the first screenful (no scroll listener) */
 const sentinel = document.createElement("div");
