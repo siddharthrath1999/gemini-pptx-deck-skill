@@ -11,7 +11,7 @@ from pptx.oxml.ns import qn
 from dk_units import Inches, Pt, emu
 
 import dk_measure as M
-from dk_canvas import LH, parse_runs, plain
+from dk_canvas import LH, parse_runs, plain, set_alt
 from dk_theme import contrast, mix, pick_on, readable
 
 TYPES = {
@@ -99,6 +99,7 @@ def add_chart(c, x, y, w, h, spec):
 
     frame = c.slide.shapes.add_chart(TYPES[kind], Inches(x), Inches(y), Inches(w), Inches(h), data)
     frame.name = spec.get("name", "Chart")
+    set_alt(frame, chart_alt(kind, cats, series, spec))
     chart = frame.chart
     chart.has_title = False
     chart.font.name = family
@@ -252,6 +253,26 @@ def add_chart(c, x, y, w, h, spec):
     return frame
 
 
+def chart_alt(kind, cats, series, spec):
+    """Alt text for a chart: its type, what it measures, and the values, so it reads without the picture."""
+    kind_name = {"column": "Column", "bar": "Bar", "line": "Line", "area": "Area", "pie": "Pie", "doughnut": "Doughnut",
+                 "scatter": "Scatter", "waterfall": "Waterfall"}.get(kind, kind.replace("_", " ").capitalize())
+    head = "%s chart" % kind_name
+    caption = spec.get("title") or spec.get("caption") or spec.get("unit")
+    if caption:
+        head += ": " + plain(str(caption))
+    parts = [head + "."]
+    for s in series[:6]:
+        if kind == "scatter":
+            pts = ", ".join("(%s, %s)" % (pt[0], pt[1]) for pt in (s.get("points") or [])[:12])
+            parts.append("%s: %s." % (s.get("name", "Series"), pts))
+        else:
+            vals = s.get("values") or []
+            pairs = ", ".join("%s %s" % (cat, v) for cat, v in list(zip(cats, vals))[:12])
+            parts.append(("%s: %s." % (s.get("name"), pairs)) if s.get("name") else pairs + ".")
+    return " ".join(parts)
+
+
 def clean_color(c):
     return str(c).strip().lstrip("#").upper()
 
@@ -381,10 +402,13 @@ def add_table(c, x, y, w, spec, max_h):
     hl_row, hl_col = spec.get("highlight_row"), spec.get("highlight_col")
     size = float(spec.get("size", 14))
 
+    def head_pt(sz):  # header labels stay small and quiet even when body text grows
+        return min(sz - 2, 12)
+
     def heights(sz):
         out = []
         if cols:
-            hh = max(M.text_height(plain(v).upper(), family, sz - 2, widths[j] - 2 * padx, True, LH, 0, int((sz - 2) * 4))[0]
+            hh = max(M.text_height(plain(v).upper(), family, head_pt(sz), widths[j] - 2 * padx, True, LH, 0, int(head_pt(sz) * 4))[0]
                      for j, v in enumerate(cols))
             out.append(hh + 2 * pady + 0.02)
         for r in rows:
@@ -394,11 +418,16 @@ def add_table(c, x, y, w, spec, max_h):
         return out
 
     hs = heights(size)
+    if "size" not in spec:  # a short table reads better with larger text than with stretched rows
+        while size < 17 and sum(heights(size + 1)) <= max_h * 0.6:
+            size += 1
+        hs = heights(size)
     while sum(hs) > max_h and size > 9:
         size -= 0.5
         hs = heights(size)
-    if sum(hs) < max_h * 0.62 and hs:  # a short table gets taller rows instead of floating in space
-        grow = min((max_h * 0.62) / sum(hs), 0.62 / max(hs), 1.9)
+    if sum(hs) < max_h * 0.7 and hs:  # a short table gets taller rows instead of floating in space
+        body = hs[1:] if cols and len(hs) > 1 else hs
+        grow = min((max_h * 0.7) / sum(hs), 0.7 / max(body), 1.9)
         if grow > 1:
             hs = [h * grow for h in hs]
     if size < 11:
@@ -409,10 +438,12 @@ def add_table(c, x, y, w, spec, max_h):
     total_rows = len(rows) + (1 if cols else 0)
     frame = c.slide.shapes.add_table(total_rows, ncol, Inches(x), Inches(y), Inches(w), Inches(sum(hs)))
     frame.name = spec.get("name", "Table")
+    set_alt(frame, "Table with %d rows. Columns: %s." % (len(spec.get("rows") or []), ", ".join(plain(col) for col in cols)))
     tbl = frame.table
     tblPr = tbl._tbl.tblPr
-    for attr in ("firstRow", "bandRow", "firstCol", "lastRow", "lastCol", "bandCol"):
+    for attr in ("bandRow", "firstCol", "lastRow", "lastCol", "bandCol"):
         tblPr.set(attr, "0")
+    tblPr.set("firstRow", "1")  # the first row is the header row for screen readers; the style adds no look of its own
     sid = tblPr.find(qn("a:tableStyleId"))
     if sid is None:
         sid = tblPr.makeelement(qn("a:tableStyleId"), {})
@@ -453,11 +484,11 @@ def add_table(c, x, y, w, spec, max_h):
                 run.text = label
                 font = run.font
                 font.name = family
-                font.size = Pt(size - 2 if is_head else size)
+                font.size = Pt(head_pt(size) if is_head else size)
                 font.bold = bool(is_head or is_bold or (j == 0 and spec.get("first_col_bold", True)))
                 font.color.rgb = _c(ink if (inverted or not is_head) else P["muted"])
                 if is_head:
-                    run._r.get_or_add_rPr().set("spc", str(int((size - 2) * 4)))
+                    run._r.get_or_add_rPr().set("spc", str(int(head_pt(size) * 4)))
             for side in ("l", "r", "t"):
                 _border(cell, side, None, 0)
             last = i == total_rows - 1

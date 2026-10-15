@@ -8,7 +8,7 @@ const count = (k: string) => (k === "all" ? LAYOUTS.length : LAYOUTS.filter((l) 
 <section id="layouts">
   <div class="wrap">
     <div class="sec-head rv">
-      <span class="eyebrow">34 layouts</span>
+      <span class="eyebrow">{LAYOUTS.length} layouts</span>
       <h2>A layout for every kind of point.</h2>
       <p class="lead">A number gets a big number. A ranking gets bars. A process gets steps. Gemini picks from the shape of your content.</p>
     </div>
@@ -25,7 +25,7 @@ const count = (k: string) => (k === "all" ? LAYOUTS.length : LAYOUTS.filter((l) 
       ))}
     </ul>
     <div class="more"><button type="button" class="btn" id="showAll" aria-controls="posterGrid" aria-expanded="false">
-      <span class="when-more"><Icon name="expand_more" /></span><span class="when-less"><Icon name="expand_less" /></span><span id="showAllLabel">Show all 34 layouts</span>
+      <span class="when-more"><Icon name="expand_more" /></span><span class="when-less"><Icon name="expand_less" /></span><span id="showAllLabel">Show all {LAYOUTS.length} layouts</span>
     </button></div>
   </div>
 </section>

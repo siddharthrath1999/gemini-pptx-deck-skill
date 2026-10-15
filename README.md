@@ -45,7 +45,7 @@ Ask an AI for slides and you usually get one of three things. Each leaves the re
 
 ### Gemini app
 
-1. Download **[pptx-native.zip](https://github.com/siddharthrath1999/pptx-native/releases/latest/download/pptx-native.zip)** (about 105 KB). Keep it zipped.
+1. Download **[pptx-native.zip](https://github.com/siddharthrath1999/pptx-native/releases/latest/download/pptx-native.zip)** (about 120 KB). Keep it zipped.
 2. In Gemini, open **Customise** in the left menu, then the **Skills** tab.
 3. Click **Create**, then **Upload**, choose the zip, and click **Create**.
 4. Start a new chat, pick **Task** under the box, type `@pptx-native` and describe your deck.
@@ -107,11 +107,11 @@ New and redesigned slides need a 16:9 deck. On other sizes it edits text, tables
 
 ## Layouts
 
-34 layouts, picked from the shape of your content: a number gets a big number, a ranking gets bars, a process gets steps.
+37 layouts, picked from the shape of your content: a number gets a big number, a ranking gets bars, a process gets steps, and your photos get picture layouts.
 
-| Data | Story | Flow | Teaching |
-|---|---|---|---|
-| Big number, KPI tiles, chart, chart pair, waterfall, bar list, split bar, table, heatmap, scorecard | Cover, agenda, section, statement, cards, comparison, two column, bullets, pros and cons, before and after, quote, next steps, sources | Timeline, process, funnel, 2x2 matrix, layers, roadmap, free canvas | Quiz question, runbook steps, code, recap |
+| Data | Story | Flow | Teaching | Pictures |
+|---|---|---|---|---|
+| Big number, KPI tiles, chart, chart pair, waterfall, bar list, split bar, table, heatmap, scorecard | Cover, agenda, section, statement, cards, comparison, two column, bullets, pros and cons, before and after, quote, next steps, sources | Timeline, process, funnel, 2x2 matrix, layers, roadmap, free canvas | Quiz question, runbook steps, code, recap | Picture with text, picture grid, full-bleed photo |
 
 ## Examples
 
@@ -140,18 +140,20 @@ Four decks Gemini made with PPTX Native, each from a single sentence:
 
 Attach your files in the same message, and ask for changes in the same chat afterwards ("Make slide 12 a chart" rebuilds just that slide). The handoff note lists every source and any gap left as a placeholder like `[2025 revenue]`.
 
-**[Prompts and layouts →](https://siddharthrath1999.github.io/pptx-native/prompts.html)** 24 ready-made prompts for business and strategy, learning and training, product and tech, and editing decks, each with fields you can change, a preview slide and a line on why it works. The same page has a prompt builder and all 34 layouts.
+**[Prompts and layouts →](https://siddharthrath1999.github.io/pptx-native/prompts.html)** 24 ready-made prompts for business and strategy, learning and training, product and tech, and editing decks, each with fields you can change, a preview slide and a line on why it works. The same page has a prompt builder and all 37 layouts.
 
 ## What's inside
 
 | | |
 |---|---|
 | **Native charts** | Column, bar, stacked, 100% stacked, line, area, pie, doughnut, scatter and waterfall, with the data inside |
-| **34 layouts** | From KPI tiles to roadmaps and quizzes |
+| **37 layouts** | From KPI tiles to roadmaps, quizzes and your own photos |
 | **Edits your deck** | Rewrite, update tables and charts, redesign or add slides, reorder, delete |
 | **Researched and sourced** | Your files first, then primary sources; every data slide names its source |
 | **Checks its own work** | Overflow, overlaps, contrast and wording, then a rendered review |
-| **A look for every audience** | Nine starting styles, or your brand colours |
+| **A look for every audience** | Nine starting styles, your brand colours, or your company template |
+| **Your photos** | Photos, screenshots and logos you attach, cropped to fit |
+| **Accessible** | Real slide titles, sections and alt text, ready for PowerPoint's checker |
 | **Speaker notes** | What to say on every slide |
 | **152 icons** | Vector shapes, editable like any other |
 | **100+ slides** | Parts, recaps and an appendix when you need depth |
@@ -171,11 +173,11 @@ Yes. Every text box, shape, chart and table is a normal PowerPoint object, and c
 <details><summary><b>Are the numbers right?</b></summary>
 It researches and cites sources, but it can still pick a weak source or misread one. Check figures before you present. The handoff note lists every source.
 </details>
-<details><summary><b>Can it use my brand?</b></summary>
-Give your colours as hex codes in the prompt. Fonts default to ones every device has; ask for a brand font only if everyone presenting has it installed.
+<details><summary><b>Can it use my brand or company template?</b></summary>
+Yes. Attach your company template (.pptx or .potx) and the new deck is built inside it, with your fonts, colours, background and logo. Or attach just your logo and give your colours as hex codes.
 </details>
 <details><summary><b>Does it add photos?</b></summary>
-No. Visuals come from charts, tables, shapes and icons. Add your own photos afterwards.
+It places the photos, screenshots and logos you attach, cropped to fit and turned the right way up. It never generates or downloads images.
 </details>
 <details><summary><b>Upload says "did not pass the security scan"</b></summary>
 Upload the official zip, unchanged. If you edited files inside it, undo the changes and try again.

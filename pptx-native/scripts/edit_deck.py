@@ -214,7 +214,32 @@ def move_after(prs, slide, after_id):
     anchor.addnext(mine)
 
 
+def join_section(prs, new_id, after_id):
+    """If the deck uses PowerPoint sections, put a new slide in the section of the slide it follows."""
+    lists = prs.part._element.xpath(".//*[local-name()='sectionLst']")
+    if not lists:
+        return
+    entries = lists[0].xpath(".//*[local-name()='sldId']")
+    if not entries:
+        return
+    target = next((e for e in entries if e.get("id") == str(after_id)), None)
+    if target is None:  # inserted at the start: join the first section
+        target = entries[0]
+        entry = target.makeelement(target.tag, {"id": str(new_id)})
+        target.addprevious(entry)
+        return
+    entry = target.makeelement(target.tag, {"id": str(new_id)})
+    target.addnext(entry)
+
+
+def drop_from_sections(prs, slide_id):
+    for entry in prs.part._element.xpath(".//*[local-name()='sectionLst']//*[local-name()='sldId']"):
+        if entry.get("id") == str(slide_id):
+            entry.getparent().remove(entry)
+
+
 def delete_slide(prs, slide):
+    drop_from_sections(prs, slide.slide_id)
     lst = prs.slides._sldIdLst
     for e in list(lst):
         if int(e.get("id")) == slide.slide_id:
@@ -251,7 +276,11 @@ def insert_slides(prs, info, op, original, findings):
         raise EditError("New slides can only be added to 16:9 decks; this deck is %s. Edit text, tables and charts instead." % info["aspect"])
     dk_units.set_scale(Emu(prs.slide_width).inches / DESIGN_W)
     try:
-        deck = Deck(theme_from_deck(info, op.get("theme")), {"page_numbers": False, "footer": ""}, prs=prs)
+        import dk_template
+        scale = Emu(prs.slide_width).inches / DESIGN_W
+        marks = dk_template.marks(prs, dk_template.blank_layout(prs), scale)
+        deck = Deck(theme_from_deck(info, op.get("theme")), {"page_numbers": False, "footer": ""}, prs=prs, template_marks=marks)
+        deck.keep_sections = True  # the deck's own sections stay; new slides join them
         for w in deck.theme.warnings:
             if "safe list" not in w:
                 findings.append({"slide": 0, "level": "info", "msg": "Inserted slides: " + w})
@@ -269,7 +298,9 @@ def insert_slides(prs, info, op, original, findings):
             if name not in NO_FOOTER:
                 canvas.footer(spec.get("source"), page=False)
             canvas.notes(spec.get("notes"))
+            canvas.finish()
             move_after(prs, canvas.slide, anchor)
+            join_section(prs, canvas.slide.slide_id, anchor)
             anchor = canvas.slide.slide_id
             made.append(canvas.slide.slide_id)
             for f in dk_lint.lint_geometry(canvas) + dk_lint.lint_copy(spec, 0):
@@ -351,6 +382,8 @@ def apply(prs, ops, findings):
                 if isinstance(after, dict):
                     after = original.get(int(after["n"]))
                 move_after(prs, slide, after)
+                drop_from_sections(prs, slide.slide_id)
+                join_section(prs, slide.slide_id, after)
                 log.append("moved slide id %d" % slide.slide_id)
             elif kind == "delete_slides":
                 for ref in op["slides"]:
@@ -405,6 +438,9 @@ def main():
     findings = []
     log = apply(prs, ops, findings)
     renumber_parts(prs)
+    folder = os.path.dirname(os.path.abspath(args.out))
+    if not os.path.isdir(folder):
+        os.makedirs(folder)
     prs.save(args.out)
     errors = sum(1 for f in findings if f["level"] == "error")
     print("Saved %s · %d edit(s) applied" % (args.out, len(log)))

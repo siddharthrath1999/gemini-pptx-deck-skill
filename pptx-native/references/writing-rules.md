@@ -32,6 +32,12 @@ Slides are read in seconds by people who are also listening. Write like a carefu
 - Hedging stacked on hedging ("could potentially help to"). Hedge once, where the uncertainty is.
 - Title Case Headlines.
 
+## Pictures
+
+- Say only what a picture visibly shows. Do not read trends, periods or numbers off a chart inside a screenshot unless the user's data confirms them, and do not claim a photo "explains" or "proves" a finding.
+- Captions name the place, product or moment ("The Pune store, October 2026"), not the file or how it was processed. Never mention file names, rotation, cropping or resizing on a slide.
+- Source lines name the source in words ("Lumen Bikes city data, Q3 2026"; "Field team photos"), never a file name such as `city-data.csv`.
+
 ## Speaker notes
 
 - Write what the presenter would say, in plain spoken sentences. Two to five sentences per slide.
@@ -58,5 +64,6 @@ When content exceeds a limit, split it across slides with a shared headline stem
 
 - Use only facts you found or were given. Mark gaps with a bracketed placeholder and report them.
 - Quotes are real words from a named, real source, or they are not on the slide.
-- If sources disagree, say so on the slide or in the notes and name both.
+- If sources disagree, say so on the slide or in the notes and name both. When a figure you computed from the user's data differs from one shown in their screenshot or report (2.2% against 2.1%), pick one, use it everywhere, and mention the other in the notes and the handoff.
+- A comparison across cities, products or companies at one moment is not a trend over time. "Newer cities have higher churn" is what the data shows; "churn falls as hubs mature" needs the same city measured over time.
 - Date anything that will age: "as of October 2026".

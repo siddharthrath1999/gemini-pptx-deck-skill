@@ -55,6 +55,6 @@ Rules: never rebuild the whole deck when the user asked for targeted changes. Ke
 ## Limits
 
 - `replace_slide` and `insert_slides` need a 16:9 deck. On 4:3 or other sizes, edit text, tables, charts and notes instead, and say so.
-- New slides match the deck's theme colours and fonts, not its custom master artwork (logos, background images). If the deck relies on master artwork, mention it in the change log.
+- New slides match the deck's theme colours and fonts. On light slides the deck's own master background, logo and brand graphics show through, and content keeps clear of them; dark and accent slides use a solid colour. Check new slides beside the originals in the render.
 - Pictures can be deleted but not replaced. SmartArt and embedded objects are read-only.
 - Fonts in an uploaded deck may not be installed where you render; measured sizes are then estimates. Check the render.

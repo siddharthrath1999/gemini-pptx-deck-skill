@@ -16,13 +16,16 @@ deck/
 ```json
 {
   "meta": {"title": "Deck title", "author": "Name or team", "date": "October 2026",
-           "footer": "Short label shown beside page numbers", "page_numbers": true},
+           "footer": "Short label shown beside page numbers", "page_numbers": true,
+           "logo": "acme-logo.png", "template": "acme-template.pptx"},
   "theme": {"preset": "editorial-warm", "overrides": {"accents": ["0B6E4F", "F2A900"]}},
   "slides": []
 }
 ```
 
 A single `.json` file with `meta`, `theme` and `slides` also works for short decks.
+
+`logo` (optional) puts the user's logo on the cover. `template` (optional) builds the deck inside the user's own template; see "Building in a template" below. File paths are relative to the spec folder; copy attached files there first.
 
 Build: `python3 scripts/build_deck.py deck -o name.pptx`. Lists: `--layouts`, `--presets`, `--icons`.
 
@@ -61,13 +64,14 @@ Slide size is 13.333 x 7.5 in. Body content sits between x 0.75 and 12.58, and f
 | A stack or hierarchy | `layers` |
 | A change | `before_after` |
 | A voice | `quote` |
+| A photo, screenshot or diagram the user gave you | `image`, `images`, `image_full` |
 | Audience participation | `question`, followed by an answer slide |
 | A short list with no better structure | `bullets` (sparingly) |
 | Something none of these fit | `custom` |
 
 ## Openers, dividers, closers
 
-**cover**: `kicker`, `title` (up to three lines), `subtitle` (one or two lines, about 25 words), `author`, `date`, `note`, `tags` (up to 5 short labels).
+**cover**: `kicker`, `title` (up to three lines), `subtitle` (one or two lines, about 25 words), `author`, `date`, `note`, `tags` (up to 5 short labels), `image` (a photo for the right half, see Pictures), `logo` (overrides `meta.logo`).
 
 **section**: `number` ("1", "Part 2"), `title`, `subtitle`, `kicker`. Defaults to tone `dark`.
 
@@ -181,6 +185,41 @@ Keep to 10 rows and 6 columns, and cells to a few words or one figure. A table t
 
 **code**: `code`, `caption`, optional `insights`.
 
+## Pictures (only ones the user supplied)
+
+Use pictures the user attached or pointed to: product photos, screenshots, site photos, logos, diagrams. Never generate, download or invent images. A picture is a path or an object:
+
+```json
+{"path": "store-front.jpg", "alt": "The Pune store at opening, with a queue outside", "fit": "cover", "focus": "center"}
+```
+
+| Field | Meaning |
+|---|---|
+| `path` | File next to `deck.json` (or an absolute path). PNG, JPEG, GIF, BMP, TIFF and WebP work. SVG and HEIC do not; ask for a PNG or JPEG. |
+| `alt` | What the picture shows, in one sentence. Required unless `decorative` is true; lint warns without it. |
+| `decorative` | `true` for pure atmosphere that adds no information. |
+| `fit` | `cover` (default) fills the box and crops the edges: photos. `contain` shows the whole picture: screenshots, charts, diagrams, logos. |
+| `focus` | For `cover`: which part to keep when cropping: `center`, `top`, `bottom`, `left`, `right`. Use `top` for people and screenshots of the top of a page. |
+
+The kit turns phone photos upright, shrinks very large files to presentation size and converts formats PowerPoint cannot show. Lint warns when a picture is too small for its box (blurry) and errors when a file is missing.
+
+**image**: one picture. `image`, optional `text`, `items`, `subhead` for a text column beside it (`side`: `left` or `right` for the picture; `split`: picture share of the width, default 0.58), `caption`, `frame` (true puts screenshots on a quiet panel), `takeaway`.
+
+**images**: 2 to 6 pictures in a grid. `images`: list of `{"image": {...}, "title", "text"}` (titles and text are short captions), `ratio` (picture shape, default "4:3"; use "16:9" for screenshots), `frame`.
+
+**image_full**: a full-bleed photo with the headline on a solid panel. `image`, `title`, `subtitle`, `kicker`, `credit`, `panel` (`left` or `right`). For openers and section starts; choose a photo with a calm area behind the panel. No footer.
+
+In `custom`, an `image` element takes `x, y, w, h` and the picture fields.
+
+## Building in a template
+
+When the user attaches their company template (`.pptx` or `.potx`) and wants a new deck in it, set `meta.template` to the file. The deck keeps the template's slide masters, background, logo and fixed graphics, and takes its colours and fonts from the template's theme. Do not set a `preset`; use `theme.overrides` only for what the template lacks. Its sample slides are removed.
+
+- The template must be 16:9. If it is not, say so and build without it.
+- Page numbers step aside for the template's logo. Lint warns when content sits on a template graphic; move it or change the layout.
+- Render and check: templates differ. Look for content on top of brand bars, logos or background art, and for dark slides (section, closing) that clash with the template; set their `tone` to `light` if they do.
+- To change slides in an existing deck that already uses the template, follow `references/editing.md` instead.
+
 ## custom
 
 `elements` is a list placed by position in inches. Add `title` and `kicker` for the standard header.
@@ -196,6 +235,7 @@ Keep to 10 rows and 6 columns, and cells to a few words or one figure. A table t
 | `stat` | `x, y, w`, `value`, `label`, `size` |
 | `card` | `x, y, w, h`, `title`, `text`, `items`, `emphasis`, `tab` |
 | `chart`, `table` | `x, y, w, h`, and `chart` or `table` spec |
+| `image` | `x, y, w, h`, `path` or `image`, `alt`, `fit`, `focus`, `frame`, `radius` |
 
 Colours take a hex value or a token: `ink`, `muted`, `surface`, `line`, `bg`, `accent`, `accent2`, `accent3`, `accent4`. Elements draw in list order, so put backgrounds first. Lint checks custom slides for bounds, overflow, overlap and contrast.
 
@@ -212,4 +252,5 @@ Icons are from Lucide (ISC licence).
 - `ERROR` must be fixed: overflow, off-slide shapes, overlap, very low contrast, dashes, emoji, unknown layouts.
 - `WARN` should be fixed: weak or duplicate headlines, stock phrasing, missing sources, over-capacity layouts, repeated layouts.
 - `INFO` goes into the handoff: placeholders, missing notes.
+- "Slide uses only N% of its height" means the slide looks empty. Add substance, merge it with a neighbour, or switch to a layout made for one idea (`statement`, `big_number`, `quote`).
 - "Text overflows" means the content is too long for its layout. Shorten it, remove an item, or split the slide. Do not reach for `custom` to squeeze it in.

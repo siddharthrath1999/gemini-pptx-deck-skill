@@ -17,6 +17,9 @@ import traceback
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+import dk_images  # noqa: E402
+import dk_template  # noqa: E402
+import dk_units  # noqa: E402
 import dk_lint  # noqa: E402
 import dk_measure  # noqa: E402
 from dk_canvas import Deck, icon_names  # noqa: E402
@@ -58,9 +61,23 @@ def load_spec(path):
 
 
 def build(spec, out):
-    theme = Theme(spec.get("theme"))
-    deck = Deck(theme, spec.get("meta"))
-    findings = [{"slide": 0, "level": "warn", "msg": w} for w in theme.warnings]
+    meta = spec.get("meta") or {}
+    template = meta.get("template")
+    if template:
+        path = dk_images.resolve(template) or template
+        prs, tokens, scale, marks, notes = dk_template.open_template(path)
+        overrides = spec.get("theme") or {}
+        if isinstance(overrides, str):
+            overrides = {"preset": overrides}
+        theme = Theme(dict(tokens, **{k: v for k, v in overrides.items() if k != "preset"}))
+        dk_units.set_scale(scale)
+        deck = Deck(theme, meta, prs=prs, template_marks=marks)
+        findings = [{"slide": 0, "level": "info", "msg": n} for n in notes]
+    else:
+        theme = Theme(spec.get("theme"))
+        deck = Deck(theme, meta)
+        findings = []
+    findings += [{"slide": 0, "level": "warn", "msg": w} for w in theme.warnings]
     slides = spec.get("slides") or []
     for i, s in enumerate(slides, 1):
         name = s.get("layout")
@@ -81,6 +98,8 @@ def build(spec, out):
             except Exception as exc:
                 findings.append({"slide": i, "level": "error", "msg": "Footer failed: %s" % exc})
         canvas.notes(s.get("notes"))
+        if canvas.fill_ratio is not None and canvas.fill_ratio < 0.4:
+            findings.append({"slide": i, "level": "warn", "msg": "Slide uses only %d%% of its height and looks empty: add substance (a takeaway, a callout, more items or evidence), or use a layout made for one idea (statement, big_number, quote)." % round(canvas.fill_ratio * 100)})
         findings.extend(dk_lint.lint_geometry(canvas))
         findings.extend(dk_lint.lint_copy(s, i))
     findings.extend(dk_lint.lint_deck(slides))
@@ -92,7 +111,11 @@ def build(spec, out):
         if key not in seen:
             seen.add(key)
             unique.append(f)
+    folder = os.path.dirname(os.path.abspath(out))
+    if not os.path.isdir(folder):
+        os.makedirs(folder)
     deck.save(out)
+    dk_units.set_scale(1.0)
     return deck, unique
 
 
@@ -121,7 +144,11 @@ def main():
         return 2
     try:
         spec = load_spec(args.spec)
+        dk_images.BASE_DIRS[:0] = [args.spec if os.path.isdir(args.spec) else os.path.dirname(os.path.abspath(args.spec))]
         deck, findings = build(spec, args.out)
+    except dk_template.TemplateError as exc:
+        print("Template problem: %s" % exc)
+        return 2
     except SystemExit:
         raise
     except Exception:

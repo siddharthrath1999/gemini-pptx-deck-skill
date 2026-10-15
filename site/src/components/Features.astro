@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import Icon from "./Icon.astro";
 import { img } from "../lib/images";
+import { LAYOUTS } from "../data/content";
 const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 const bars = [0.3, 0.45, 0.4, 0.6, 0.52, 0.75, 1, 0.68];
 const notes = "Riders doubled in three quarters. Pause here, then point to Pune: it turned profitable first. Next, we look at why.";
@@ -15,7 +16,7 @@ const narrow = "(max-width: 640px) 90vw, (max-width: 980px) 45vw, 280px";
 
       <article class="tile rv"><div class="demo" aria-hidden="true"><div class="cycle fit" data-cycle>
         {["l06", "l15", "l20", "l22"].map((n, i) => <Image class={i === 0 ? "on" : ""} src={img(`layouts/${n}.jpg`)} alt="" widths={[400, 760]} sizes={narrow} />)}
-      </div></div><h3>34 layouts</h3><p>Picked from the shape of your content. <a class="more" href={`${base}prompts.html#layouts`}>See them all</a></p></article>
+      </div></div><h3>{LAYOUTS.length} layouts</h3><p>Picked from the shape of your content, including ones for your own photos. <a class="more" href={`${base}prompts.html#layouts`}>See them all</a></p></article>
 
       <article class="tile rv"><div class="demo" aria-hidden="true"><ul class="ticks">
         <li style="--i:0"><Icon name="description" />Your files<em>first</em></li>

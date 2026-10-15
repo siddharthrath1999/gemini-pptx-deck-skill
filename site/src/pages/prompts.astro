@@ -5,7 +5,7 @@ import Icon from "../components/Icon.astro";
 import Prompts from "../components/Prompts.astro";
 import Layouts from "../components/Layouts.astro";
 import { img } from "../lib/images";
-import { PROMPTS, PROMPT_CATS } from "../data/content";
+import { PROMPTS, PROMPT_CATS, LAYOUTS } from "../data/content";
 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -14,7 +14,7 @@ const fields = (t: string) => esc(t).replace(/\[([^\]]+)\]/g, (_m, v) => `<span 
 const catOf = (k: string) => PROMPT_CATS.find((c) => c.key === k)!;
 const count = (k: string) => (k === "all" ? PROMPTS.length : PROMPTS.filter((p) => p.cat === k).length);
 ---
-<Base page="gallery" title="Prompts and layouts · PPTX Native" description="Ready-made prompts for PPTX Native, a prompt builder, and all 34 slide layouts. Fill in your details and send them to Gemini.">
+<Base page="gallery" title="Prompts and layouts · PPTX Native" description={`Ready-made prompts for PPTX Native, a prompt builder, and all ${LAYOUTS.length} slide layouts. Fill in your details and send them to Gemini.`}>
   <section class="hero">
     <div class="glow" aria-hidden="true"></div>
     <div class="wrap grid">
@@ -22,7 +22,7 @@ const count = (k: string) => (k === "all" ? PROMPTS.length : PROMPTS.filter((p) 
         <span class="eyebrow">{PROMPTS.length} prompts · 4 use cases</span>
         <h1>Prompts and layouts</h1>
         <p class="lead">Prompts that already make good decks, a builder for your own, and every layout the skill can pick from.</p>
-        <nav class="jump" aria-label="On this page"><a class="chip" href="#gallery"><Icon name="format_quote" />{PROMPTS.length} ready prompts</a><a class="chip" href="#build"><Icon name="tune" />Build your own</a><a class="chip" href="#layouts"><Icon name="dashboard" />34 layouts</a></nav>
+        <nav class="jump" aria-label="On this page"><a class="chip" href="#gallery"><Icon name="format_quote" />{PROMPTS.length} ready prompts</a><a class="chip" href="#build"><Icon name="tune" />Build your own</a><a class="chip" href="#layouts"><Icon name="dashboard" />{LAYOUTS.length} layouts</a></nav>
       </div>
       <ol class="steps" aria-label="How to use a prompt">
         <li><span class="n">1</span><div><b>Change the <span class="demo-f">underlined</span> parts</b><span>Your topic, audience, length and files.</span></div></li>

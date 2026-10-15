@@ -191,34 +191,44 @@ def token(c, value, default=None):
 @layout("cover", footer=False)
 def cover(c, d):
     P, T = c.P, c.theme
+    photo = d.get("image")
+    logo = d.get("logo") or c.deck.meta.get("logo")
+    split = W * 0.54  # with a photo, text keeps to the left of this line
+    if photo:
+        c.picture(photo, split, 0, W - split, H, radius=0, name="Cover picture")
     y = 0.9
+    if logo:
+        c.picture({"path": logo, "fit": "contain", "align": "left", "alt": (c.deck.meta.get("author") or "Company") + " logo"} if isinstance(logo, str) else dict({"fit": "contain", "align": "left"}, **logo),
+                  MX, 0.6, 2.4, 0.5, radius=0, name="Logo")
+        y = 1.35
     if d.get("kicker"):
         y = c.kicker(MX, y, d["kicker"]) + 0.2
-    title_w = CW * (0.74 if T["header"] == "block" else 0.86)
+    title_w = (split - MX - 0.5) if photo else CW * (0.74 if T["header"] == "block" else 0.86)
     y_title = max(y, 1.75)
     y = c.put(MX, y_title, title_w, d.get("title", ""), size=66, max_h=2.75 if d.get("subtitle") else 3.4, min_size=34, font="display",
               bold=c.display_bold(), spacing=0.92, tracking=T["tracking"] * 1.4, max_lines=3, name="Title", role="title")
     tags = d.get("tags") or []
     if d.get("subtitle"):
         floor = 5.42 if tags else 6.0
-        y = c.put(MX, y + 0.26, CW * 0.72, d["subtitle"], size=20, color=P["muted"], max_h=max(0.4, floor - (y + 0.26)),
+        y = c.put(MX, y + 0.26, title_w if photo else CW * 0.72, d["subtitle"], size=20, color=P["muted"], max_h=max(0.4, floor - (y + 0.26)),
                   min_size=14, spacing=1.08, name="Subtitle", role="subtitle")
-    if T["header"] == "block":
+    if T["header"] == "block" and not photo:
         c.rect(W - MX - 2.3, 0.9, 2.3, 2.3, fill=P["accent"], name="Cover block")
         if len(P["accents"]) > 1:
             c.rect(W - MX - 3.45, 3.2, 1.15, 1.15, fill=accent_n(c, 1), name="Cover block 2")
-    c.rect(MX, 6.2, CW, 0.02, fill=P["line"] if T["card"] != "bold" else P["ink"], radius=0, name="Cover rule")
+    rule_w = (split - MX - 0.5) if photo else CW
+    c.rect(MX, 6.2, rule_w, 0.02, fill=P["line"] if T["card"] != "bold" else P["ink"], radius=0, name="Cover rule")
     meta = "   \u00b7   ".join(str(v) for v in (d.get("author") or c.deck.meta.get("author"), d.get("date") or c.deck.meta.get("date"), d.get("note")) if v)
     if meta:
-        c.put(MX, 6.42, CW * 0.7, meta, size=12, color=P["muted"], max_h=0.4, min_size=10, name="Cover meta")
+        c.put(MX, 6.42, rule_w if photo else CW * 0.7, meta, size=12, color=P["muted"], max_h=0.4, min_size=10, name="Cover meta")
     x = W - MX
-    for i, a in enumerate(reversed(P["accents"][:4])):
+    for i, a in enumerate([] if photo else reversed(P["accents"][:4])):
         x -= 0.34
         c.rect(x, 6.44, 0.26, 0.26, fill=a, radius=min(0.06, T["radius"]), name="Palette chip")
         x -= 0.06
     tx = MX
     for tag in tags[:5]:
-        if tx > MX + CW * 0.8:
+        if tx > MX + (rule_w - 1.5 if photo else CW * 0.8):
             break
         tx += c.pill(tx, 5.62, str(tag), fill=P["surface"] if P["surface"] != P["bg"] else mix(P["bg"], P["ink"], 0.07),
                      color=P["ink"], size=10, h=0.32) + 0.12
@@ -255,7 +265,7 @@ def agenda(c, d):
     y1 = takeaway(c, d, c.bottom)
     gap = 0.24
     ch = (y1 - y0 - gap * (rows - 1)) / rows
-    ch = min(ch, 3.4) if rows == 1 else ch
+    ch = min(ch, 4.0) if rows == 1 else ch
     for i, it in enumerate(items):
         r, k = divmod(i, per_row)
         x, w = cols(per_row)[k]
@@ -266,6 +276,7 @@ def agenda(c, d):
               max_h=0.75, min_size=30, max_lines=1, name="Agenda number")
         block(c, ix, iy + 0.82, iw, ih - 0.82, item_parts({"title": it.get("title") or it.get("text"),
               "text": it.get("text") if it.get("title") else None}, ink, muted, 17, 13), on=fill)
+    c.settle(y0, y1)
 
 
 @layout("statement")
@@ -328,6 +339,7 @@ def big_number(c, d):
             ix, iy, iw, ih, fill, ink, muted = c.card(x, y0 + i * (ch + gap), w, ch, pad=0.22)
             c.stat(ix, iy, iw, it.get("value", ""), it.get("label") or it.get("text"), size=30, color=ink, on=fill,
                    label_color=muted, max_h=ih - 0.62)
+    c.settle(y0, y1)
 
 
 @layout("kpis")
@@ -370,6 +382,7 @@ def kpis(c, d):
             (it.get("label") or it.get("title"), {"size": 15, "bold": True, "color": ink, "gap": 0.08}),
             (it.get("note") or it.get("text"), {"size": 12.5, "color": muted, "spacing": 1.06}),
         ], on=fill)
+    c.settle(y0, y1)
 
 
 # ---- text-led --------------------------------------------------------------------------------
@@ -393,6 +406,7 @@ def bullets(c, d):
             (aside.get("title"), {"size": 17, "bold": True, "color": ink, "gap": 0.1}),
             (aside.get("text"), {"size": 13.5, "color": muted, "spacing": 1.08}),
         ], on=fill)
+    c.settle(y0, y1)
 
 
 def _column_parts(col, ink, muted):
@@ -470,7 +484,7 @@ def cards(c, d):
     sc = fit_scale(c, groups, grow=1.35 if rows == 1 else 1.2)
     for i, it in enumerate(items):
         needs.append(measure_parts(c, groups[i][0], iw0, sc) + extras[i] + 2 * pad + 0.12)
-    ch = avail if rows > 1 else min(avail, max(max(needs + [0]), avail * 0.62, 1.7))
+    ch = avail if rows > 1 else min(avail, max(max(needs + [0]), avail * 0.72, 1.7))
     for i, it in enumerate(items):
         r, k = divmod(i, per_row)
         x, w = grid[k]
@@ -493,6 +507,7 @@ def cards(c, d):
             c.put(ix, end + 0.16, iw, str(it["stat"]), size=26, font="display", bold=c.display_bold(), color=ink, on=fill,
                   max_h=0.5, min_size=16, max_lines=1, spacing=0.95, name="Card stat")
         block(c, ix, iy, iw, end - iy, _card_parts(c, it, ink, muted, per_row), on=fill, scale=sc)
+    c.settle(y0, y1)
 
 
 def _card_parts(c, it, ink, muted, per_row):
@@ -578,17 +593,20 @@ def before_after(c, d):
 def quote(c, d):
     P, T = c.P, c.theme
     y = 1.0
+    c.mark_body()
     if d.get("kicker"):
         y = c.kicker(MX, y, d["kicker"]) + 0.1
     c.put(MX, y, 1.6, "\u201c", size=120, font="display", bold=c.display_bold(), color=P["accent_big"], spacing=0.8, name="Quote mark")
     text = d.get("quote") or d.get("text") or ""
     avail = c.bottom - (y + 1.25) - 1.0
-    yq = c.put(MX, y + 1.25, CW * 0.86, text, size=34, max_h=avail, min_size=20, font="display", bold=False if T["display"] in ("Georgia", "Cambria") else c.display_bold(),
+    big = 42 if len(plain(text)) <= 110 else (38 if len(plain(text)) <= 170 else 34)
+    yq = c.put(MX, y + 1.25, CW * 0.86, text, size=big, max_h=avail, min_size=20, font="display", bold=False if T["display"] in ("Georgia", "Cambria") else c.display_bold(),
                spacing=1.05, tracking=T["tracking"] * 0.5, name="Quote", role="title")
     block(c, MX, yq + 0.3, CW * 0.7, 0.8, [
         (d.get("by"), {"size": 16, "bold": True, "gap": 0.04}),
         (d.get("role"), {"size": 13, "color": P["muted"]}),
     ])
+    c.settle(TOP, c.bottom, bias=0.45, max_shift=1.2)
 
 
 @layout("question")
@@ -598,6 +616,7 @@ def question(c, d):
     y0 = head(c, d, max_lines=3)
     if d.get("context"):
         y0 = c.put(MX, y0 - 0.06, CW * 0.8, d["context"], size=17, color=P["muted"], max_h=0.9, min_size=13, spacing=1.06) + 0.3
+        c.mark_body()
     opts = [str(o) for o in d.get("options") or []]
     n = len(opts)
     icon = d.get("icon")
@@ -626,6 +645,7 @@ def question(c, d):
         cy = y0 + max(0, (rows * rh + gap * (rows - 1) - d1) / 2)
         c.oval(cx, cy, d1, d1, fill=P["ink"], name="Question disc")
         c.icon(icon, cx + d1 * 0.26, cy + d1 * 0.26, d1 * 0.48, color=P["bg"], weight=3)
+    c.settle(y0, c.bottom, max_shift=0.9)
 
 
 @layout("recap")
@@ -647,6 +667,7 @@ def recap(c, d):
         c.rect(MX, y, CW, 0.015, fill=P["line"], radius=0, name="Rule")
         c.put(MX, y + 0.14, 0.9, "%02d" % (i + 1), size=26, font="display", bold=c.display_bold(), color=P["accent_text"], max_h=0.5, max_lines=1, spacing=0.95)
         block(c, MX + 1.05, y + 0.15, CW - 1.45, rh - 0.2, rp(it), min_pt=11, scale=sc)
+    c.settle(y0, y1)
 
 
 @layout("next_steps")
@@ -659,7 +680,7 @@ def next_steps(c, d):
     if n > 6:
         c.warn("next_steps: %d items; keep to 6 per slide." % n)
     gap = 0.14
-    rh = min(0.95, (y1 - y0 - gap * (n - 1)) / n)
+    rh = min(1.1, (y1 - y0 - gap * (n - 1)) / n)
     has_owner = any(it.get("owner") for it in items)
     has_when = any(it.get("when") for it in items)
     ow, ww = (2.2 if has_owner else 0), (1.7 if has_when else 0)
@@ -680,6 +701,7 @@ def next_steps(c, d):
         if has_when and it.get("when"):
             block(c, x + ow, y + 0.1, ww - 0.1, rh - 0.2, [("When", {"size": 9, "color": muted, "caps": True, "tracking": 60, "bold": True, "gap": 0.02}),
                   (str(it["when"]), {"size": 13, "color": ink, "bold": True})], on=fill, valign="m", min_pt=9)
+    c.settle(y0, y1)
 
 
 @layout("sources")
@@ -708,6 +730,7 @@ def table(c, d):
         if key in d and key not in spec:
             spec[key] = d[key]
     add_table(c, MX, y0, CW * float(d.get("width", 1.0)), spec, y1 - y0)
+    c.settle(y0, y1)
 
 
 def _insights(c, d, x, y0, w, y1):
@@ -823,6 +846,7 @@ def bar_list(c, d):
                        % (note[:40], max(8, int((bar_w - 0.3) / 0.075 / 2))))
     if side:
         _insights(c, d, MX + CW * 0.68, y0, CW * 0.32, y1)
+    c.settle(y0, y1)
 
 
 @layout("split_bar")
@@ -866,6 +890,7 @@ def split_bar(c, d):
                 else:
                     c.warn("split_bar: segment %r is too narrow for its label; shorten it or put the figure in the takeaway." % label)
             x += sw + gap
+    c.settle(y0, y1)
 
 
 @layout("heatmap")
@@ -880,7 +905,7 @@ def heatmap(c, d):
     lab_w = min(3.2, max(1.5, max([M.text_width(plain(str(r.get("name", ""))), c.font("body"), 13, True) for r in rows] + [1.0]) + 0.25))
     cw = (CW - lab_w) / nc
     hh = 0.5
-    rh = min(0.7, (y1 - y0 - hh) / nr)
+    rh = min(0.9, (y1 - y0 - hh) / nr)
     vals = [float(v) for r in rows for v in (r.get("values") or []) if isinstance(v, (int, float))]
     lo, hi = (min(vals), max(vals)) if vals else (0, 1)
     fmt = d.get("format", "{:,.0f}")
@@ -904,6 +929,7 @@ def heatmap(c, d):
             c.rect(MX + lab_w + j * cw + 0.03, y, cw - 0.06, rh - 0.06, fill=fill, radius=min(c.radius(), 0.06), name="Cell")
             c.text(MX + lab_w + j * cw + 0.03, y, cw - 0.06, rh - 0.06, label, size=13, bold=True, color=pick_on(fill, "141414", "FFFFFF"),
                    on=fill, align="c", valign="m", fit=9, name="Cell value")
+    c.settle(y0, y1)
 
 
 @layout("scorecard")
@@ -921,7 +947,7 @@ def scorecard(c, d):
     lab_w = min(3.0, max(1.6, max([M.text_width(plain(str(r.get("name", ""))), c.font("body"), 14, True) for r in rows] + [1.0]) + 0.3))
     cw = (CW - lab_w - note_w) / nc
     hh = 0.55
-    rh = min(0.78, (y1 - y0 - hh) / nr)
+    rh = min(0.95, (y1 - y0 - hh) / nr)
     hl = d.get("highlight")
     main = series_colors(c, 1)[0]
     for j, col in enumerate(columns):
@@ -956,6 +982,7 @@ def scorecard(c, d):
         if has_note and r.get("note"):
             c.text(MX + lab_w + nc * cw + 0.15, y + 0.04, note_w - 0.15, rh - 0.08, str(r["note"]), size=12, color=readable(P["muted"], on_fill, 4.5),
                    valign="m", fit=9, on=on_fill, name="Row note")
+    c.settle(y0, y1)
 
 
 # ---- flows and structures --------------------------------------------------------------------
@@ -975,7 +1002,7 @@ def timeline(c, d):
     hl = d.get("highlight")
     tp = lambda it: [(it.get("title"), {"size": 17 if big else 14, "bold": True, "gap": 0.09, "spacing": 0.98}),
                      (it.get("text"), {"size": 13.5 if big else 12, "color": P["muted"], "spacing": 1.07})]
-    sc = fit_scale(c, [(tp(it), grid[0][1] - 0.05, y1 - ly - 0.3) for it in items], grow=1.25, min_pt=9.5)
+    sc = fit_scale(c, [(tp(it), grid[0][1] - 0.05, y1 - ly - 0.3) for it in items], grow=1.45 if n <= 4 else 1.25, min_pt=9.5)
     for i, it in enumerate(items):
         x, w = grid[i]
         on = hl is not None and (i == hl or it.get("date") == hl)
@@ -983,6 +1010,7 @@ def timeline(c, d):
               max_h=0.55 if big else 0.4, min_size=12, max_lines=1, font="display", spacing=0.95, name="Date")
         c.oval(x, ly - 0.09, 0.18, 0.18, fill=P["accent"] if (on or hl is None) else P["bg"], line=P["ink"], line_w=1.5, name="Milestone dot")
         block(c, x, ly + 0.3, w - 0.05, y1 - ly - 0.3, tp(it), min_pt=9.5, scale=sc)
+    c.settle(y0, y1)
 
 
 @layout("process")
@@ -999,7 +1027,7 @@ def process(c, d):
     pad = 0.24
     sc = fit_scale(c, [(_card_parts(c, s, P["ink"], P["muted"], n), grid[0][1] - 2 * pad, y1 - y0 - 0.75 - 2 * pad) for s in steps], grow=1.3)
     need = max([measure_parts(c, _card_parts(c, s, P["ink"], P["muted"], n), grid[0][1] - 2 * pad, sc) for s in steps] + [0.5]) + 0.8 + 2 * pad
-    ch = min(y1 - y0, max(need, (y1 - y0) * 0.62))
+    ch = min(y1 - y0, max(need, (y1 - y0) * 0.72))
     for i, s in enumerate(steps):
         x, w = grid[i]
         ix, iy, iw, ih, fill, ink, muted = c.card(x, y0, w, ch, emphasis=(d.get("emphasis") == i), pad=pad)
@@ -1011,6 +1039,7 @@ def process(c, d):
         if i < n - 1:
             ax = x + w + gap / 2
             c.icon("arrow-right", ax - 0.13, y0 + ch / 2 - 0.13, 0.26, color=P["ink"], weight=2)
+    c.settle(y0, y1)
 
 
 @layout("funnel")
@@ -1044,6 +1073,7 @@ def funnel(c, d):
             note = "%.0f%% of previous" % (100.0 * vals[i] / vals[i - 1])
         if note:
             c.text(area_x + area_w + 0.25, y, CW - (CW * 0.2 + area_w) - 0.25, rh, str(note), size=12.5, color=P["muted"], valign="m", fit=9.5, name="Stage note")
+    c.settle(y0, y1)
 
 
 @layout("matrix")
@@ -1089,7 +1119,7 @@ def layers(c, d):
     if n > 6:
         c.warn("layers: %d layers; keep to 6." % n)
     gap = 0.12
-    rh = min(1.05, (y1 - y0 - gap * (n - 1)) / n)
+    rh = min(1.2, (y1 - y0 - gap * (n - 1)) / n)
     main = series_colors(c, 1)[0]
     pyramid = bool(d.get("pyramid"))
     for i, it in enumerate(items):
@@ -1107,6 +1137,7 @@ def layers(c, d):
             c.put(x + 0.3 + tw, y + 0.08, w - tw - 0.6, it["text"], size=15, color=ink, on=fill, max_h=rh - 0.16, min_size=10, valign="m", spacing=1.04)
             c.boxes[-1]["h"] = rh - 0.16
             c.slide.shapes[-1].height = emu(rh - 0.16)
+    c.settle(y0, y1)
 
 
 @layout("roadmap")
@@ -1195,6 +1226,7 @@ def steps(c, d):
                 x = MX + CW - mw + k * 1.75
                 block(c, x, y + 0.14, 1.65, rh - 0.2, [(key, {"size": 9, "color": P["muted"], "caps": True, "tracking": 60, "bold": True, "gap": 0.02}),
                       (str(it[key]), {"size": 12.5, "bold": True})], min_pt=9)
+    c.settle(y0, y1)
 
 
 @layout("code")
@@ -1222,6 +1254,115 @@ def code(c, d):
     c.boxes[-1]["fits"] = True
     if side:
         _insights(c, d, MX + CW * 0.68, y0, CW * 0.32, y1)
+
+
+# ---- pictures --------------------------------------------------------------------------------
+def _ratio(value, default=4 / 3.0):
+    if not value:
+        return default
+    if isinstance(value, (int, float)):
+        return float(value)
+    a, _, b = str(value).partition(":")
+    try:
+        return float(a) / float(b)
+    except (ValueError, ZeroDivisionError):
+        return default
+
+
+@layout("image")
+def image(c, d):
+    """One picture, alone or beside a text column: a product, a place, a screenshot, a diagram."""
+    P = c.P
+    y0 = head(c, d)
+    y1 = takeaway(c, d, c.bottom)
+    img = d.get("image") or {}
+    cap = d.get("caption")
+    cap_h = 0.38 if cap else 0.0
+    frame = bool(d.get("frame"))
+    has_text = d.get("text") or d.get("items")
+    if has_text:
+        iw = CW * float(d.get("split", 0.58))
+        left = d.get("side", "left") == "left"
+        ix = MX if left else MX + CW - iw
+        tx, tw = (MX + iw + 0.5, CW - iw - 0.5) if left else (MX, CW - iw - 0.5)
+        box = c.picture(img, ix, y0, iw, y1 - y0 - cap_h, frame=frame)
+        parts = [(d.get("subhead"), {"size": 20, "bold": True, "gap": 0.14, "spacing": 1.0}),
+                 (d.get("text"), {"size": 16, "color": P["ink"], "gap": 0.22, "spacing": 1.12})] + list_parts(d.get("items"), P["ink"], P["muted"], 15, 16, 13.5, 9)
+        block(c, tx, y0, tw, y1 - y0, parts, grow=1.3, valign="m")
+    else:
+        box = c.picture(img, MX, y0, CW, y1 - y0 - cap_h, frame=frame)
+    if box and cap:
+        c.put(box[0], box[1] + box[3] + 0.1, box[2], cap, size=11.5, color=P["muted"], max_h=0.3, min_size=9, name="Caption")
+
+
+@layout("image_full", footer=False)
+def image_full(c, d):
+    """A full-bleed photo with the headline on a solid panel: openers, section starts, a moment to pause."""
+    P, T = c.P, c.theme
+    c.picture(d.get("image") or {}, 0, 0, W, H, radius=0, name="Full-bleed picture")
+    pw, pad = 6.3, 0.38
+    tw = pw - 2 * pad
+    title = d.get("title", "")
+    size, _ = M.fit_size([plain(title)], c.font("display"), tw, 2.0, 38, 24, c.display_bold(), 0.96 * LH, 0, 0, 3)
+    th = c.measure(title, size, tw, "display", c.display_bold(), 0.96, tracking=T["tracking"])[0]
+    sub = d.get("subtitle")
+    sh = min(1.0, c.measure(sub, 15, tw, spacing=1.08)[0]) if sub else 0
+    credit = d.get("credit") or (d.get("image") or {}).get("credit") if isinstance(d.get("image"), dict) else d.get("credit")
+    ph = pad * 2 + (0.36 if d.get("kicker") else 0) + th + (sh + 0.16 if sub else 0) + (0.3 if credit else 0)
+    left = d.get("panel", "left") != "right"
+    px = 0.55 if left else W - 0.55 - pw
+    py = H - 0.55 - ph
+    c.rect(px, py, pw, ph, fill=P["bg"], name="Title panel")
+    y = py + pad
+    if d.get("kicker"):
+        y = c.kicker(px + pad, y, d["kicker"]) + 0.12
+    y = c.put(px + pad, y, tw, title, size=size, font="display", bold=c.display_bold(), spacing=0.96, tracking=T["tracking"],
+              max_h=th + 0.02, min_size=22, name="Title", role="title")
+    if sub:
+        y = c.put(px + pad, y + 0.16, tw, sub, size=15, color=P["muted"], max_h=sh + 0.02, min_size=12, spacing=1.08, name="Subtitle")
+    if credit:
+        c.put(px + pad, py + ph - pad - 0.2, tw, str(credit), size=9, color=P["muted"], max_h=0.22, min_size=8, name="Credit", role="footer")
+
+
+@layout("images")
+def images(c, d):
+    """Two to six pictures in a grid with short captions: products, screens, sites, before and after."""
+    P = c.P
+    y0 = head(c, d)
+    y1 = takeaway(c, d, c.bottom)
+    items = []
+    for it in d.get("images") or d.get("items") or []:
+        if isinstance(it, str):
+            items.append({"image": {"path": it}})
+        elif "image" in it:
+            items.append(dict(it, image=it["image"] if isinstance(it["image"], dict) else {"path": it["image"], "alt": it.get("alt")}))
+        else:
+            items.append({"image": it, "title": it.get("title"), "text": it.get("text")})
+    n = len(items)
+    if not 2 <= n <= 6:
+        c.warn("images: %d pictures; use 2 to 6." % n)
+    n = max(1, n)
+    per_row = n if n <= 4 else 3
+    rows = (n + per_row - 1) // per_row
+    gap = 0.26
+    grid = cols(per_row, gap=gap)
+    cw = grid[0][1]
+    has_text = any(it.get("text") for it in items)
+    has_title = any(it.get("title") for it in items)
+    cap_h = (0.42 if has_title else 0) + (0.5 if has_text else 0)
+    row_h = (y1 - y0 - gap * (rows - 1)) / rows
+    pic_h = max(0.8, min(row_h - cap_h, cw / _ratio(d.get("ratio"))))
+    for i, it in enumerate(items):
+        r, k = divmod(i, per_row)
+        x, w = grid[k]
+        y = y0 + r * (pic_h + cap_h + gap)
+        c.picture(it["image"], x, y, w, pic_h, frame=bool(d.get("frame")))
+        if cap_h:
+            block(c, x, y + pic_h + 0.12, w, cap_h - 0.08, [
+                (it.get("title"), {"size": 15, "bold": True, "gap": 0.04, "spacing": 0.98}),
+                (it.get("text"), {"size": 12.5, "color": P["muted"], "spacing": 1.05}),
+            ], min_pt=10)
+    c.settle(y0, y1)
 
 
 # ---- free canvas -----------------------------------------------------------------------------
@@ -1272,5 +1413,8 @@ def custom(c, d):
             c._rec("region", x, y, w, h, name="chart")
         elif t == "table":
             add_table(c, x, y, w, el.get("table") or {}, h or (c.bottom - y))
+        elif t in ("image", "picture"):
+            c.picture(el.get("image") or {"path": el.get("path"), "alt": el.get("alt"), "fit": el.get("fit"), "focus": el.get("focus"),
+                      "decorative": el.get("decorative")}, x, y, w, h, radius=el.get("radius"), frame=bool(el.get("frame")))
         else:
             c.warn("custom: unknown element type %r." % t)

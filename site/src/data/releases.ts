@@ -6,6 +6,20 @@ export type Release = { version: string; date: string; title: string; summary: s
 
 export const RELEASES: Release[] = [
   {
+    version: "1.3.0",
+    date: "2026-10-16",
+    title: "Your photos, your template",
+    summary: "Attach your photos, logo or company template, and slides now use their space better.",
+    changes: [
+      { type: "new", title: "Your own photos and screenshots", text: "Attach photos, screenshots or a logo and three new layouts place them: one picture with text, a grid of up to six, or a full-bleed photo. Phone photos are turned upright and large files are shrunk." },
+      { type: "new", title: "Build inside your company template", text: "Attach a .pptx or .potx template and the deck uses its fonts, colours, background and logo. Page numbers move clear of the logo." },
+      { type: "improved", title: "Fuller, better balanced slides", text: "Cards, tables, timelines and lists grow to use the space, and content no longer hugs the headline over an empty lower half. Slides that look empty are flagged before you see them." },
+      { type: "improved", title: "Accessible by default", text: "Every slide has a real title, each part becomes a PowerPoint section, and charts, tables and pictures carry alt text. PowerPoint's Accessibility Checker finds no missing alt text." },
+      { type: "improved", title: "Length that fits the request", text: "Decks match the ask, for example 20 to 35 slides for an analysis, and go long when you ask for depth." },
+      { type: "improved", title: "Edits fit your deck better", text: "New slides added to a deck let its own background and logo show through and join the right section." },
+    ],
+  },
+  {
     version: "1.2.1",
     date: "2026-10-14",
     title: "Steadier slide previews",

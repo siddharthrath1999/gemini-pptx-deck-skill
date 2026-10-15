@@ -7,6 +7,7 @@ editable PowerPoint object and records its box so dk_lint can check bounds, over
 import json
 import os
 import re
+import uuid
 
 from pptx import Presentation
 from pptx.dml.color import RGBColor
@@ -15,6 +16,7 @@ from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE, PP_ALIGN
 from pptx.oxml.ns import qn
 from dk_units import Inches, Pt, emu
 
+import dk_images
 import dk_measure as M
 from dk_theme import Theme, contrast, mix, pick_on, readable
 
@@ -59,6 +61,56 @@ def _plain_style(shape):
         shape._element.remove(style)
 
 
+DECORATIVE_URI = "{C183D7F6-B498-43B3-948B-1728B52AA6E4}"
+DECORATIVE_NS = "http://schemas.microsoft.com/office/drawing/2017/decorative"
+SECTIONS_URI = "{521415D9-36F7-43E2-AB2F-B90AF26B5E84}"
+P14_NS = "http://schemas.microsoft.com/office/powerpoint/2010/main"
+
+
+def _cnvpr(element):
+    """The cNvPr (id, name, alt text) of a shape, connector, group, picture or graphic frame."""
+    found = element.xpath("./*[1]/p:cNvPr")
+    return found[0] if found else None
+
+
+def set_alt(shape, text):
+    """Alt text that screen readers and PowerPoint's Accessibility Checker read."""
+    props = _cnvpr(shape._element)
+    if props is not None and text:
+        props.set("descr", str(text)[:1000])
+
+
+def mark_decorative(element):
+    """Flag a purely visual object as decorative, so screen readers skip it and the checker does not ask for alt text."""
+    props = _cnvpr(element)
+    if props is None:
+        return
+    ext_list = props.find(qn("a:extLst"))
+    if ext_list is None:
+        ext_list = props.makeelement(qn("a:extLst"), {})
+        props.append(ext_list)
+    for ext in ext_list.findall(qn("a:ext")):
+        if ext.get("uri") == DECORATIVE_URI:
+            return
+    ext = ext_list.makeelement(qn("a:ext"), {"uri": DECORATIVE_URI})
+    flag = ext.makeelement("{%s}decorative" % DECORATIVE_NS, {"val": "1"}, nsmap={"adec": DECORATIVE_NS})
+    ext.append(flag)
+    ext_list.append(ext)
+
+
+def make_title(shape):
+    """Turn a text box into the slide's title placeholder. Its look is unchanged (every format is set
+    on the text itself), but PowerPoint, Keynote and screen readers now see it as the slide title."""
+    sp = shape._element
+    c_sp = sp.find(qn("p:nvSpPr")).find(qn("p:cNvSpPr"))
+    if c_sp is not None and c_sp.get("txBox"):
+        del c_sp.attrib["txBox"]
+    nv = sp.find(qn("p:nvSpPr")).find(qn("p:nvPr"))
+    for old in nv.findall(qn("p:ph")):
+        nv.remove(old)
+    nv.insert(0, nv.makeelement(qn("p:ph"), {"type": "title"}))
+
+
 def load_icons():
     global _icons
     if _icons is None:
@@ -94,7 +146,7 @@ def blank_layout(prs):
 
 
 class Deck(object):
-    def __init__(self, theme=None, meta=None, prs=None):
+    def __init__(self, theme=None, meta=None, prs=None, template_marks=None):
         self.theme = theme if isinstance(theme, Theme) else Theme(theme)
         self.meta = dict(meta or {})
         if prs is None:
@@ -106,6 +158,11 @@ class Deck(object):
             self.prs = prs  # an existing deck: new slides use its blank layout and size
             self.blank = blank_layout(prs)
         self.canvases = []
+        # a template's fixed graphics (logo, bars): light slides let them show, and text keeps clear of them
+        self.marks = list(template_marks or [])
+        self.template = template_marks is not None
+        # an existing deck keeps its own sections (edit mode); new decks, templates included, get one per divider
+        self.keep_sections = prs is not None and not self.template
         props = self.prs.core_properties
         props.title = self.meta.get("title", "")
         props.author = self.meta.get("author", "")
@@ -120,8 +177,44 @@ class Deck(object):
         return canvas
 
     def save(self, path):
+        for canvas in self.canvases:
+            canvas.finish()
+        self.write_sections()
         self.prs.save(path)
         return path
+
+    def write_sections(self):
+        """Section dividers become PowerPoint sections, so long decks can be collapsed and navigated by part."""
+        if not any(c.layout == "section" for c in self.canvases) or self.keep_sections:
+            return
+        groups, name = [], "Opening"
+        for canvas in self.canvases:
+            if canvas.layout == "section":
+                name = plain(canvas.spec.get("title") or "Section %d" % (len(groups) + 1))[:60]
+                groups.append((name, []))
+            elif not groups:
+                groups.append((name, []))
+            groups[-1][1].append(canvas.slide.slide_id)
+        root = self.prs.part._element
+        ext_list = root.find(qn("p:extLst"))
+        if ext_list is None:
+            ext_list = root.makeelement(qn("p:extLst"), {})
+            root.append(ext_list)
+        for ext in ext_list.findall(qn("p:ext")):
+            if ext.get("uri") == SECTIONS_URI:
+                ext_list.remove(ext)
+        ext = ext_list.makeelement(qn("p:ext"), {"uri": SECTIONS_URI})
+        tag = "{%s}" % P14_NS
+        lst = ext.makeelement(tag + "sectionLst", {}, nsmap={"p14": P14_NS})
+        for title, ids in groups:
+            sec = lst.makeelement(tag + "section", {"name": title, "id": "{%s}" % str(uuid.uuid4()).upper()})
+            id_list = sec.makeelement(tag + "sldIdLst", {})
+            for sid in ids:
+                id_list.append(id_list.makeelement(tag + "sldId", {"id": str(sid)}))
+            sec.append(id_list)
+            lst.append(sec)
+        ext.append(lst)
+        ext_list.append(ext)
 
 
 class Canvas(object):
@@ -129,12 +222,76 @@ class Canvas(object):
         self.deck, self.slide, self.number, self.spec = deck, slide, number, spec
         self.theme = deck.theme
         self.P = self.theme.tone(tone)
-        self.boxes, self.warnings = [], []
+        self.boxes, self.warnings, self.errors = [], [], []
         self.layout = spec.get("layout", "")
         self.bottom = BOTTOM
-        fill = slide.background.fill
-        fill.solid()
-        fill.fore_color.rgb = _c(self.P["bg"])
+        self.titled = False
+        self.finished = False
+        self.body_from = (0, 0)  # (first shape, first box) of the slide body, set after the header
+        self.fill_ratio = None
+        if not (deck.template and tone == "light"):  # light slides in a template show the master's own background
+            fill = slide.background.fill
+            fill.solid()
+            fill.fore_color.rgb = _c(self.P["bg"])
+
+    # ---- accessibility -----------------------------------------------------------------------
+    def finish(self):
+        """Last pass before saving: a real title on every slide, alt text where it matters,
+        and decorative marks on purely visual shapes."""
+        if self.finished:
+            return
+        self.finished = True
+        if not self.titled:
+            hidden = plain(self.spec.get("title") or self.spec.get("kicker") or self.spec.get("text")
+                           or self.spec.get("quote") or self.deck.meta.get("title") or "Slide %d" % self.number)
+            box = self.slide.shapes.add_textbox(Inches(MX), Inches(-1.2), Inches(CW), Inches(0.6))
+            box.name = "Title (off-slide)"
+            label = hidden[:200]
+            frame = box.text_frame
+            frame.text = label
+            make_title(box)
+            box._element.getparent().remove(box._element)
+            self.slide.shapes._spTree.insert(2, box._element)  # first in reading order
+            self.titled = True
+        for shape in self.slide.shapes:
+            el = shape._element
+            tag = el.tag.split("}")[-1]
+            if tag == "grpSp" or tag == "cxnSp":
+                mark_decorative(el)
+            elif tag == "sp" and not (shape.has_text_frame and shape.text_frame.text.strip()):
+                mark_decorative(el)
+        # Reading order follows drawing order, which is already title, body, footer. Shapes are never
+        # reordered here, because order is also stacking order and moving them would hide things.
+
+    # ---- balance -----------------------------------------------------------------------------
+    def mark_body(self):
+        """Everything drawn after this point is the slide body (used by settle)."""
+        self.body_from = (len(self.slide.shapes._spTree) - 2, len(self.boxes))
+
+    def settle(self, top, bottom, bias=0.42, max_shift=0.5, min_free=0.4):
+        """Ease the body down toward the optical centre between top and bottom when it would otherwise
+        hug the headline over an empty lower slide. The shift is capped (half an inch by default) so the
+        line where content starts stays consistent from slide to slide; layouts grow first, settle second.
+        The takeaway stays put. Returns the shift in inches."""
+        recs = [r for r in self.boxes[self.body_from[1]:] if r.get("name") != "Takeaway"]
+        if not recs:
+            return 0.0
+        used_top = min(r["y"] for r in recs)
+        used_bottom = max(r["y"] + r["h"] for r in recs)
+        span = bottom - top
+        if span > 0:
+            self.fill_ratio = (used_bottom - used_top) / span
+        free = (bottom - used_bottom) - max(0.0, used_top - top)
+        if free < min_free:
+            return 0.0
+        shift = min(max_shift, free * bias)
+        for shape in list(self.slide.shapes)[self.body_from[0]:]:
+            if shape.name == "Takeaway" or shape.top is None:
+                continue
+            shape.top = shape.top + emu(shift)
+        for r in recs:
+            r["y"] += shift
+        return shift
 
     # ---- bookkeeping -------------------------------------------------------------------------
     def warn(self, message):
@@ -280,6 +437,14 @@ class Canvas(object):
                 spc = self._spc(size, tracking)
                 if spc:
                     run._r.get_or_add_rPr().set("spc", str(spc))
+        if role == "title" and not self.titled:
+            make_title(box)
+            self.titled = True
+            # read the title first, unless moving it to the back would put it under a panel or picture
+            earlier = [r for r in self.boxes if r["kind"] in ("shape", "image")]
+            if not any(r["x"] < x + w and x < r["x"] + r["w"] and r["y"] < y + h and y < r["y"] + r["h"] for r in earlier):
+                box._element.getparent().remove(box._element)
+                self.slide.shapes._spTree.insert(2, box._element)
         if rotation in (90, -90, 270):  # record the box as it sits on the slide after rotation
             x, y, w, h, need = x + w / 2 - h / 2, y + h / 2 - w / 2, h, w, 0
         self._rec("text", x, y, w, h, need=need, size=size, lines=lines, text=" / ".join(measured)[:90],
@@ -364,6 +529,61 @@ class Canvas(object):
             self.oval(x, y, d, d, fill=fill, name="Badge")
         self.text(x, y, d, d, str(label), size=size or d * 72 * 0.42, color=color, bold=True, align="c",
                   valign="m", on=fill, font=font, role="badge")
+
+    # ---- pictures ----------------------------------------------------------------------------
+    def picture(self, image, x, y, w, h, fit=None, focus=None, radius=None, name="Picture", frame=False):
+        """A user-supplied picture. image is a path or {"path", "alt", "fit", "focus", "decorative"}.
+
+        fit "cover" fills the box and crops the overflow (photos); "contain" shows the whole image
+        (screenshots, charts, logos). Returns the box the picture occupies, or None if it failed.
+        """
+        spec = image if isinstance(image, dict) else {"path": image}
+        fit = spec.get("fit") or fit or "cover"
+        focus = spec.get("focus") or focus or "center"
+        info = dk_images.load(spec.get("path") or spec.get("src") or "")
+        if info.get("error"):
+            self.errors.append(info["error"])
+            self.rect(x, y, w, h, fill=mix(self.P["bg"], self.P["ink"], 0.06), line=self.P["line"], dash=True, name="Missing picture")
+            self.text(x + 0.2, y, w - 0.4, h, "Missing picture: " + str(spec.get("path") or "")[:60], size=11,
+                      color=self.P["muted"], align="c", valign="m", fit=8, name="Missing picture label")
+            return None
+        if frame:  # screenshots sit on a quiet panel so their edges are visible on any background
+            self.rect(x, y, w, h, fill=self.P["surface"], line=self.P["line"], name="Picture frame")
+            pad = 0.12
+            x, y, w, h = x + pad, y + pad, w - 2 * pad, h - 2 * pad
+        if fit == "contain":
+            x, y, w, h = dk_images.contain_box(info["px"], x, y, w, h, spec.get("align") or "center")
+            crop = (0.0, 0.0, 0.0, 0.0)
+        else:
+            crop = dk_images.cover_crop(info["px"], w, h, focus)
+        pic = self.slide.shapes.add_picture(info["path"], Inches(x), Inches(y), Inches(w), Inches(h))
+        pic.crop_left, pic.crop_top, pic.crop_right, pic.crop_bottom = crop
+        pic.name = spec.get("name") or name
+        radius = self.theme["radius"] if radius is None else radius
+        if radius > 0.005 and not frame:
+            geom = pic._element.spPr.find(qn("a:prstGeom"))
+            if geom is not None:
+                geom.set("prst", "roundRect")
+                av = geom.find(qn("a:avLst"))
+                if av is None:
+                    av = geom.makeelement(qn("a:avLst"), {})
+                    geom.append(av)
+                for old in list(av):
+                    av.remove(old)
+                adj = int(min(50000, radius / min(w, h) * 100000))
+                av.append(av.makeelement(qn("a:gd"), {"name": "adj", "fmla": "val %d" % adj}))
+        if spec.get("decorative"):
+            mark_decorative(pic._element)
+        elif spec.get("alt"):
+            set_alt(pic, spec["alt"])
+        else:
+            self.warn("Picture %s has no alt text. Add \"alt\" (what it shows, in a sentence) or \"decorative\": true." % info["name"])
+        shown_px = info["px"][0] * (1 - crop[0] - crop[2])
+        ppi = shown_px / max(w, 0.01)
+        if ppi < 100:
+            self.warn("Picture %s is low resolution at this size (%d pixels per inch); use a larger file or show it smaller." % (info["name"], ppi))
+        self._rec("image", x, y, w, h, name=pic.name)
+        return x, y, w, h
 
     # ---- icons -------------------------------------------------------------------------------
     def icon(self, name, x, y, size, color=None, weight=None):
@@ -477,6 +697,7 @@ class Canvas(object):
             y += 0.16
             self.rect(MX, y, CW, 0.02, fill=P["ink"] if T["card"] == "rule" else P["line"], radius=0, name="Header rule")
             y += 0.02
+        self.mark_body()
         return y + 0.3
 
     def kicker(self, x, y, label, color=None):
@@ -500,9 +721,14 @@ class Canvas(object):
         if page and self.deck.meta.get("page_numbers", True):
             right = ("%s   %d" % (label, self.number)).strip() if label else str(self.number)
         rw = 0.0
+        edge = W - MX
+        for m in self.deck.marks:  # master graphics show on every slide, whatever its tone
+            if m["y"] < FOOT_Y + 0.25 and m["y"] + m["h"] > FOOT_Y and m["x"] + m["w"] > W / 2:
+                edge = min(edge, m["x"] - 0.2)
         if right:
             rw = min(4.0, M.text_width(right, self.font("body"), 9) + 0.1)
-            self.text(W - MX - rw, FOOT_Y, rw, 0.2, right, size=9, color=P["muted"], align="r", name="Page", role="footer")
+            self.text(edge - rw, FOOT_Y, rw, 0.2, right, size=9, color=P["muted"], align="r", name="Page", role="footer")
+            rw += W - MX - edge
         if source:
             self.put(MX, FOOT_Y, CW - rw - 0.3, source, size=9, color=P["muted"], max_h=0.36, min_size=8,
                      name="Source", role="footer")

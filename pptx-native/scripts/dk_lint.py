@@ -104,6 +104,18 @@ def lint_geometry(canvas):
     add = lambda level, msg: out.append({"slide": n, "level": level, "msg": msg})
     for msg in canvas.warnings:
         add("warn", msg)
+    for msg in getattr(canvas, "errors", []):
+        add("error", msg)
+    if True:
+        for m in getattr(canvas.deck, "marks", []):
+            for b in canvas.boxes:
+                if b["kind"] not in ("text", "image") or b.get("role") == "footer" and b.get("name") == "Page":
+                    continue
+                ix = min(b["x"] + b["w"], m["x"] + m["w"]) - max(b["x"], m["x"])
+                iy = min(b["y"] + b["h"], m["y"] + m["h"]) - max(b["y"], m["y"])
+                if ix > 0.05 and iy > 0.05:
+                    add("warn", "%s sits on the template's %s. Move or shorten it, or pick another layout for this slide." % (b.get("name") or b["kind"], m["name"]))
+                    break
     texts = []
     for b in canvas.boxes:
         x, y, w, h = b["x"], b["y"], b["w"], b["h"]

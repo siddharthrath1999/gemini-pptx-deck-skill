@@ -55,7 +55,7 @@ test("layouts: filter, expand, collapse", async ({ page }) => {
   const visible = () => page.locator("#posterGrid > li:visible").count();
   expect(await visible()).toBe(8);
   await page.locator("#showAll").click();
-  expect(await visible()).toBe(34);
+  expect(await visible()).toBe(37);
   await expect(page.locator("#showAll")).toHaveText(/Show fewer/);
   await page.locator("#showAll").click();
   expect(await visible()).toBe(8);

@@ -79,6 +79,7 @@ export const LAYOUT_FILTERS = [
   { key: "story", label: "Story", icon: "auto_stories" },
   { key: "flow", label: "Flow", icon: "account_tree" },
   { key: "teach", label: "Teaching", icon: "school" },
+  { key: "pics", label: "Pictures", icon: "photo_library" },
 ];
 // [name, description, category, image number]
 export const LAYOUTS: [string, string, string, number][] = [
@@ -99,6 +100,8 @@ export const LAYOUTS: [string, string, string, number][] = [
   ["Runbook steps", "Owner, time and command per step.", "teach", 33], ["Code", "Monospace panel with notes.", "teach", 34],
   ["Free canvas", "Anything the others don't cover.", "flow", 35], ["Recap", "What to remember from a part.", "teach", 36],
   ["Next steps", "Actions with owners and dates.", "story", 37], ["Sources", "Numbered references.", "story", 38],
+  ["Picture", "Your photo or screenshot, with text beside it.", "pics", 39], ["Picture grid", "Two to six of your photos with captions.", "pics", 40],
+  ["Full-bleed photo", "Your photo edge to edge, headline on a panel.", "pics", 41],
 ];
 
 export const EXAMPLES = [
@@ -141,8 +144,8 @@ export const FAQ = [
   ["Why does it need Task mode in Gemini?", "Task mode gives Gemini a small computer where it can run the skill's tools. In normal chat it can't, so you'd get text, HTML or a Google Slides export instead of a .pptx."],
   ["Can it edit a deck I already have?", "Yes. Attach the .pptx and say what to change. It can rewrite text, update tables and chart data, replace notes, reorder or delete slides, and redesign or add slides in your deck's own fonts and colours. New and redesigned slides need a 16:9 deck."],
   ["Are the numbers right?", "It researches and cites sources, but it can still pick a weak source or misread one. Check figures before you present. The handoff note lists every source."],
-  ["Can it use my brand?", "Give your colours as hex codes in the prompt. Fonts default to ones every device has; ask for a brand font only if everyone presenting has it installed."],
-  ["Does it add photos?", "No. Visuals come from charts, tables, shapes and icons. Add your own photos afterwards."],
+  ["Can it use my brand or company template?", "Yes. Attach your company template (.pptx or .potx) and the new deck is built inside it, with your fonts, colours, background and logo. Or attach just your logo and give your colours as hex codes."],
+  ["Does it add photos?", "It places the photos, screenshots and logos you attach, cropped to fit and turned the right way up. It never generates or downloads images."],
 ];
 
 export const PROMPT_CATS = [
