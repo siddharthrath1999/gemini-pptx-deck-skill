@@ -11,7 +11,7 @@ const link = (h: string) => (page === "home" ? h : `${home}${h}`);
 const cols = [
   { title: "Product", links: [[link("#how"), "How it works"], [link("#examples"), "Examples"], [link("#features"), "Features"], [link("#faq"), "FAQ"]] },
   { title: "Get started", links: [[link("#setup-gemini"), "Gemini app"], [link("#setup-antigravity"), "Antigravity"], [ZIP_URL, "Download the zip"], [`${base}prompts.html`, "Prompts"], [`${base}prompts.html#layouts`, "Layouts"]] },
-  { title: "Project", links: [[GITHUB, "GitHub"], [`${GITHUB}/releases`, "Release notes"], [`${GITHUB}/issues`, "Report an issue"], [`${GITHUB}/blob/main/LICENSE`, "MIT licence"]] },
+  { title: "Project", links: [[GITHUB, "GitHub"], [`${base}releases.html`, "What's new"], [`${GITHUB}/issues`, "Report an issue"], [`${GITHUB}/blob/main/LICENSE`, "MIT licence"]] },
 ];
 ---
 <footer class="foot">

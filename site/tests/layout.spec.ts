@@ -8,10 +8,10 @@ const VIEWPORTS = [
   { name: "laptop", width: 1024, height: 768, mobile: false },
   { name: "desktop", width: 1440, height: 900, mobile: false },
 ];
-const PAGES = [{ name: "home", path: "/index.html" }, { name: "gallery", path: "/prompts.html" }];
+const PAGES = [{ name: "home", path: "/index.html" }, { name: "gallery", path: "/prompts.html" }, { name: "releases", path: "/releases.html" }];
 
 // Grids whose items must never overlap each other.
-const GRIDS = ["#path", "#how .strip", "#examples .cards", "#bento", "#setup .two", "#posterGrid", ".principles", ".vs", "#gGrid"];
+const GRIDS = [".changes", ".releases", "#path", "#how .strip", "#examples .cards", "#bento", "#setup .two", "#posterGrid", ".principles", ".vs", "#gGrid"];
 
 async function scrollThrough(page: Page) {
   await page.evaluate(async () => {

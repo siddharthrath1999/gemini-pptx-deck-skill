@@ -2,6 +2,7 @@
 // Set up: two plain cards, one per place you can use the skill. Side by side on desktop, stacked on phones.
 import Icon from "./Icon.astro";
 import { ZIP_URL, INSTALL, INSTALL_PROJECT, PROMPT_CATS } from "../data/content";
+import { LATEST } from "../data/releases";
 const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
 ---
 <section id="setup">
@@ -20,7 +21,7 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
         </header>
         <ol class="steps">
           <li><span class="n">1</span><div><b>Download the skill</b><span>Keep the file zipped.</span>
-            <a class="btn primary sm dl" href={ZIP_URL}><Icon name="download" />Download pptx-native.zip</a></div></li>
+            <span class="dlrow"><a class="btn primary sm" href={ZIP_URL}><Icon name="download" />Download pptx-native.zip</a><a class="ver" href={`${base}releases.html`}>v{LATEST.version} · What's new</a></span></div></li>
           <li><span class="n">2</span><div><b>Open Customise, then Skills</b><span>In Gemini's left menu.</span></div></li>
           <li><span class="n">3</span><div><b>Click Create, then Upload</b><span>Choose the zip and confirm.</span></div></li>
           <li><span class="n">4</span><div><b>Pick Task and ask</b><span>In a new chat, pick Task under the box, type <code>@pptx-native</code> and describe your deck.</span></div></li>
@@ -91,7 +92,9 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
   .steps li > div > span { display: block; color: var(--muted); font-size: 14px; line-height: 1.5; }
   .note code { overflow-wrap: anywhere; }
   code { font: 500 12.5px var(--mono); color: var(--soft); background: var(--bg-3); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; }
-  .dl { margin-top: 10px; }
+  .steps .dlrow { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 10px; }
+  .ver { min-height: 36px; display: inline-flex; align-items: center; padding: 0 4px; font-size: 13px; color: var(--muted); text-decoration: underline; text-decoration-color: var(--line-3); text-underline-offset: 3px; }
+  .ver:hover { color: var(--ink); }
   .note { margin: auto 0 0; display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 1.5; color: var(--faint); }
   .note :global(.i) { width: 17px; height: 17px; margin-top: 1px; }
 

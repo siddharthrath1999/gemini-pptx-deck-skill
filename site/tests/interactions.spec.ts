@@ -193,7 +193,7 @@ test("back to top stays on the page you are on", async ({ page }) => {
 test("every internal link lands on a real page and section", async ({ page, request }) => {
   const bad: string[] = [];
   const cache = new Map<string, string>();
-  for (const from of ["/index.html", "/prompts.html"]) {
+  for (const from of ["/index.html", "/prompts.html", "/releases.html"]) {
     await page.goto(from);
     const hrefs = await page.evaluate(() => Array.from(document.querySelectorAll<HTMLAnchorElement>("a[href]")).map((a) => a.href).filter((h) => h.startsWith(location.origin)));
     for (const h of new Set(hrefs)) {
@@ -209,4 +209,16 @@ test("every internal link lands on a real page and section", async ({ page, requ
     }
   }
   expect(bad).toEqual([]);
+});
+
+test("release notes: latest first, deep links, download", async ({ page }) => {
+  await page.goto("/releases.html");
+  const first = page.locator(".rel").first();
+  await expect(first.locator(".tag")).toHaveText("Latest");
+  await page.locator(".latest").click();
+  await expect(page).toHaveURL(/#v\d+-\d+-\d+$/);
+  await expect(page.locator(".update .btn")).toHaveAttribute("href", /releases\/latest\/download\/pptx-native\.zip$/);
+  await page.goto("/index.html#setup");
+  await page.locator("#setup-gemini .ver").click();
+  await expect(page).toHaveURL(/releases\.html$/);
 });

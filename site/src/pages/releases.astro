@@ -1,0 +1,114 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import { RELEASES, LATEST, anchor, niceDate } from "../data/releases";
+import { GITHUB, ZIP_URL } from "../data/content";
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const label = { new: "New", improved: "Improved", fixed: "Fixed" } as const;
+const icon = { new: "auto_awesome", improved: "trending_up", fixed: "build" } as const;
+---
+<Base page="other" title="What's new · PPTX Native" description={`Release notes for PPTX Native. Latest: v${LATEST.version}, ${LATEST.title.toLowerCase()}.`}>
+  <section class="hero">
+    <div class="glow" aria-hidden="true"></div>
+    <div class="wrap top">
+      <div class="copy">
+        <span class="eyebrow">Release notes</span>
+        <h1>What's new.</h1>
+        <p class="lead">Every version of PPTX Native, in plain words. The newest is at the top.</p>
+        <a class="latest" href={`#${anchor(LATEST.version)}`}><span class="pill">v{LATEST.version}</span>{LATEST.title}<Icon name="arrow_downward" /></a>
+      </div>
+      <aside class="update" aria-labelledby="update-title">
+        <h2 id="update-title">How to update</h2>
+        <ol>
+          <li><span class="app gemini"><img src={`${base}logos/gemini-2025.svg`} alt="" width="22" height="22" /></span><div><b>Gemini app</b><span>Download the new zip. In Customise → Skills, open PPTX Native, click More, then Replace skill.</span></div></li>
+          <li><span class="app agy"><img src={`${base}logos/antigravity.png`} alt="" width="22" height="22" /></span><div><b>Antigravity</b><span>Run the <a href={`${base}index.html#setup-antigravity`}>one-line installer</a> again, then restart.</span></div></li>
+        </ol>
+        <a class="btn primary" href={ZIP_URL}><Icon name="download" />Download v{LATEST.version}</a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="list" aria-label="Releases">
+    <div class="wrap">
+      <ol class="releases">
+        {RELEASES.map((r, i) => (
+          <li class="rel" id={anchor(r.version)}>
+            <div class="meta">
+              <a class="ver" href={`#${anchor(r.version)}`} aria-label={`Link to version ${r.version}`}>v{r.version}</a>
+              <time datetime={r.date}>{niceDate(r.date)}</time>
+              {i === 0 && <span class="tag">Latest</span>}
+            </div>
+            <article class="body">
+              <h2>{r.title}</h2>
+              <p class="sum">{r.summary}</p>
+              <ul class="changes">
+                {r.changes.map((c) => (
+                  <li>
+                    <span class={`type ${c.type}`}><Icon name={icon[c.type]} />{label[c.type]}</span>
+                    <div><b>{c.title}</b><p>{c.text}</p></div>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          </li>
+        ))}
+      </ol>
+      <p class="more"><a class="textlink" href={`${GITHUB}/releases`}>Every release and its download on GitHub<Icon name="arrow_forward" /></a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { position: relative; overflow: hidden; padding: calc(var(--nav-h) + 72px) 0 40px; }
+  .glow { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(55% 60% at 30% -10%, rgba(59,79,216,.28), transparent 70%), radial-gradient(40% 50% at 90% 0%, rgba(255,107,61,.12), transparent 70%); }
+  .top { position: relative; display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: end; }
+  .copy { display: grid; gap: 18px; justify-items: start; }
+  h1 { font-size: clamp(44px, 6vw, 80px); letter-spacing: -0.05em; }
+  .latest { display: inline-flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px 0 6px; border-radius: 999px; border: 1px solid var(--line-2); background: rgba(255,255,255,.03); font-size: 14px; font-weight: 500; color: var(--soft); transition: border-color .2s, color .2s; }
+  .latest:hover { border-color: var(--line-3); color: var(--ink); }
+  .latest :global(.i) { width: 17px; height: 17px; color: var(--muted); }
+  .pill { height: 28px; display: inline-flex; align-items: center; padding: 0 10px; border-radius: 999px; background: var(--accent-soft); border: 1px solid var(--accent-line); color: #ffd9c9; font: 500 12px/1 var(--mono); }
+
+  .update { display: grid; gap: 16px; padding: 22px; border-radius: var(--r-lg); border: 1px solid var(--line-2); background: var(--bg-2); }
+  .update h2 { font-size: 17px; letter-spacing: -0.02em; }
+  .update ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  .update li { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; align-items: start; }
+  .update .app { --s: 36px; }
+  .update b { display: block; font-size: 14.5px; font-weight: 500; }
+  .update span:not(.app) { display: block; color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-top: 2px; }
+  .update a:not(.btn) { color: var(--soft); text-decoration: underline; text-decoration-color: var(--line-3); text-underline-offset: 3px; }
+  .update .btn { justify-self: start; }
+
+  .list { padding-top: 24px; }
+  .releases { list-style: none; margin: 0; padding: 0; display: grid; }
+  .rel { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; padding: 40px 0; border-top: 1px solid var(--line); scroll-margin-top: calc(var(--nav-h) + 24px); }
+  .meta { position: sticky; top: calc(var(--nav-h) + 40px); align-self: start; display: grid; gap: 8px; justify-items: start; }
+  .ver { font: 500 22px/1 var(--mono); letter-spacing: -0.02em; color: var(--ink); }
+  .ver:hover { color: var(--accent-2); }
+  time { font-size: 14px; color: var(--muted); }
+  .tag { height: 24px; display: inline-flex; align-items: center; padding: 0 9px; border-radius: 7px; background: rgba(95,211,154,.1); border: 1px solid rgba(95,211,154,.3); color: var(--ok); font: 500 11.5px/1 var(--mono); }
+  .rel:target .ver { color: var(--accent-2); }
+
+  .body h2 { font-size: clamp(24px, 2.6vw, 32px); letter-spacing: -0.035em; }
+  .sum { margin: 10px 0 0; font-size: 17px; line-height: 1.55; color: var(--soft); max-width: 60ch; }
+  .changes { list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 10px; }
+  .changes li { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 16px; align-items: start; padding: 16px 18px; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--bg-2); }
+  .type { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 9px; border-radius: 7px; font: 500 11.5px/1 var(--mono); letter-spacing: .02em; justify-self: start; }
+  .type :global(.i) { width: 15px; height: 15px; }
+  .type.new { color: #ffd9c9; background: var(--accent-soft); border: 1px solid var(--accent-line); }
+  .type.improved { color: #c3cdfc; background: rgba(59,79,216,.14); border: 1px solid rgba(110,130,255,.35); }
+  .type.fixed { color: var(--ok); background: rgba(95,211,154,.08); border: 1px solid rgba(95,211,154,.28); }
+  .changes b { display: block; font-size: 15.5px; font-weight: 500; line-height: 1.4; }
+  .changes p { margin: 4px 0 0; color: var(--muted); font-size: 14.5px; line-height: 1.55; }
+  .more { margin: 8px 0 0; padding-top: 32px; border-top: 1px solid var(--line); }
+
+  @media (max-width: 900px) {
+    .top { grid-template-columns: 1fr; }
+    .rel { grid-template-columns: 1fr; gap: 16px; padding: 32px 0; }
+    .meta { position: static; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  }
+  @media (max-width: 640px) {
+    .hero { padding-top: calc(var(--nav-h) + 48px); }
+    .changes li { grid-template-columns: 1fr; gap: 10px; padding: 14px; }
+  }
+</style>
